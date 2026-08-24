@@ -46,31 +46,35 @@ function svg(width, height, tone, seed) {
 }
 
 const files = [
+  // These paths mirror exactly what Keystatic writes, so seed content and
+  // panel-created content are identical: a collection entry's images live under
+  // images/<collection>/<slug>/, the cover named after its field and each array
+  // item under photos/<index>/image.jpg. Deviate and the panel shows empty
+  // image fields, then silently rewrites the paths on first save.
   // [relative path, width, height, tone index]
-  ['sessions/hero.jpg', 1600, 2133, 0],
-  ['sessions/plener-1.jpg', 2000, 1333, 1],
-  ['sessions/plener-2.jpg', 1500, 2000, 2],
-  ['sessions/plener-3.jpg', 1500, 2000, 3],
-  ['sessions/plener-4.jpg', 2000, 1500, 4],
-  ['sessions/roczek-1.jpg', 1600, 2000, 5],
-  ['sessions/roczek-2.jpg', 2000, 1333, 6],
-  ['sessions/roczek-3.jpg', 1500, 2000, 7],
-  ['sessions/rodzinna-1.jpg', 1600, 2000, 2],
-  ['sessions/rodzinna-2.jpg', 2000, 1333, 4],
-  ['sessions/rodzinna-3.jpg', 1500, 2000, 1],
-  ['offers/plener.jpg', 1400, 1750, 2],
-  ['offers/rodzinna.jpg', 1400, 1750, 4],
-  ['offers/swiateczna.jpg', 1400, 1750, 6],
+  ['sessions/plener-jesienny-zuzia-marek/coverImage.jpg', 2000, 1333, 1],
+  ['sessions/plener-jesienny-zuzia-marek/photos/0/image.jpg', 1500, 2000, 2],
+  ['sessions/plener-jesienny-zuzia-marek/photos/1/image.jpg', 1500, 2000, 3],
+  ['sessions/plener-jesienny-zuzia-marek/photos/2/image.jpg', 2000, 1500, 4],
+  ['sessions/roczek-antosia/coverImage.jpg', 1600, 2000, 5],
+  ['sessions/roczek-antosia/photos/0/image.jpg', 2000, 1333, 6],
+  ['sessions/roczek-antosia/photos/1/image.jpg', 1500, 2000, 7],
+  ['sessions/rodzina-k-sesja-w-domu/coverImage.jpg', 1600, 2000, 2],
+  ['sessions/rodzina-k-sesja-w-domu/photos/0/image.jpg', 2000, 1333, 4],
+  ['sessions/rodzina-k-sesja-w-domu/photos/1/image.jpg', 1500, 2000, 1],
+  ['offers/plenerowa/image.jpg', 1400, 1750, 2],
+  ['offers/rodzinna/image.jpg', 1400, 1750, 4],
+  ['offers/swiateczna/image.jpg', 1400, 1750, 6],
+  // Not a collection image — imported directly by the pages, so it can live anywhere.
   ['about/portret.jpg', 1400, 1750, 3],
 ];
 
 await mkdir(OUT, { recursive: true });
-for (const dir of ['sessions', 'offers', 'about']) {
-  await mkdir(path.join(OUT, dir), { recursive: true });
-}
+
 
 for (const [rel, width, height, toneIndex] of files) {
   const target = path.join(OUT, rel);
+  await mkdir(path.dirname(target), { recursive: true });
   await sharp(svg(width, height, TONES[toneIndex], toneIndex + width))
     .jpeg({ quality: 80, mozjpeg: true })
     .toFile(target);

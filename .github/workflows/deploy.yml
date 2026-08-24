@@ -1,0 +1,79 @@
+name: Build i deploy
+
+# Runs on a push to this repo, and on a repository_dispatch fired by the
+# content repo whenever the panel saves something.
+on:
+  push:
+    branches: [main]
+  repository_dispatch:
+    types: [content-updated]
+  workflow_dispatch:
+
+concurrency:
+  # A newer save supersedes an in-flight build; never deploy out of order.
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pobierz kod
+        uses: actions/checkout@v4
+
+      - name: Pobierz treść (prywatne repo)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.CONTENT_REPO || 'awfotografia/blog-content' }}
+          token: ${{ secrets.CONTENT_REPO_TOKEN }}
+          path: blog-content
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Cheap and catches the one mistake that is expensive to undo.
+      - name: Sprawdź rozmiary zdjęć
+        run: npm run check:images
+
+      - name: Zbuduj stronę
+        run: npm run build
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://awfotografia.pl' }}
+
+      - name: Skonfiguruj klucz SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.MYDEVIL_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.MYDEVIL_HOST }}" >> ~/.ssh/known_hosts
+
+      # The public site: static files only, served straight by nginx so no
+      # photo request ever touches Node.
+      - name: Wyślij stronę
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/id_ed25519" \
+            dist/client/ \
+            "${{ secrets.MYDEVIL_USER }}@${{ secrets.MYDEVIL_HOST }}:domains/${{ vars.SITE_DOMAIN || 'awfotografia.pl' }}/public_html/"
+
+      # The panel: the whole app, because Keystatic's API routes need Node.
+      # node_modules and .env stay on the server between deploys.
+      - name: Wyślij panel
+        run: |
+          rsync -az --delete \
+            --exclude 'node_modules' \
+            --exclude '.env' \
+            --exclude '.git' \
+            -e "ssh -i ~/.ssh/id_ed25519" \
+            ./ \
+            "${{ secrets.MYDEVIL_USER }}@${{ secrets.MYDEVIL_HOST }}:domains/${{ vars.PANEL_DOMAIN || 'panel.awfotografia.pl' }}/public_nodejs/"
+
+      - name: Zainstaluj zależności panelu i zrestartuj
+        run: |
+          ssh -i ~/.ssh/id_ed25519 \
+            "${{ secrets.MYDEVIL_USER }}@${{ secrets.MYDEVIL_HOST }}" \
+            "cd domains/${{ vars.PANEL_DOMAIN || 'panel.awfotografia.pl' }}/public_nodejs && npm ci --omit=dev && devil www restart ${{ vars.PANEL_DOMAIN || 'panel.awfotografia.pl' }}"

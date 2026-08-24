@@ -1,0 +1,34 @@
+name: Opublikuj zmiany
+
+# Lives in the CONTENT repo (awfotografia/blog-content), not the code repo.
+# Every save from the panel is a commit here; this tells the code repo to
+# rebuild and deploy.
+on:
+  push:
+    branches: [main]
+
+jobs:
+  check-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Reject oversized photos here, where they are added — before they are
+      # baked into this repo's history forever.
+      - name: Sprawdź rozmiary zdjęć
+        run: |
+          npm install sharp@0.34.4 --no-save
+          curl -sSL -o check-images.mjs \
+            "https://raw.githubusercontent.com/${{ vars.CODE_REPO || 'mrlynx93/awfotografia_page' }}/main/scripts/check-images.mjs"
+          node check-images.mjs .
+
+      - name: Przebuduj stronę
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.CODE_REPO_TOKEN }}
+          repository: ${{ vars.CODE_REPO || 'mrlynx93/awfotografia_page' }}
+          event-type: content-updated

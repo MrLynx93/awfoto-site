@@ -4,22 +4,45 @@ import { config, collection, singleton, fields } from '@keystatic/core';
  * Panel do zarządzania treścią strony.
  *
  * Code is English; every label the photographer sees is Polish.
+ * Content lives in a separate private repo — see `inRepo` below.
  *
- * Content lives in a separate private repo. In local mode it is a plain clone
- * at ./blog-content, so `pathPrefix` points there and every path below is
- * written once and works in both modes.
+ * This file is bundled into the browser, so it must use `import.meta.env`
+ * (replaced by Vite at build time) rather than `process.env`, which does not
+ * exist client-side — and only PUBLIC_-prefixed variables reach the browser.
+ *
+ * The panel always talks to the private content repo over GitHub, in
+ * development as well as production, so local editing behaves exactly like the
+ * deployed panel.
+ *
+ * Local mode is deliberately NOT the default. Keystatic's local reader walks
+ * the current repo's git tree and honours .gitignore, and ./blog-content is
+ * gitignored here on purpose — so local mode shows an empty panel unless that
+ * folder is tracked. Set PUBLIC_KEYSTATIC_STORAGE=local only in a checkout
+ * where the content is committed.
  */
-const isLocal = process.env.KEYSTATIC_STORAGE === 'local';
+const storageMode = import.meta.env.PUBLIC_KEYSTATIC_STORAGE ?? 'github';
 
-const storage = isLocal
-  ? ({ kind: 'local', pathPrefix: 'blog-content' } as const)
-  : ({
-      kind: 'github',
-      repo: {
-        owner: process.env.PUBLIC_CONTENT_REPO_OWNER || 'awfotografia',
-        name: process.env.PUBLIC_CONTENT_REPO_NAME || 'blog-content',
-      },
-    } as const);
+const storage =
+  storageMode === 'local'
+    ? ({ kind: 'local' } as const)
+    : ({
+        kind: 'github',
+        repo: {
+          owner: import.meta.env.PUBLIC_CONTENT_REPO_OWNER || 'awfotografia',
+          name: import.meta.env.PUBLIC_CONTENT_REPO_NAME || 'blog-content',
+        },
+      } as const);
+
+/**
+ * In GitHub mode the content repo *is* the root, so paths start at `content/`.
+ * Locally that same repo is a clone at ./blog-content, so every path needs the
+ * folder in front.
+ *
+ * Note this cannot use `storage.pathPrefix` — Keystatic ignores that option in
+ * local mode (it only applies to GitHub storage), which silently yields an
+ * empty panel.
+ */
+const inRepo = (p: string) => (storageMode === 'local' ? `blog-content/${p}` : p);
 
 /** Reused by the regular and the Christmas price list — identical shape. */
 const pricingPackage = fields.object(
@@ -58,7 +81,7 @@ export default config({
   collections: {
     sessions: collection({
       label: 'Moje sesje',
-      path: 'content/sessions/*',
+      path: inRepo('content/sessions/*'),
       slugField: 'title',
       format: { contentField: 'body' },
       entryLayout: 'content',
@@ -77,6 +100,10 @@ export default config({
         date: fields.date({
           label: 'Data sesji',
           description: 'Sesje wyświetlają się od najnowszej.',
+          // Required, and defaulted to today: the site sorts by this and its
+          // schema demands it, so an entry saved without a date breaks the build.
+          defaultValue: { kind: 'today' },
+          validation: { isRequired: true },
         }),
         category: fields.select({
           label: 'Rodzaj sesji',
@@ -101,7 +128,7 @@ export default config({
         coverImage: fields.image({
           label: 'Zdjęcie główne',
           description: 'Widoczne na liście sesji i przy udostępnianiu linku.',
-          directory: 'images/sessions',
+          directory: inRepo('images/sessions'),
           publicPath: '../../images/sessions/',
           validation: { isRequired: true },
         }),
@@ -109,7 +136,7 @@ export default config({
           fields.object({
             image: fields.image({
               label: 'Zdjęcie',
-              directory: 'images/sessions',
+              directory: inRepo('images/sessions'),
               publicPath: '../../images/sessions/',
               validation: { isRequired: true },
             }),
@@ -144,7 +171,7 @@ export default config({
 
     offers: collection({
       label: 'Oferta',
-      path: 'content/offers/*',
+      path: inRepo('content/offers/*'),
       slugField: 'name',
       format: 'yaml',
       columns: ['name', 'price'],
@@ -163,7 +190,7 @@ export default config({
         price: fields.text({ label: 'Cena', description: 'Np. „od 550 zł”' }),
         image: fields.image({
           label: 'Zdjęcie',
-          directory: 'images/offers',
+          directory: inRepo('images/offers'),
           publicPath: '../../images/offers/',
           validation: { isRequired: true },
         }),
@@ -191,7 +218,7 @@ export default config({
   singletons: {
     pricing: singleton({
       label: 'Cennik',
-      path: 'content/pricing',
+      path: inRepo('content/pricing'),
       format: { data: 'yaml' },
       schema: {
         intro: fields.text({
@@ -235,7 +262,7 @@ export default config({
 
     settings: singleton({
       label: 'Ustawienia',
-      path: 'content/settings',
+      path: inRepo('content/settings'),
       format: { data: 'yaml' },
       schema: {
         heroEyebrow: fields.text({

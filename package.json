@@ -4,15 +4,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "KEYSTATIC_STORAGE=local astro dev",
-    "start": "astro dev",
+    "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "content:init": "node scripts/content-init.mjs",
     "content:pull": "node scripts/content-pull.mjs",
-    "sprawdz:zdjecia": "node scripts/sprawdz-zdjecia.mjs",
-    "serve": "node app.js"
+    "serve": "node app.js",
+    "check:images": "node scripts/check-images.mjs",
+    "fetch:fonts": "node scripts/fetch-fonts.mjs"
   },
   "dependencies": {
     "@astrojs/markdoc": "2.0.8",
