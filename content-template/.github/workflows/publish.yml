@@ -1,6 +1,6 @@
 name: Opublikuj zmiany
 
-# Lives in the CONTENT repo (awfotografia/blog-content), not the code repo.
+# Lives in the CONTENT repo (lynx-soft/awfotografia-site-content), not the code repo.
 # Every save from the panel is a commit here. This shrinks any oversized photo,
 # rewrites that same commit so the original is never permanently stored, then
 # tells the code repo to rebuild and deploy.
@@ -37,7 +37,7 @@ jobs:
         run: |
           npm install sharp@0.34.4 --no-save
           curl -sSL -o resize-images.mjs \
-            "https://raw.githubusercontent.com/${{ vars.CODE_REPO || 'mrlynx93/awfotografia_page' }}/main/scripts/resize-images.mjs"
+            "https://raw.githubusercontent.com/${{ vars.CODE_REPO || 'MrLynx93/awfotografia_page' }}/main/scripts/resize-images.mjs"
           node resize-images.mjs .
           rm -f resize-images.mjs
 
@@ -70,5 +70,5 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.CODE_REPO_TOKEN }}
-          repository: ${{ vars.CODE_REPO || 'mrlynx93/awfotografia_page' }}
+          repository: ${{ vars.CODE_REPO || 'MrLynx93/awfotografia_page' }}
           event-type: content-updated

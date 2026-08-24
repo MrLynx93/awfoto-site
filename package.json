@@ -12,8 +12,8 @@
     "content:pull": "node scripts/content-pull.mjs",
     "serve": "node app.js",
     "fetch:fonts": "node scripts/fetch-fonts.mjs",
-    "images:resize": "node scripts/resize-images.mjs blog-content",
-    "images:check": "node scripts/resize-images.mjs blog-content --check"
+    "images:resize": "node scripts/resize-images.mjs site-content",
+    "images:check": "node scripts/resize-images.mjs site-content --check"
   },
   "dependencies": {
     "@astrojs/markdoc": "2.0.8",

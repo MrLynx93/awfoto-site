@@ -5,7 +5,7 @@ import ContactSection from '../components/ContactSection.astro';
 import SessionGrid from '../components/SessionGrid.astro';
 import { getSettings } from '../lib/siteContent';
 import { publishedSessions } from '../lib/sessions';
-import portrait from '../../blog-content/images/about/portret.jpg';
+import portrait from '../../site-content/images/about/portret.jpg';
 
 const settings = getSettings();
 const latest = (await publishedSessions()).slice(0, 3);

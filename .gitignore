@@ -1,6 +1,6 @@
-# Content lives in its own private repo (awfotografia/blog-content) and is
+# Content lives in its own private repo (lynx-soft/awfotografia-site-content) and is
 # checked out here by `npm run content:pull` or by CI. Never commit it.
-blog-content/
+site-content/
 
 # build output
 dist/

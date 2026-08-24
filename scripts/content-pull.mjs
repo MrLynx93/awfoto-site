@@ -1,5 +1,5 @@
 /**
- * Clones or updates the private content repo into ./blog-content.
+ * Clones or updates the private content repo into ./site-content.
  *
  * The panel commits there; this pulls those commits down so a local build sees
  * the same content the deployed site will. CI does the equivalent with
@@ -9,9 +9,9 @@ import { execFileSync } from 'node:child_process';
 import { access } from 'node:fs/promises';
 import path from 'node:path';
 
-const repo = process.env.CONTENT_REPO || 'git@github.com:awfotografia/blog-content.git';
+const repo = process.env.CONTENT_REPO || 'git@github.com:lynx-soft/awfotografia-site-content.git';
 const branch = process.env.CONTENT_BRANCH || 'main';
-const target = path.join(process.cwd(), 'blog-content');
+const target = path.join(process.cwd(), 'site-content');
 
 const run = (args, cwd) =>
   execFileSync('git', args, { cwd, stdio: 'inherit' });
@@ -23,7 +23,7 @@ const isRepo = await access(path.join(target, '.git')).then(
 
 try {
   if (isRepo) {
-    console.log(`Aktualizuję blog-content (${branch})…`);
+    console.log(`Aktualizuję site-content (${branch})…`);
     run(['fetch', 'origin', branch], target);
     run(['checkout', branch], target);
     run(['reset', '--hard', `origin/${branch}`], target);
@@ -34,7 +34,7 @@ try {
     );
     if (hasPlainDir) {
       console.error(
-        'blog-content/ istnieje, ale nie jest repozytorium git.\n' +
+        'site-content/ istnieje, ale nie jest repozytorium git.\n' +
           'To zapewne treść startowa z `npm run content:init`.\n' +
           'Usuń ten katalog albo przenieś go, zanim pobierzesz prawdziwe repo.',
       );

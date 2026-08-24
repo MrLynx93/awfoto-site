@@ -1,17 +1,17 @@
 /**
- * First-run helper: copies content-template/ into blog-content/ so the site
- * builds before the private content repo exists.
+ * Offline fallback: copies content-template/ into site-content/ so the site
+ * builds without access to the private content repo.
  *
- * Once awfotografia/blog-content is created, seed it from content-template/
- * once and use `npm run content:pull` from then on. This script refuses to
- * overwrite an existing blog-content/.
+ * The real content lives in lynx-soft/awfotografia-site-content — use
+ * `npm run content:pull` for that. This is only for working without it, and it
+ * refuses to overwrite an existing site-content/.
  */
 import { cp, access, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 
 const root = process.cwd();
 const template = path.join(root, 'content-template');
-const target = path.join(root, 'blog-content');
+const target = path.join(root, 'site-content');
 
 const exists = await access(target).then(
   () => true,
@@ -20,7 +20,7 @@ const exists = await access(target).then(
 
 if (exists) {
   console.log(
-    'blog-content/ już istnieje — nie nadpisuję.\n' +
+    'site-content/ już istnieje — nie nadpisuję.\n' +
       'Użyj `npm run content:pull`, żeby pobrać najnowszą treść.',
   );
   process.exit(0);
@@ -30,6 +30,7 @@ await mkdir(target, { recursive: true });
 await cp(template, target, { recursive: true });
 
 console.log(
-  'Skopiowano content-template/ → blog-content/\n' +
-    'To jest treść startowa. Docelowo trzyma ją prywatne repo awfotografia/blog-content.',
+  'Skopiowano content-template/ → site-content/\n' +
+    'To treść zastępcza. Prawdziwa jest w lynx-soft/awfotografia-site-content —\n' +
+    'pobierz ją przez `npm run content:pull`.',
 );

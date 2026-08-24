@@ -24,9 +24,9 @@ jobs:
       - name: Pobierz treść (prywatne repo)
         uses: actions/checkout@v4
         with:
-          repository: ${{ vars.CONTENT_REPO || 'awfotografia/blog-content' }}
+          repository: ${{ vars.CONTENT_REPO || 'lynx-soft/awfotografia-site-content' }}
           token: ${{ secrets.CONTENT_REPO_TOKEN }}
-          path: blog-content
+          path: site-content
 
       - uses: actions/setup-node@v4
         with:

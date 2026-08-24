@@ -2,14 +2,14 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 /**
- * All content lives in a separate private repo, checked out at ./blog-content
+ * All content lives in a separate private repo, checked out at ./site-content
  * (see `npm run content:pull`). Nothing under it is committed to this repo.
  *
  * Only the two collections with images are content collections — they need
  * Astro's `image()` schema so `astro:assets` can optimise the photos. The two
  * singletons (pricing, settings) are plain YAML read in src/lib/siteContent.ts.
  */
-const CONTENT = './blog-content/content';
+const CONTENT = './site-content/content';
 
 /**
  * Sessions are the site's only editorial collection: portfolio and blog in one.

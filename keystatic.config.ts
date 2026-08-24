@@ -15,7 +15,7 @@ import { config, collection, singleton, fields } from '@keystatic/core';
  * deployed panel.
  *
  * Local mode is deliberately NOT the default. Keystatic's local reader walks
- * the current repo's git tree and honours .gitignore, and ./blog-content is
+ * the current repo's git tree and honours .gitignore, and ./site-content is
  * gitignored here on purpose — so local mode shows an empty panel unless that
  * folder is tracked. Set PUBLIC_KEYSTATIC_STORAGE=local only in a checkout
  * where the content is committed.
@@ -28,21 +28,21 @@ const storage =
     : ({
         kind: 'github',
         repo: {
-          owner: import.meta.env.PUBLIC_CONTENT_REPO_OWNER || 'awfotografia',
-          name: import.meta.env.PUBLIC_CONTENT_REPO_NAME || 'blog-content',
+          owner: import.meta.env.PUBLIC_CONTENT_REPO_OWNER || 'lynx-soft',
+          name: import.meta.env.PUBLIC_CONTENT_REPO_NAME || 'awfotografia-site-content',
         },
       } as const);
 
 /**
  * In GitHub mode the content repo *is* the root, so paths start at `content/`.
- * Locally that same repo is a clone at ./blog-content, so every path needs the
+ * Locally that same repo is a clone at ./site-content, so every path needs the
  * folder in front.
  *
  * Note this cannot use `storage.pathPrefix` — Keystatic ignores that option in
  * local mode (it only applies to GitHub storage), which silently yields an
  * empty panel.
  */
-const inRepo = (p: string) => (storageMode === 'local' ? `blog-content/${p}` : p);
+const inRepo = (p: string) => (storageMode === 'local' ? `site-content/${p}` : p);
 
 /** Reused by the regular and the Christmas price list — identical shape. */
 const pricingPackage = fields.object(

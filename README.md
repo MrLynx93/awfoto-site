@@ -17,29 +17,29 @@ npm run dev              # site at localhost:4321
 ```
 
 Once the private content repo exists, use `npm run content:pull` instead of
-`content:init` — it clones or updates `blog-content/`.
+`content:init` — it clones or updates `site-content/`.
 
 ### Editing content locally
 
 The panel at `/keystatic` always talks to the private content repo over GitHub,
 in development as well as production, so it needs the OAuth credentials from
 [`.env.example`](./.env.example) and a GitHub login. Local site development
-needs none of that — `npm run dev` renders straight from `blog-content/`.
+needs none of that — `npm run dev` renders straight from `site-content/`.
 
 Keystatic also has a "local" storage mode that edits files on disk with no
 login, but it is **not** usable here: its reader walks the current repo's git
-tree and honours `.gitignore`, and `blog-content/` is gitignored by design, so
+tree and honours `.gitignore`, and `site-content/` is gitignored by design, so
 local mode shows an empty panel. It only works in a checkout where the content
 is committed — hence `PUBLIC_KEYSTATIC_STORAGE=local` is opt-in, not the default.
 
 | Command | What it does |
 |---|---|
-| `npm run dev` | Dev server; site reads `./blog-content`, panel needs GitHub credentials |
+| `npm run dev` | Dev server; site reads `./site-content`, panel needs GitHub credentials |
 | `npm run build` | Static build into `dist/` |
 | `npm run serve` | Runs the production Express entry (`app.js`) |
-| `npm run content:init` | Copies `content-template/` → `blog-content/` (won't overwrite) |
+| `npm run content:init` | Copies `content-template/` → `site-content/` (won't overwrite) |
 | `npm run content:pull` | Clones/updates the private content repo |
-| `npm run images:resize` | Shrinks oversized photos in `blog-content/` in place |
+| `npm run images:resize` | Shrinks oversized photos in `site-content/` in place |
 | `npm run images:check` | Reports oversized photos without changing them |
 | `npm run fetch:fonts` | Re-downloads the self-hosted webfonts |
 
@@ -49,11 +49,11 @@ is committed — hence `PUBLIC_KEYSTATIC_STORAGE=local` is opt-in, not the defau
 Panel at panel.awfotografia.pl/keystatic
         │  commits Markdown/YAML + images
         ▼
-   awfotografia/blog-content  (private)
+   lynx-soft/awfotografia-site-content  (private)
         │  publish.yml → repository_dispatch
         ▼
    this repo ── GitHub Actions ──┐
-        │  checkout code          │  checkout blog-content → ./blog-content
+        │  checkout code          │  checkout site-content → ./site-content
         ▼  npm ci && npm run build ◄┘
    rsync over SSH to mydevil.net
         ├── dist/client/ → awfotografia.pl/public_html        (static, nginx)
@@ -82,10 +82,10 @@ public repo.
 
 | Where | What |
 |---|---|
-| `sessions` (collection) | `blog-content/content/sessions/*.mdoc` — the site's only editorial collection |
-| `offers` (collection) | `blog-content/content/offers/*.yaml` |
-| `pricing` (singleton) | `blog-content/content/pricing.yaml` |
-| `settings` (singleton) | `blog-content/content/settings.yaml` |
+| `sessions` (collection) | `site-content/content/sessions/*.mdoc` — the site's only editorial collection |
+| `offers` (collection) | `site-content/content/offers/*.yaml` |
+| `pricing` (singleton) | `site-content/content/pricing.yaml` |
+| `settings` (singleton) | `site-content/content/settings.yaml` |
 
 Sessions and offers are Astro content collections because they carry images and
 need the `image()` schema for `astro:assets` optimisation. Pricing and settings
@@ -93,7 +93,7 @@ have no images, so `src/lib/siteContent.ts` reads them directly — still
 schema-validated, so a panel typo fails the build rather than silently rendering
 a blank section.
 
-Keystatic image fields write into `blog-content/images/…` with a `publicPath` that
+Keystatic image fields write into `site-content/images/…` with a `publicPath` that
 resolves relative to the content file, which is what lets Astro optimise them.
 
 ### Image paths are Keystatic's convention, not ours
@@ -148,7 +148,7 @@ In **this** repo:
 |---|---|
 | `SITE_URL` | `https://awfotografia.pl` |
 | `SITE_DOMAIN` / `PANEL_DOMAIN` | `awfotografia.pl` / `panel.awfotografia.pl` |
-| `CONTENT_REPO` | `awfotografia/blog-content` |
+| `CONTENT_REPO` | `lynx-soft/awfotografia-site-content` |
 
 In the **content** repo: `CODE_REPO_TOKEN` (a token that can dispatch to this
 repo), plus `content-template/.github/workflows/publish.yml` copied to `.github/`.

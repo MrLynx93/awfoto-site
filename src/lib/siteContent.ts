@@ -9,7 +9,7 @@ import { z } from 'astro:content';
  * time. Both are validated, so a typo in the panel fails the build loudly
  * instead of rendering a blank section.
  */
-const CONTENT_DIR = path.join(process.cwd(), 'blog-content', 'content');
+const CONTENT_DIR = path.join(process.cwd(), 'site-content', 'content');
 
 const pricingPackageSchema = z.object({
   name: z.string(),
