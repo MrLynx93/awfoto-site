@@ -35,9 +35,10 @@ jobs:
 
       - run: npm ci
 
-      # Cheap and catches the one mistake that is expensive to undo.
+      # The content repo resizes photos on push, so this should always pass.
+      # Kept as a net in case content ever lands without going through it.
       - name: Sprawdź rozmiary zdjęć
-        run: npm run check:images
+        run: npm run images:check
 
       - name: Zbuduj stronę
         run: npm run build

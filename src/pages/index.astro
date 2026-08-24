@@ -31,7 +31,7 @@ const heroImage = highlighted[0]?.data.coverImage;
       <h1>{settings.heroHeading}</h1>
       {settings.heroText && <p class="hero-text">{settings.heroText}</p>}
       <div class="buttons">
-        <a class="button" href="/moje-sesje">Moje sesje</a>
+        <a class="button" href="/sesje">Moje sesje</a>
         <a class="button button--ghost" href="/cennik">Cennik</a>
       </div>
     </div>
@@ -58,7 +58,7 @@ const heroImage = highlighted[0]?.data.coverImage;
           <p class="label">Portfolio i aktualności w jednym</p>
           <h2 class="section-title">Moje sesje</h2>
         </div>
-        <a class="more-link" href="/moje-sesje">Wszystkie sesje →</a>
+        <a class="more-link" href="/sesje">Wszystkie sesje →</a>
       </div>
       <SessionGrid sessions={highlighted} showIntro />
     </div>

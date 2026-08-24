@@ -18,7 +18,7 @@ const meta = [formatDate(date), category].filter(Boolean).join(' · ');
 const teaser = intro.length > 110 ? `${intro.slice(0, 110).trimEnd()}…` : intro;
 ---
 
-<a class="session-card" href={`/moje-sesje/${session.id}`}>
+<a class="session-card" href={`/sesje/${session.id}`}>
   <Image
     src={coverImage}
     alt=""

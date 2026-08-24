@@ -33,6 +33,19 @@ const siteUrl = process.env.SITE_URL || 'https://awfotografia.pl';
 if (panelOnly) {
   app.use((req, res, next) => {
     res.set('X-Robots-Tag', 'noindex, nofollow');
+
+    // Land people straight in the panel when they type the bare domain.
+    //
+    // The panel cannot actually be *served* at "/": Keystatic hardcodes
+    // /keystatic and /api/keystatic throughout its client bundle — router
+    // pushes, fetch calls, the OAuth redirect URL — so mounting it elsewhere
+    // would mean patching vendored code that changes on every release. A
+    // redirect gets the same practical result: nobody has to type /keystatic,
+    // it just shows up in the address bar afterwards.
+    if (req.path === '/') {
+      return res.redirect(302, '/keystatic');
+    }
+
     const isPanel =
       req.path.startsWith('/keystatic') || req.path.startsWith('/api/keystatic');
     // Astro's own assets must still load for the panel to render.

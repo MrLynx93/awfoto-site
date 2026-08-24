@@ -31,8 +31,9 @@ export default defineConfig({
     // index paths are redirected — Astro requires a dynamic redirect to carry
     // its params through, and there are no old per-post URLs to preserve since
     // neither section was ever published. Deeper paths fall through to 404.
-    '/blog': '/moje-sesje',
-    '/posty': '/moje-sesje',
-    '/portfolio': '/moje-sesje',
+    '/blog': '/sesje',
+    '/posty': '/sesje',
+    '/portfolio': '/sesje',
+    '/moje-sesje': '/sesje',
   },
 });

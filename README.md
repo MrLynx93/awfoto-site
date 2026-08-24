@@ -39,7 +39,8 @@ is committed — hence `PUBLIC_KEYSTATIC_STORAGE=local` is opt-in, not the defau
 | `npm run serve` | Runs the production Express entry (`app.js`) |
 | `npm run content:init` | Copies `content-template/` → `blog-content/` (won't overwrite) |
 | `npm run content:pull` | Clones/updates the private content repo |
-| `npm run check:images` | Fails if any photo exceeds 1.5 MB or 3000 px |
+| `npm run images:resize` | Shrinks oversized photos in `blog-content/` in place |
+| `npm run images:check` | Reports oversized photos without changing them |
 | `npm run fetch:fonts` | Re-downloads the self-hosted webfonts |
 
 ## How it fits together
@@ -73,9 +74,10 @@ public repo.
 - **Code is English** — identifiers, filenames, components, CSS classes.
   **Only the colour tokens keep Polish names** (`--kremowy`, `--glina`, …),
   as do all user-facing strings and panel labels.
-- **URLs are Polish**: `/moje-sesje`, `/oferta`, `/cennik`, `/o-mnie`, `/kontakt`.
+- **URLs are Polish**: `/sesje`, `/oferta`, `/cennik`, `/o-mnie`, `/kontakt`.
 - **Portfolio and blog are one thing.** A session is a short piece of text plus
-  its photos. `/blog`, `/posty` and `/portfolio` redirect to `/moje-sesje`.
+  its photos, rendered as intro → text → photos. `/blog`, `/posty`, `/portfolio`
+  and `/moje-sesje` all redirect to `/sesje`.
 
 ## Content model
 
@@ -169,9 +171,16 @@ just static files. Run the panel locally with `npm run dev` and deploy only
 
 ## Things worth knowing
 
-- **Photos live in Git.** `npm run check:images` runs in CI on both repos and
-  rejects anything over 1.5 MB or 3000 px, because Git keeps every version of a
-  binary forever and one batch of camera originals bloats the repo permanently.
+- **Photos are resized automatically, in CI.** Keystatic has no upload transform
+  and commits straight from the browser in GitHub mode, so nothing can touch a
+  file before it lands. `publish.yml` in the content repo therefore resizes
+  anything over 2400 px or 900 KB and commits the result, which is what lets
+  photos be uploaded straight from the camera.
+  **Caveat worth knowing:** the oversized original still exists in that repo's
+  Git history, since history is immutable — the resize is a follow-up commit,
+  not a rewrite. Working checkouts stay small and the site only ever serves the
+  resized files, but the repo grows by the original sizes over time. If it ever
+  becomes a problem, a one-off `git filter-repo` pass clears it.
 - **Publishing is not instant** — save → commit → build → deploy ≈ 2–3 minutes.
 - **No analytics, no cookies, no contact form**, so there is no consent banner
   and no spam surface. A commented-out Plausible snippet sits in `BaseLayout.astro`.

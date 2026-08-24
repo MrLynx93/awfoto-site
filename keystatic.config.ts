@@ -94,7 +94,7 @@ export default config({
           },
           slug: {
             label: 'Adres strony',
-            description: 'Fragment adresu po /moje-sesje/. Nie zmieniaj po opublikowaniu.',
+            description: 'Fragment adresu po /sesje/. Nie zmieniaj po opublikowaniu.',
           },
         }),
         date: fields.date({
@@ -163,7 +163,7 @@ export default config({
         }),
         body: fields.markdoc({
           label: 'Treść (opcjonalnie)',
-          description: 'Dłuższy tekst pod zdjęciami. Możesz zostawić puste.',
+          description: 'Dłuższy tekst pod krótkim opisem, nad zdjęciami. Możesz zostawić puste.',
           options: { image: false },
         }),
       },

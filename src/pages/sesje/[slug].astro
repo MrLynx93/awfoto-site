@@ -38,14 +38,14 @@ const meta = [formatDate(date), category].filter(Boolean).join(' · ');
     <p class="session-intro">{intro}</p>
   </header>
 
-  <section class="section">
-    <PhotoGallery photos={photos} />
-  </section>
-
   <section class="section session-body">
     <div class="prose">
       <Content />
     </div>
+  </section>
+
+  <section class="section session-gallery">
+    <PhotoGallery photos={photos} />
   </section>
 
   {
@@ -57,7 +57,7 @@ const meta = [formatDate(date), category].filter(Boolean).join(' · ');
               <p class="label">Zobacz też</p>
               <h2 class="section-title">Inne sesje</h2>
             </div>
-            <a class="more-link" href="/moje-sesje">
+            <a class="more-link" href="/sesje">
               Wszystkie sesje →
             </a>
           </div>
@@ -98,9 +98,18 @@ const meta = [formatDate(date), category].filter(Boolean).join(' · ');
     color: var(--tekst-jasny);
   }
 
-  /* Collapses to nothing when a session has no body text. */
+  /* Collapses to nothing when a session has no body text, so the gallery
+     follows the intro directly. */
   .session-body {
     padding-block: 0;
+    padding-top: var(--gap-sm);
+  }
+  .session-body:not(:has(.prose > *)) {
+    display: none;
+  }
+
+  .session-gallery {
+    padding-top: var(--gap-sm);
   }
   .prose {
     max-width: 40rem;

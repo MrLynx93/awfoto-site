@@ -7,7 +7,7 @@ ani znać się na programowaniu — wszystko robi się w przeglądarce.
 
 ## Logowanie do panelu
 
-1. Wejdź na **https://panel.awfotografia.pl/keystatic**
+1. Wejdź na **https://panel.awfotografia.pl**
 2. Kliknij **Sign in with GitHub** i zaloguj się swoim kontem GitHub.
 
 Konto GitHub jest darmowe i zakłada się je raz. Jeśli jeszcze go nie masz albo
@@ -36,7 +36,7 @@ Sesja to jednocześnie wpis na blogu i pozycja w portfolio — jedno i to samo.
 | **Zdjęcia** | Cała galeria. Przeciągnij, żeby zmienić kolejność |
 | **Pokaż na stronie głównej** | Zaznacz dla 3 sesji, które mają być na górze strony |
 | **Szkic** | Zaznaczone = niewidoczne dla odwiedzających |
-| **Treść** | Możesz zostawić puste. To dodatkowy tekst **pod** zdjęciami |
+| **Treść** | Możesz zostawić puste. To dodatkowy tekst **nad** zdjęciami, pod krótkim opisem |
 
 3. Kliknij **Create** (albo **Save** przy późniejszych zmianach).
 
@@ -52,24 +52,26 @@ Nie musisz wypełniać przy każdym zdjęciu, ale im więcej, tym lepiej.
 
 ---
 
-## ⚠️ Rozmiar zdjęć — najważniejsza rzecz
+## Rozmiar zdjęć — nie musisz nic robić
 
-**Nie wrzucaj zdjęć prosto z aparatu.** Wyeksportuj je najpierw:
+**Wrzucaj zdjęcia prosto z aparatu.** Nie trzeba ich wcześniej eksportować
+ani zmniejszać w Lightroomie.
 
-- **dłuższy bok: 2400 pikseli**
-- **jakość JPEG: 80**
-- **rozmiar pliku: poniżej 500 KB**
+Po zapisaniu system sam:
 
-**W Lightroomie:** Eksport → Rozmiar obrazu → zaznacz „Zmień rozmiar tak, aby
-zmieścił się", wybierz **Dłuższy bok: 2400 px**, Jakość: **80**.
+- zmniejsza każde zdjęcie do 2400 pikseli dłuższego boku,
+- zapisuje je z jakością, na której nie widać różnicy,
+- robi jeszcze mniejsze wersje na telefony.
 
-Jeśli wrzucisz za duże zdjęcie, system je odrzuci i pokaże komunikat — nic się
-nie zepsuje, po prostu trzeba wyeksportować jeszcze raz.
+Trwa to około minuty i dzieje się w tle. Na stronie zdjęcia wyglądają
+identycznie jak oryginały — na każdym ekranie, łącznie z 4K.
 
-**Dlaczego to ważne:** zdjęcia zapisują się w historii na zawsze i nie da się
-ich potem łatwo usunąć. Kilka sesji w pełnej rozdzielczości i wszystko zaczyna
-działać wolno. Na zdjęciach 2400 px strona wygląda **identycznie** (sama robi
-z nich mniejsze wersje na telefony), a nic nie puchnie.
+**Jedyne, o czym warto pamiętać:** wgrywanie dużych plików trwa dłużej,
+zwłaszcza na słabym łączu. Jeśli masz wolny internet i wgrywasz 30 zdjęć,
+możesz je wcześniej pomniejszyć — ale nie musisz.
+
+**Czego system nie przyjmie:** plików RAW (.NEF, .CR2, .ARW) i bardzo dużych
+TIFF-ów. Zapisz je najpierw jako JPEG.
 
 ---
 

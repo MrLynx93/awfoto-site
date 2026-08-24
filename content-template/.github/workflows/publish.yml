@@ -1,14 +1,18 @@
 name: Opublikuj zmiany
 
 # Lives in the CONTENT repo (awfotografia/blog-content), not the code repo.
-# Every save from the panel is a commit here; this tells the code repo to
-# rebuild and deploy.
+# Every save from the panel is a commit here. This shrinks any oversized photo,
+# commits the result, then tells the code repo to rebuild and deploy.
 on:
   push:
     branches: [main]
 
+# Needed to push the resized photos back.
+permissions:
+  contents: write
+
 jobs:
-  check-and-publish:
+  resize-and-publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,15 +21,32 @@ jobs:
         with:
           node-version: 22
 
-      # Reject oversized photos here, where they are added — before they are
-      # baked into this repo's history forever.
-      - name: Sprawdź rozmiary zdjęć
+      # Keystatic has no upload transform and commits straight from the
+      # browser, so this is the first point where anything can touch the file.
+      # It means photos can be uploaded straight from the camera.
+      - name: Zmniejsz zdjęcia
         run: |
           npm install sharp@0.34.4 --no-save
-          curl -sSL -o check-images.mjs \
-            "https://raw.githubusercontent.com/${{ vars.CODE_REPO || 'mrlynx93/awfotografia_page' }}/main/scripts/check-images.mjs"
-          node check-images.mjs .
+          curl -sSL -o resize-images.mjs \
+            "https://raw.githubusercontent.com/${{ vars.CODE_REPO || 'mrlynx93/awfotografia_page' }}/main/scripts/resize-images.mjs"
+          node resize-images.mjs .
+          rm -f resize-images.mjs
 
+      - name: Zapisz zmniejszone zdjęcia
+        run: |
+          rm -rf node_modules package.json package-lock.json
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "Nic do zapisania — zdjęcia były już w dobrym rozmiarze."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          # [skip ci] stops this push from triggering the workflow again.
+          git commit -m "Zmniejszono zdjęcia automatycznie [skip ci]"
+          git push
+
+      # Runs after the resize push, so the site builds from the shrunk photos.
       - name: Przebuduj stronę
         uses: peter-evans/repository-dispatch@v3
         with:
