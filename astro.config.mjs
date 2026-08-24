@@ -27,13 +27,9 @@ export default defineConfig({
   },
 
   redirects: {
-    // Portfolio and blog used to be separate ideas; they are one now. Only the
-    // index paths are redirected — Astro requires a dynamic redirect to carry
-    // its params through, and there are no old per-post URLs to preserve since
-    // neither section was ever published. Deeper paths fall through to 404.
-    '/blog': '/sesje',
-    '/posty': '/sesje',
-    '/portfolio': '/sesje',
+    // The route was /moje-sesje for part of the build; this keeps any link
+    // shared in the meantime working. Nothing else needs redirecting — the
+    // site has never been published under another address.
     '/moje-sesje': '/sesje',
   },
 });
