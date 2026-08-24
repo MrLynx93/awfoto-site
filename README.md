@@ -146,9 +146,29 @@ In **this** repo:
 
 | Variable | Default |
 |---|---|
-| `SITE_URL` | `https://awfotografia.pl` |
-| `SITE_DOMAIN` / `PANEL_DOMAIN` | `awfotografia.pl` / `panel.awfotografia.pl` |
+| `SITE_DOMAIN` | `awfotografia.pl` — the only domain setting; the rest derives from it |
+| `PANEL_DOMAIN` | `panel.<SITE_DOMAIN>`, unless set explicitly |
 | `CONTENT_REPO` | `lynx-soft/awfotografia-site-content` |
+
+### Changing the domain
+
+The domain is not hardcoded — CI reads `SITE_DOMAIN`, the server reads
+`SITE_URL`. To move to a different one (`aw-foto.pl`, say):
+
+1. Set the repository variable **`SITE_DOMAIN`**. That alone fixes the canonical
+   URLs and sitemap in the build, both rsync targets, and the panel restart.
+2. On the server, update **`SITE_URL`** in `.env` — it is where the panel sends
+   non-panel traffic.
+3. Re-point the **GitHub OAuth app** callback to
+   `https://panel.<new-domain>/api/keystatic/github/oauth/callback`. The panel
+   cannot log in until this matches.
+4. On mydevil, `devil www add` the two new domains and issue their certificates,
+   as in the setup block above.
+5. Update the panel address in `DLA-FOTOGRAFA.md`, and the Plausible
+   `data-domain` in `BaseLayout.astro` if analytics are ever switched on.
+
+Steps 3 and 4 are the ones that actually break things if skipped; the rest are
+cosmetic until traffic arrives.
 
 In the **content** repo: `CODE_REPO_TOKEN` (a token that can dispatch to this repo).
 

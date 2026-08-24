@@ -9,6 +9,14 @@ on:
     types: [content-updated]
   workflow_dispatch:
 
+env:
+  # The only place the domain is configured. Set the repository variable
+  # SITE_DOMAIN to change it everywhere: the canonical URLs baked into the
+  # build, both rsync targets, and the panel restart. PANEL_DOMAIN is derived
+  # unless you override it with a variable of its own.
+  SITE_DOMAIN: ${{ vars.SITE_DOMAIN || 'awfotografia.pl' }}
+  PANEL_DOMAIN: ${{ vars.PANEL_DOMAIN || format('panel.{0}', vars.SITE_DOMAIN || 'awfotografia.pl') }}
+
 concurrency:
   # A newer save supersedes an in-flight build; never deploy out of order.
   group: deploy
@@ -43,7 +51,7 @@ jobs:
       - name: Zbuduj stronę
         run: npm run build
         env:
-          SITE_URL: ${{ vars.SITE_URL || 'https://awfotografia.pl' }}
+          SITE_URL: https://${{ env.SITE_DOMAIN }}
 
       - name: Skonfiguruj klucz SSH
         run: |
@@ -59,7 +67,7 @@ jobs:
           rsync -az --delete \
             -e "ssh -i ~/.ssh/id_ed25519" \
             dist/client/ \
-            "${{ secrets.MYDEVIL_USER }}@${{ secrets.MYDEVIL_HOST }}:domains/${{ vars.SITE_DOMAIN || 'awfotografia.pl' }}/public_html/"
+            "${{ secrets.MYDEVIL_USER }}@${{ secrets.MYDEVIL_HOST }}:domains/${{ env.SITE_DOMAIN }}/public_html/"
 
       # The panel: the whole app, because Keystatic's API routes need Node.
       # node_modules and .env stay on the server between deploys.
@@ -71,10 +79,10 @@ jobs:
             --exclude '.git' \
             -e "ssh -i ~/.ssh/id_ed25519" \
             ./ \
-            "${{ secrets.MYDEVIL_USER }}@${{ secrets.MYDEVIL_HOST }}:domains/${{ vars.PANEL_DOMAIN || 'panel.awfotografia.pl' }}/public_nodejs/"
+            "${{ secrets.MYDEVIL_USER }}@${{ secrets.MYDEVIL_HOST }}:domains/${{ env.PANEL_DOMAIN }}/public_nodejs/"
 
       - name: Zainstaluj zależności panelu i zrestartuj
         run: |
           ssh -i ~/.ssh/id_ed25519 \
             "${{ secrets.MYDEVIL_USER }}@${{ secrets.MYDEVIL_HOST }}" \
-            "cd domains/${{ vars.PANEL_DOMAIN || 'panel.awfotografia.pl' }}/public_nodejs && npm ci --omit=dev && devil www restart ${{ vars.PANEL_DOMAIN || 'panel.awfotografia.pl' }}"
+            "cd domains/${{ env.PANEL_DOMAIN }}/public_nodejs && npm ci --omit=dev && devil www restart ${{ env.PANEL_DOMAIN }}"
