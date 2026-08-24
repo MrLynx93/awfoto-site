@@ -25,11 +25,4 @@ export default defineConfig({
     // Photos are the whole point of this site, so allow generous widths.
     responsiveStyles: true,
   },
-
-  redirects: {
-    // The route was /moje-sesje for part of the build; this keeps any link
-    // shared in the meantime working. Nothing else needs redirecting — the
-    // site has never been published under another address.
-    '/moje-sesje': '/sesje',
-  },
 });

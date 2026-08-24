@@ -76,8 +76,7 @@ public repo.
   as do all user-facing strings and panel labels.
 - **URLs are Polish**: `/sesje`, `/oferta`, `/cennik`, `/o-mnie`, `/kontakt`.
 - **Portfolio and blog are one thing.** A session is a short piece of text plus
-  its photos, rendered as intro → text → photos, at `/sesje`. `/moje-sesje`
-  redirects there, from when the route was longer.
+  its photos, rendered as intro → text → photos, at `/sesje`.
 
 ## Content model
 
