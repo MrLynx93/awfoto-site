@@ -150,8 +150,21 @@ In **this** repo:
 | `SITE_DOMAIN` / `PANEL_DOMAIN` | `awfotografia.pl` / `panel.awfotografia.pl` |
 | `CONTENT_REPO` | `lynx-soft/awfotografia-site-content` |
 
-In the **content** repo: `CODE_REPO_TOKEN` (a token that can dispatch to this
-repo), plus `content-template/.github/workflows/publish.yml` copied to `.github/`.
+In the **content** repo: `CODE_REPO_TOKEN` (a token that can dispatch to this repo).
+
+### Seeding the content repo
+
+While `lynx-soft/awfotografia-site-content` is still empty, fill it in one step:
+
+```bash
+./scripts/seed-content-repo.sh
+```
+
+That pushes the seed sessions, offers, price list, settings and their photos —
+in Keystatic's exact directory layout, so the panel reads them on first load —
+plus `.github/workflows/publish.yml`, which is what resizes uploaded photos and
+triggers a rebuild. It refuses to run if the repo already has `content/` or
+`images/`, so it cannot clobber real work.
 
 ### GitHub OAuth app for the panel
 
