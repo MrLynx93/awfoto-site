@@ -142,6 +142,27 @@ what CI builds with, so match it.
 Then create `~/domains/panel.awfotografia.pl/public_nodejs/.env` from
 [`.env.example`](./.env.example). It is never committed and survives deploys.
 
+### Pointing the domain at the host
+
+The domain does not have to be bought from the host — it is bought at any
+registrar and pointed here. Two ways, both fine:
+
+**Delegate DNS to the host** (simplest — mail, SSL and subdomains all follow):
+
+```bash
+devil dns add awfotografia.pl        # or: panel → Strefy DNS → + Dodaj nową strefę
+```
+
+Then read the host's nameservers out of the panel and set them as the domain's
+nameservers at the registrar. Do this *before* issuing certificates.
+
+**Or keep DNS at the registrar** and point two A records — `@` and `panel` — at
+the account's IP (`devil www list` shows it). Let's Encrypt validates over HTTP,
+so certificates still work.
+
+Either way, `devil www add` the two domains and issue the certificates as above
+once the records resolve.
+
 ### GitHub secrets and variables
 
 In **this** repo:
