@@ -123,13 +123,21 @@ the same pattern.
 ### One-time setup on mydevil.net
 
 ```bash
+# The static site: nginx serves the files directly, no Node in the request path.
 devil www add awfotografia.pl static
-devil www add panel.awfotografia.pl nodejs 22
+
+# The panel. The nodejs type takes the full path to the interpreter and an
+# environment — not a bare version number.
+devil www add panel.awfotografia.pl nodejs /usr/local/bin/node22 production
 
 # free, auto-renewing certificates for both
 devil ssl www add <IP> le le awfotografia.pl
 devil ssl www add <IP> le le panel.awfotografia.pl
 ```
+
+Check the available interpreter path first (`ls /usr/local/bin/node*`); the host
+carries several versions and only the even-numbered ones are LTS. Node 22 is
+what CI builds with, so match it.
 
 Then create `~/domains/panel.awfotografia.pl/public_nodejs/.env` from
 [`.env.example`](./.env.example). It is never committed and survives deploys.
@@ -197,9 +205,27 @@ client ID and secret in the server-side `.env` along with a
 just static files. Run the panel locally with `npm run dev` and deploy only
 `dist/client/`.
 
+## Which host
+
+The deploy targets a host with SSH and the `devil` CLI. Two work identically:
+
+| | Disk | Price |
+|---|---|---|
+| **small.pl** SMALL1 | 5 GB | 50 zł/rok (25 zł first year) |
+| **mydevil.net** MD1 | — | ~100 zł/rok |
+
+small.pl is mydevil's own budget brand from the same operator (ADMIN.NET.PL),
+in the same ATMAN Warsaw datacenter, with the same `devil` tooling and the same
+language support. Nothing in this repo changes between them.
+
+5 GB is ample: the panel needs ~370 MB (`node_modules` — Astro, Keystatic and
+React are runtime dependencies, so `--omit=dev` barely trims it), and the built
+site is a few MB plus the generated photo variants.
+
 ## Running cost
 
-`.pl` domain ≈ 80–100 zł/rok + mydevil MD1 ≈ 100 zł/rok → **≈ 180–200 zł/rok.**
+`.pl` domain ≈ 60–100 zł/rok + hosting 50–100 zł/rok → **≈ 110–200 zł/rok**,
+depending on which of the two you pick.
 
 ## Things worth knowing
 
