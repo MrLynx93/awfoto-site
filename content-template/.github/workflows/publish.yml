@@ -2,28 +2,37 @@ name: Opublikuj zmiany
 
 # Lives in the CONTENT repo (awfotografia/blog-content), not the code repo.
 # Every save from the panel is a commit here. This shrinks any oversized photo,
-# commits the result, then tells the code repo to rebuild and deploy.
+# rewrites that same commit so the original is never permanently stored, then
+# tells the code repo to rebuild and deploy.
 on:
   push:
     branches: [main]
 
-# Needed to push the resized photos back.
+# Needed to push the rewritten commit back.
 permissions:
   contents: write
 
 jobs:
   resize-and-publish:
+    # The amend below pushes as the bot, which retriggers this workflow. That
+    # rerun finds nothing to resize, so skip it rather than build twice.
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Need the parent commit to amend onto.
+          fetch-depth: 2
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      # Keystatic has no upload transform and commits straight from the
-      # browser, so this is the first point where anything can touch the file.
-      # It means photos can be uploaded straight from the camera.
+      # Keystatic has no upload transform and, in GitHub storage mode, commits
+      # straight from the browser to api.github.com — our server is never in
+      # the path. So the earliest anything of ours can run is right here, after
+      # the file has landed. It means photos can be uploaded straight from the
+      # camera with no export step.
       - name: Zmniejsz zdjęcia
         run: |
           npm install sharp@0.34.4 --no-save
@@ -32,21 +41,31 @@ jobs:
           node resize-images.mjs .
           rm -f resize-images.mjs
 
+      # Amend rather than commit on top: a follow-up commit would leave the
+      # full-size original referenced in history forever, and Git history is
+      # immutable, so the repo would grow by camera file sizes indefinitely.
+      # Rewriting the tip leaves the big blob unreferenced for GitHub to
+      # garbage-collect.
       - name: Zapisz zmniejszone zdjęcia
         run: |
           rm -rf node_modules package.json package-lock.json
           if [ -z "$(git status --porcelain)" ]; then
-            echo "Nic do zapisania — zdjęcia były już w dobrym rozmiarze."
+            echo "Zdjęcia były już w dobrym rozmiarze — nic do zapisania."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          # [skip ci] stops this push from triggering the workflow again.
-          git commit -m "Zmniejszono zdjęcia automatycznie [skip ci]"
-          git push
+          # Keep the panel's original message and author; only the blobs change.
+          git commit --amend --no-edit
+          # --force-with-lease refuses to clobber a save that landed while this
+          # was running; that push simply gets resized by its own run instead.
+          if ! git push --force-with-lease; then
+            echo "::warning::W trakcie zmniejszania pojawił się nowy zapis — zdjęcia z tego zapisu zmniejszy jego własny przebieg."
+            exit 0
+          fi
 
-      # Runs after the resize push, so the site builds from the shrunk photos.
+      # Runs after the rewrite, so the site builds from the shrunk photos.
       - name: Przebuduj stronę
         uses: peter-evans/repository-dispatch@v3
         with:

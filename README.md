@@ -170,16 +170,17 @@ just static files. Run the panel locally with `npm run dev` and deploy only
 
 ## Things worth knowing
 
-- **Photos are resized automatically, in CI.** Keystatic has no upload transform
-  and commits straight from the browser in GitHub mode, so nothing can touch a
-  file before it lands. `publish.yml` in the content repo therefore resizes
-  anything over 2400 px or 900 KB and commits the result, which is what lets
-  photos be uploaded straight from the camera.
-  **Caveat worth knowing:** the oversized original still exists in that repo's
-  Git history, since history is immutable — the resize is a follow-up commit,
-  not a rewrite. Working checkouts stay small and the site only ever serves the
-  resized files, but the repo grows by the original sizes over time. If it ever
-  becomes a problem, a one-off `git filter-repo` pass clears it.
+- **Photos are resized automatically, in CI.** In GitHub storage mode Keystatic
+  commits straight from the browser to api.github.com — our server is never in
+  the path, and there is no custom-field API to hook the upload — so nothing can
+  touch a photo *before* it reaches GitHub. `publish.yml` in the content repo
+  therefore resizes anything over 2400 px or 900 KB and **amends the panel's own
+  commit**, force-pushing with `--force-with-lease`. The oversized original is
+  never permanently referenced, so GitHub garbage-collects it and the repo stays
+  small. This is what lets photos be uploaded straight from the camera.
+  If a second save lands mid-run the lease refuses and that run bows out; the
+  new push is resized by its own run. The bot's push is skipped via an
+  `actor != github-actions[bot]` guard so the workflow doesn't loop.
 - **Publishing is not instant** — save → commit → build → deploy ≈ 2–3 minutes.
 - **No analytics, no cookies, no contact form**, so there is no consent banner
   and no spam surface. A commented-out Plausible snippet sits in `BaseLayout.astro`.
