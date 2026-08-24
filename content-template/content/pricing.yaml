@@ -1,0 +1,86 @@
+intro: >-
+  Wszystkie ceny zawierają obróbkę zdjęć i galerię online.
+  Zaliczka 150 zł rezerwuje termin.
+packages:
+  - name: Mini
+    price: 550 zł
+    duration: ok. 45 minut
+    highlighted: false
+    badge: ''
+    includes:
+      - 15 zdjęć w obróbce
+      - 1 lokalizacja
+      - Galeria online
+      - Gotowe w 14 dni
+  - name: Standard
+    price: 850 zł
+    duration: ok. 90 minut
+    highlighted: true
+    badge: Najczęściej wybierany
+    includes:
+      - 35 zdjęć w obróbce
+      - 2 lokalizacje, zmiana stroju
+      - Galeria online + pendrive
+      - 10 odbitek 15×21
+      - Gotowe w 10 dni
+  - name: Max
+    price: 1 250 zł
+    duration: ok. 150 minut
+    highlighted: false
+    badge: ''
+    includes:
+      - Wszystkie udane zdjęcia
+      - Dowolna liczba lokalizacji
+      - Fotoksiążka 20×20 cm
+      - 25 odbitek 15×21
+      - Gotowe w 7 dni
+christmas:
+  active: true
+  eyebrow: Listopad — grudzień
+  title: Cennik świąteczny
+  description: >-
+    Osobna scenografia, krótsze sesje i stałe terminy weekendowe.
+    Zdjęcia gotowe przed Wigilią przy rezerwacji do 8 grudnia.
+  packages:
+    - name: Mini świąteczna
+      price: 450 zł
+      duration: ok. 30 minut
+      highlighted: false
+      badge: ''
+      includes:
+        - 10 zdjęć w obróbce
+        - Scenografia świąteczna
+        - Galeria online
+    - name: Rodzinna świąteczna
+      price: 700 zł
+      duration: ok. 60 minut
+      highlighted: true
+      badge: Polecana
+      includes:
+        - 25 zdjęć w obróbce
+        - Dwie scenografie
+        - 10 kartek świątecznych
+        - Gotowe w 7 dni
+    - name: Świąteczna max
+      price: 950 zł
+      duration: ok. 90 minut
+      highlighted: false
+      badge: ''
+      includes:
+        - 40 zdjęć w obróbce
+        - Scenografia + plener
+        - 20 kartek świątecznych
+        - Odbitka 30×40 w ramie
+notes:
+  - title: Rezerwacja
+    text: >-
+      Termin rezerwuje zaliczka 150 zł, odliczana od ceny pakietu. Przy zmianie
+      terminu do 7 dni przed sesją zaliczka przechodzi na nowy termin.
+  - title: Dojazd
+    text: >-
+      Do 30 km od Rzeszowa w cenie sesji. Powyżej — 1,20 zł za kilometr,
+      liczone w obie strony.
+  - title: Zdjęcia dodatkowe
+    text: >-
+      Każde zdjęcie ponad pakiet: 25 zł. Cała sesja bez limitu:
+      dopłata 300 zł do pakietu Standard.

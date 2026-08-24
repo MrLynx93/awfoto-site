@@ -1,0 +1,143 @@
+---
+import SocialLinks from './SocialLinks.astro';
+import { getSettings } from '../lib/siteContent';
+
+const settings = getSettings();
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <a class="wordmark" href="/">AW<em>·</em>Fotografia</a>
+      <p class="tagline">
+        Fotografia rodzinna, plenerowa i świąteczna.
+        {settings.city && <><br />{settings.city}</>}
+      </p>
+    </div>
+
+    <div>
+      <h2>Strona</h2>
+      <ul>
+        <li><a href="/moje-sesje">Moje sesje</a></li>
+        <li><a href="/oferta">Oferta</a></li>
+        <li><a href="/cennik">Cennik</a></li>
+        <li><a href="/o-mnie">O mnie</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2>Kontakt</h2>
+      <ul>
+        {
+          settings.phone && (
+            <li>
+              <a href={`tel:${settings.phone.replace(/\s/g, '')}`}>{settings.phone}</a>
+            </li>
+          )
+        }
+        {settings.email && <li><a href={`mailto:${settings.email}`}>{settings.email}</a></li>}
+      </ul>
+      <SocialLinks
+        facebook={settings.facebook}
+        instagram={settings.instagram}
+        class="footer-socials"
+      />
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© {year} AW Fotografia</span>
+    <a href="/polityka-prywatnosci">Polityka prywatności</a>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding: clamp(3rem, 6vw, 4.5rem) var(--pad-x) 2.5rem;
+    background: var(--tekst);
+    color: #cfc5b9;
+    font-size: 0.86rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 2.5rem;
+    max-width: var(--max);
+    margin: 0 auto;
+  }
+
+  .wordmark {
+    font-family: var(--display);
+    font-size: 1.15rem;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--bez);
+  }
+  .wordmark em {
+    font-style: normal;
+    color: var(--glina);
+  }
+
+  .tagline {
+    margin-top: 1rem;
+    color: #a99e92;
+    font-size: 0.88rem;
+  }
+
+  .footer h2 {
+    margin-bottom: 1rem;
+    font-family: var(--body);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--bez);
+  }
+
+  .footer ul {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer a {
+    color: #cfc5b9;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer a:hover {
+    color: var(--glina);
+  }
+
+  .footer :global(.footer-socials) {
+    margin-top: 1.25rem;
+  }
+  .footer :global(.footer-socials a) {
+    color: #a99e92;
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    max-width: var(--max);
+    margin: 3rem auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 0.76rem;
+    color: #948a7f;
+  }
+
+  @media (max-width: 780px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

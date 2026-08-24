@@ -1,0 +1,157 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PricingTable from '../components/PricingTable.astro';
+import BotanicalDivider from '../components/BotanicalDivider.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { getPricing, getSettings } from '../lib/siteContent';
+
+const pricing = getPricing();
+const settings = getSettings();
+
+// The Christmas list is switched on in November and off in January from the
+// panel — no code change, and the packages stay saved in between.
+const showChristmas = pricing.christmas.active && pricing.christmas.packages.length > 0;
+---
+
+<BaseLayout
+  title="Cennik"
+  description="Pakiety sesji: mini, standard i max. Osobny cennik świąteczny."
+>
+  <header class="page-header">
+    <p class="label">Cennik</p>
+    <h1>Pakiety sesji</h1>
+    {pricing.intro && <p class="lead">{pricing.intro}</p>}
+  </header>
+
+  <section class="section">
+    <div class="container">
+      <PricingTable packages={pricing.packages} />
+    </div>
+  </section>
+
+  {
+    showChristmas && (
+      <section class="section christmas">
+        <div class="container">
+          <BotanicalDivider />
+          <div class="centered heading-block">
+            {pricing.christmas.eyebrow && <p class="label">{pricing.christmas.eyebrow}</p>}
+            <h2 class="section-title">{pricing.christmas.title}</h2>
+            {pricing.christmas.description && (
+              <p class="lead">{pricing.christmas.description}</p>
+            )}
+          </div>
+          <PricingTable packages={pricing.christmas.packages} />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    pricing.notes.length > 0 && (
+      <section class="section">
+        <div class="notes">
+          {pricing.notes.map((note) => (
+            <div>
+              <h2>{note.title}</h2>
+              <p>{note.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <ContactSection
+    settings={settings}
+    heading="Masz pytanie o pakiet?"
+    lead="Napisz — pomogę dobrać sesję do tego, czego naprawdę potrzebujecie."
+    warm
+  />
+</BaseLayout>
+
+<style>
+  .page-header {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: clamp(3.5rem, 8vw, 6rem) var(--pad-x) 0;
+    text-align: center;
+  }
+  .page-header h1 {
+    margin-bottom: 1.25rem;
+    font-size: clamp(2.8rem, 6.5vw, 4.5rem);
+  }
+  .page-header p {
+    margin-inline: auto;
+  }
+
+  .heading-block {
+    margin-top: 2.5rem;
+  }
+
+  /* The Christmas list is a dark band, so it reads as a separate offer rather
+     than more of the same table. */
+  .christmas {
+    background: var(--tekst);
+    color: var(--bez);
+  }
+  .christmas :global(.section-title),
+  .christmas :global(.package h3),
+  .christmas :global(.price) {
+    color: var(--bez);
+  }
+  .christmas :global(.label) {
+    color: var(--taupe);
+  }
+  .christmas :global(.lead) {
+    color: #c3b8ac;
+  }
+  .christmas :global(.package) {
+    background: rgba(255, 255, 255, 0.045);
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+  .christmas :global(.package--highlight) {
+    background: rgba(176, 137, 104, 0.16);
+    border-color: var(--glina);
+    box-shadow: none;
+  }
+  .christmas :global(.checklist li) {
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+  }
+  .christmas :global(.checklist svg) {
+    color: var(--taupe);
+  }
+  .christmas :global(.price small) {
+    color: #b4a99d;
+  }
+  .christmas :global(.sprig) {
+    color: var(--taupe);
+  }
+
+  .notes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.5rem, 3vw, 3rem);
+    max-width: var(--max);
+    margin: 0 auto;
+  }
+  .notes h2 {
+    margin-bottom: 0.75rem;
+    font-family: var(--body);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--glina);
+  }
+  .notes p {
+    font-size: 0.94rem;
+    color: var(--tekst-jasny);
+  }
+
+  @media (max-width: 820px) {
+    .notes {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

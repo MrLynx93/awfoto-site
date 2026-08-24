@@ -1,0 +1,124 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PhotoGallery from '../../components/PhotoGallery.astro';
+import Lightbox from '../../components/Lightbox.astro';
+import SessionGrid from '../../components/SessionGrid.astro';
+import ContactSection from '../../components/ContactSection.astro';
+import { getSettings } from '../../lib/siteContent';
+import { publishedSessions, otherSessions, formatDate, type Session } from '../../lib/sessions';
+
+export async function getStaticPaths() {
+  const sessions = await publishedSessions();
+  return sessions.map((session) => ({
+    params: { slug: session.id },
+    props: { session, others: otherSessions(sessions, session) },
+  }));
+}
+
+interface Props {
+  session: Session;
+  others: Session[];
+}
+
+const { session, others } = Astro.props;
+const { title, date, category, intro, photos, coverImage } = session.data;
+const settings = getSettings();
+
+// The body is optional — most sessions are just the intro plus photos.
+const { Content } = await render(session);
+
+const meta = [formatDate(date), category].filter(Boolean).join(' · ');
+---
+
+<BaseLayout title={title} description={intro} ogImage={coverImage.src}>
+  <header class="session-header">
+    <p class="session-date">{meta}</p>
+    <h1>{title}</h1>
+    <p class="session-intro">{intro}</p>
+  </header>
+
+  <section class="section">
+    <PhotoGallery photos={photos} />
+  </section>
+
+  <section class="section session-body">
+    <div class="prose">
+      <Content />
+    </div>
+  </section>
+
+  {
+    others.length > 0 && (
+      <section class="section warm other-sessions">
+        <div class="container">
+          <div class="title-row">
+            <div>
+              <p class="label">Zobacz też</p>
+              <h2 class="section-title">Inne sesje</h2>
+            </div>
+            <a class="more-link" href="/moje-sesje">
+              Wszystkie sesje →
+            </a>
+          </div>
+          <SessionGrid sessions={others} />
+        </div>
+      </section>
+    )
+  }
+
+  <ContactSection
+    settings={settings}
+    heading="Chcesz taką sesję?"
+    lead="Napisz — dobierzemy termin i miejsce."
+  />
+
+  <Lightbox />
+</BaseLayout>
+
+<style>
+  .session-header {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: clamp(3rem, 7vw, 5.5rem) var(--pad-x) 0;
+    text-align: center;
+  }
+  .session-header h1 {
+    margin: 0.75rem 0 1.5rem;
+    font-size: clamp(2.6rem, 6vw, 4.2rem);
+  }
+  .session-date {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--szalwia);
+  }
+  .session-intro {
+    margin-inline: auto;
+    color: var(--tekst-jasny);
+  }
+
+  /* Collapses to nothing when a session has no body text. */
+  .session-body {
+    padding-block: 0;
+  }
+  .prose {
+    max-width: 40rem;
+    margin: 0 auto;
+    color: var(--tekst-jasny);
+  }
+  .prose :global(p) {
+    margin-bottom: 1.25rem;
+  }
+  .prose :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .prose:empty {
+    display: none;
+  }
+
+  .other-sessions {
+    border-top: 1px solid var(--piaskowy);
+    margin-top: var(--gap);
+  }
+</style>

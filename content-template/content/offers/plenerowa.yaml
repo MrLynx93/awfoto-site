@@ -1,0 +1,16 @@
+name: Sesja plenerowa
+order: 1
+featured: true
+season: caloroczna
+duration: ok. 90 minut
+photoCount: 25 zdjęć
+price: od 550 zł
+image: ../../images/offers/plener.jpg
+description: >-
+  Łąka, las albo miejsce, które coś dla Was znaczy. Najlepiej godzinę przed
+  zachodem słońca — wtedy światło jest najcieplejsze.
+includes:
+  - Wybór lokalizacji razem ze mną
+  - Zdjęcia w pełnej obróbce
+  - Galeria online do pobrania
+  - Pomoc w doborze strojów

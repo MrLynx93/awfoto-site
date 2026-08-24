@@ -1,0 +1,42 @@
+---
+import type { Settings } from '../lib/siteContent';
+
+interface Props {
+  banner: Settings['seasonalBanner'];
+}
+
+const { banner } = Astro.props;
+// Switched on and off from the panel — November on, January off.
+const show = banner.active && banner.text;
+---
+
+{
+  show && (
+    <div class="banner">
+      {banner.text}
+      {banner.linkText && (
+        <>
+          {' · '}
+          <a href={banner.linkHref}>{banner.linkText}</a>
+        </>
+      )}
+    </div>
+  )
+}
+
+<style>
+  .banner {
+    padding: 0.6rem 1rem;
+    background: var(--glina);
+    color: #fff9f2;
+    text-align: center;
+    font-size: 0.8rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+  .banner a {
+    color: inherit;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+  }
+</style>

@@ -1,0 +1,16 @@
+name: Sesja świąteczna
+order: 3
+featured: true
+season: swiateczna
+duration: ok. 60 minut
+photoCount: 15 zdjęć
+price: od 450 zł
+image: ../../images/offers/swiateczna.jpg
+description: >-
+  Ciepła, kameralna scenografia z choinką i światełkami. Terminy tylko
+  w listopadzie i grudniu — rezerwują się szybko.
+includes:
+  - Gotowa scenografia świąteczna
+  - Zdjęcia w pełnej obróbce
+  - Kartki świąteczne do druku
+  - Gotowe przed Wigilią

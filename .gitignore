@@ -1,0 +1,21 @@
+# Content lives in its own private repo (awfotografia/blog-content) and is
+# checked out here by `npm run content:pull` or by CI. Never commit it.
+blog-content/
+
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# secrets — Keystatic's GitHub app credentials live only on the server
+.env
+.env.*
+!.env.example
+
+# editors / OS
+.DS_Store
+*.log
+.vscode/
+.idea/

@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getSettings } from '../lib/siteContent';
+
+const settings = getSettings();
+---
+
+<BaseLayout
+  title="Polityka prywatności"
+  description="Jak przetwarzane są dane na stronie AW Fotografia."
+  noindex
+>
+  <article class="legal">
+    <p class="label">Informacja</p>
+    <h1>Polityka prywatności</h1>
+
+    <p class="lead">
+      Krótko, bo naprawdę nie ma tu wiele do opisania: ta strona nie zbiera
+      żadnych danych.
+    </p>
+
+    <h2>Formularze</h2>
+    <p>
+      Strona nie ma formularza kontaktowego. Kontakt odbywa się telefonicznie,
+      mailowo albo przez Instagram i Messenger — czyli poza tą stroną, na
+      zasadach tych serwisów.
+    </p>
+
+    <h2>Pliki cookies</h2>
+    <p>
+      Strona nie używa plików cookies ani narzędzi analitycznych. Dlatego nie
+      zobaczysz tu okienka z pytaniem o zgodę — nie ma na co jej wyrażać.
+    </p>
+
+    <h2>Logi serwera</h2>
+    <p>
+      Serwer, na którym stoi strona, zapisuje standardowe logi dostępu (adres
+      IP, data zapytania, typ przeglądarki). Służą wyłącznie diagnostyce
+      i bezpieczeństwu, i nie są łączone z żadnymi innymi danymi.
+    </p>
+
+    <h2>Zdjęcia</h2>
+    <p>
+      Zdjęcia publikowane na stronie pochodzą z sesji, na których publikację
+      osoby na nich uwiecznione wyraziły zgodę. Jeśli jesteś na którymś ze zdjęć
+      i chcesz, żeby zostało usunięte — napisz, usunę je bez pytania o powód.
+    </p>
+
+    <h2>Administrator danych</h2>
+    <p>
+      AW Fotografia{settings.city && `, ${settings.city}`}.
+      {settings.email && <> Kontakt: <a href={`mailto:${settings.email}`}>{settings.email}</a>.</>}
+    </p>
+
+    <p class="note">
+      <strong>Uwaga:</strong> to jest tekst przygotowany na start. Zanim strona
+      pójdzie na produkcję, uzupełnij dane firmy (pełna nazwa, adres, NIP)
+      i — jeśli dojdzie formularz albo analityka — rozszerz ten dokument.
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: clamp(3.5rem, 8vw, 6rem) var(--pad-x) var(--gap);
+  }
+  .legal h1 {
+    margin-bottom: 1.5rem;
+    font-size: clamp(2.4rem, 5.5vw, 3.6rem);
+  }
+  .legal h2 {
+    margin: 2.5rem 0 0.75rem;
+    font-size: 1.4rem;
+  }
+  .legal p {
+    color: var(--tekst-jasny);
+  }
+  .legal .lead {
+    margin-bottom: 1rem;
+  }
+  .legal a {
+    color: var(--glina-ciemna);
+  }
+
+  .note {
+    margin-top: 3rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--bez);
+    border-left: 2px solid var(--glina);
+    font-size: 0.92rem;
+  }
+  .note strong {
+    color: var(--tekst);
+    font-weight: 500;
+  }
+</style>

@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  offer: CollectionEntry<'offers'>;
+}
+
+const { offer } = Astro.props;
+const { name, description, duration, price, image } = offer.data;
+---
+
+<article class="offer-card">
+  <a href={`/oferta/${offer.id}`}>
+    <Image
+      class="arch"
+      src={image}
+      alt=""
+      widths={[300, 600, 900]}
+      sizes="(max-width: 820px) 90vw, 33vw"
+      loading="lazy"
+    />
+  </a>
+  <h3><a href={`/oferta/${offer.id}`}>{name}</a></h3>
+  <p>{description}</p>
+  <div class="offer-meta">
+    {duration && <span>{duration}</span>}
+    {price && <b>{price}</b>}
+  </div>
+</article>
+
+<style>
+  .offer-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+  }
+
+  .offer-card img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .offer-card a:hover img {
+    transform: translateY(-4px);
+  }
+
+  .offer-card h3 {
+    font-size: 1.75rem;
+  }
+  .offer-card h3 a {
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .offer-card h3 a:hover {
+    color: var(--glina-ciemna);
+  }
+
+  .offer-card p {
+    font-size: 0.95rem;
+    color: var(--tekst-jasny);
+  }
+
+  .offer-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--piaskowy);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tekst-jasny);
+  }
+  .offer-meta b {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--tekst);
+    font-variant-numeric: tabular-nums;
+  }
+</style>

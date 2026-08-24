@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactSection from '../components/ContactSection.astro';
+import BotanicalDivider from '../components/BotanicalDivider.astro';
+import { getSettings } from '../lib/siteContent';
+
+const settings = getSettings();
+
+const details = [
+  ['Telefon', settings.phone],
+  ['E-mail', settings.email],
+  ['Obszar', settings.city],
+  ['Kontakt', settings.hours],
+].filter(([, value]) => value);
+---
+
+<BaseLayout
+  title="Kontakt"
+  description="Telefon, e-mail, Instagram i Messenger — najszybszy sposób na rezerwację terminu."
+>
+  <header class="page-header">
+    <p class="label">Kontakt</p>
+    <h1>Napisz albo zadzwoń</h1>
+    <p class="lead">
+      Nie ma formularza — wolę zwykłą rozmowę. Najszybciej odpisuję
+      na Instagramie i Messengerze.
+    </p>
+  </header>
+
+  <ContactSection settings={settings} heading="Wybierz, co Ci wygodniej" />
+
+  {
+    details.length > 0 && (
+      <section class="section warm">
+        <div class="container">
+          <BotanicalDivider />
+          <dl class="details">
+            {details.map(([term, value]) => (
+              <div>
+                <dt>{term}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .page-header {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: clamp(3.5rem, 8vw, 6rem) var(--pad-x) 0;
+    text-align: center;
+  }
+  .page-header h1 {
+    margin-bottom: 1.25rem;
+    font-size: clamp(2.8rem, 6.5vw, 4.5rem);
+  }
+  .page-header p {
+    margin-inline: auto;
+  }
+
+  .details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: clamp(1.5rem, 3vw, 3rem);
+    margin: 3rem 0 0;
+    text-align: center;
+  }
+  .details dt {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--glina);
+  }
+  .details dd {
+    margin: 0.6rem 0 0;
+    font-family: var(--display);
+    font-size: 1.35rem;
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SessionGrid from '../../components/SessionGrid.astro';
+import { publishedSessions } from '../../lib/sessions';
+
+const sessions = await publishedSessions();
+---
+
+<BaseLayout
+  title="Moje sesje"
+  description="Portfolio i aktualności w jednym miejscu — sesje rodzinne, plenerowe, roczkowe i świąteczne."
+>
+  <header class="page-header">
+    <p class="label">Portfolio i aktualności w jednym miejscu</p>
+    <h1>Moje sesje</h1>
+    <p class="lead">
+      Każda sesja to osobny wpis — kilka zdań o tym, jak było, i zdjęcia.
+      Kliknij w zdjęcie, żeby zobaczyć całą sesję.
+    </p>
+  </header>
+
+  <section class="section">
+    <div class="container">
+      {
+        sessions.length > 0 ? (
+          <SessionGrid sessions={sessions} flush />
+        ) : (
+          <p class="lead centered">Pierwsze sesje pojawią się tu wkrótce.</p>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-header {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: clamp(3.5rem, 8vw, 6rem) var(--pad-x) 0;
+    text-align: center;
+  }
+  .page-header h1 {
+    font-size: clamp(2.8rem, 6.5vw, 4.5rem);
+    margin-bottom: 1.25rem;
+  }
+  .page-header p {
+    margin-inline: auto;
+  }
+</style>

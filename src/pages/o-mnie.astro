@@ -1,0 +1,106 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactSection from '../components/ContactSection.astro';
+import SessionGrid from '../components/SessionGrid.astro';
+import { getSettings } from '../lib/siteContent';
+import { publishedSessions } from '../lib/sessions';
+import portrait from '../../blog-content/images/about/portret.jpg';
+
+const settings = getSettings();
+const latest = (await publishedSessions()).slice(0, 3);
+---
+
+<BaseLayout title="O mnie" description={settings.aboutText}>
+  <article class="about">
+    <Image
+      class="arch"
+      src={portrait}
+      alt="Ania — fotografka"
+      widths={[400, 800]}
+      sizes="(max-width: 900px) 80vw, 40vw"
+      loading="eager"
+    />
+    <div>
+      <p class="label">O mnie</p>
+      <h1>{settings.aboutHeading}</h1>
+      <p class="lead">{settings.aboutText}</p>
+      {settings.signature && <p class="signature">{settings.signature}</p>}
+      {
+        settings.city && (
+          <p class="where">
+            Pracuję w okolicy: <strong>{settings.city}</strong>
+          </p>
+        )
+      }
+    </div>
+  </article>
+
+  {
+    latest.length > 0 && (
+      <section class="section warm">
+        <div class="container">
+          <div class="title-row">
+            <div>
+              <p class="label">Ostatnio</p>
+              <h2 class="section-title">Najnowsze sesje</h2>
+            </div>
+            <a class="more-link" href="/moje-sesje">
+              Wszystkie sesje →
+            </a>
+          </div>
+          <SessionGrid sessions={latest} />
+        </div>
+      </section>
+    )
+  }
+
+  <ContactSection settings={settings} heading="Porozmawiajmy o Waszej sesji" />
+</BaseLayout>
+
+<style>
+  .about {
+    display: grid;
+    grid-template-columns: 0.85fr 1fr;
+    align-items: center;
+    gap: clamp(2rem, 6vw, 5.5rem);
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: clamp(3rem, 7vw, 5.5rem) var(--pad-x) var(--gap);
+  }
+  .about img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+  .about h1 {
+    margin-bottom: 1.5rem;
+    font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+  }
+  .signature {
+    margin-top: 1.75rem;
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--glina);
+  }
+  .where {
+    margin-top: 1.5rem;
+    font-size: 0.94rem;
+    color: var(--tekst-jasny);
+  }
+  .where strong {
+    font-weight: 500;
+    color: var(--tekst);
+  }
+
+  @media (max-width: 900px) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+    .about img {
+      max-width: 20rem;
+      margin-inline: auto;
+    }
+  }
+</style>

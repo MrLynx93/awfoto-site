@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BotanicalDivider from '../components/BotanicalDivider.astro';
+---
+
+<BaseLayout title="Nie znaleziono strony" noindex>
+  <section class="notfound">
+    <BotanicalDivider />
+    <p class="label">Błąd 404</p>
+    <h1>Tej strony tu nie ma</h1>
+    <p class="lead">
+      Może link jest nieaktualny, a może adres wpisał się z literówką.
+      Zdjęcia są tam, gdzie zwykle.
+    </p>
+    <div class="buttons">
+      <a class="button" href="/moje-sesje">Moje sesje</a>
+      <a class="button button--ghost" href="/">Strona główna</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: clamp(4rem, 12vw, 8rem) var(--pad-x);
+    text-align: center;
+  }
+  .notfound .label {
+    margin-top: 2.5rem;
+  }
+  .notfound h1 {
+    margin-bottom: 1.25rem;
+    font-size: clamp(2.4rem, 6vw, 3.8rem);
+  }
+  .notfound p {
+    margin-inline: auto;
+  }
+  .buttons {
+    justify-content: center;
+    margin-top: 2.5rem;
+  }
+</style>

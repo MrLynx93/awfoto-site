@@ -1,0 +1,16 @@
+name: Sesja rodzinna
+order: 2
+featured: true
+season: caloroczna
+duration: ok. 120 minut
+photoCount: 35 zdjęć
+price: od 650 zł
+image: ../../images/offers/rodzinna.jpg
+description: >-
+  W domu albo w plenerze — zwyczajne popołudnie, tylko ładniej opowiedziane.
+  Dzieci mogą biegać, nikt nie musi grzecznie siedzieć.
+includes:
+  - Sesja w domu lub w plenerze
+  - Zdjęcia w pełnej obróbce
+  - Galeria online do pobrania
+  - Zdjęcia grupowe i portrety osobno

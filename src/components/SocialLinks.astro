@@ -1,0 +1,52 @@
+---
+interface Props {
+  facebook?: string;
+  instagram?: string;
+  class?: string;
+}
+
+const { facebook, instagram, class: className } = Astro.props;
+---
+
+<div class:list={['socials', className]}>
+  {
+    instagram && (
+      <a href={instagram} aria-label="Instagram" rel="noopener noreferrer" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" />
+          <circle cx="12" cy="12" r="4.2" />
+          <circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none" />
+        </svg>
+      </a>
+    )
+  }
+  {
+    facebook && (
+      <a href={facebook} aria-label="Facebook" rel="noopener noreferrer" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M14.5 8.5V6.9c0-.8.5-1.4 1.3-1.4h1.5V2.6h-2.4c-2.4 0-3.7 1.5-3.7 3.9v2h-2.2v3h2.2v9h3.3v-9h2.4l.4-3h-2.8Z" />
+        </svg>
+      </a>
+    )
+  }
+</div>
+
+<style>
+  .socials {
+    display: flex;
+    gap: 0.9rem;
+  }
+  .socials a {
+    display: grid;
+    place-items: center;
+    color: var(--tekst-jasny);
+    transition: color 0.3s;
+  }
+  .socials a:hover {
+    color: var(--glina);
+  }
+  .socials svg {
+    width: 17px;
+    height: 17px;
+  }
+</style>

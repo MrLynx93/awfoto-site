@@ -1,0 +1,325 @@
+---
+import SocialLinks from './SocialLinks.astro';
+import SeasonalBanner from './SeasonalBanner.astro';
+import { getSettings } from '../lib/siteContent';
+
+const settings = getSettings();
+const path = Astro.url.pathname;
+
+const NAV = [
+  { href: '/moje-sesje', label: 'Moje sesje' },
+  { href: '/oferta', label: 'Oferta' },
+  { href: '/cennik', label: 'Cennik' },
+  { href: '/o-mnie', label: 'O mnie' },
+  { href: '/kontakt', label: 'Kontakt' },
+];
+
+/** A nav item is current when the path is it or sits beneath it. */
+const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<header>
+  <SeasonalBanner banner={settings.seasonalBanner} />
+
+  <nav class="nav" aria-label="Główne">
+    <a class="wordmark" href="/">AW<em>·</em>Fotografia</a>
+
+    <ul class="menu">
+      {
+        NAV.map((item) => (
+          <li>
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <SocialLinks
+      facebook={settings.facebook}
+      instagram={settings.instagram}
+      class="header-socials"
+    />
+
+    <button
+      class="nav-toggle"
+      id="nav-toggle"
+      type="button"
+      aria-label="Menu"
+      aria-expanded="false"
+      aria-controls="nav-panel"
+    >
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="nav-panel" id="nav-panel" data-open="false">
+    <ul>
+      {
+        NAV.map((item) => (
+          <li>
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="nav-panel-foot">
+      {
+        settings.phone && (
+          <a class="phone" href={`tel:${settings.phone.replace(/\s/g, '')}`}>
+            {settings.phone}
+          </a>
+        )
+      }
+      <SocialLinks facebook={settings.facebook} instagram={settings.instagram} />
+    </div>
+  </div>
+</header>
+
+<style>
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.6rem var(--pad-x);
+    border-bottom: 1px solid var(--piaskowy);
+    background: var(--kremowy);
+    position: relative;
+  }
+
+  .wordmark {
+    font-family: var(--display);
+    font-size: 1.35rem;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .wordmark em {
+    font-style: normal;
+    color: var(--glina);
+  }
+
+  .menu {
+    display: flex;
+    gap: 1.75rem;
+    margin: 0 0 0 auto;
+    padding: 0;
+    list-style: none;
+    font-size: 0.82rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+  .menu a {
+    text-decoration: none;
+    padding-bottom: 3px;
+    border-bottom: 1px solid transparent;
+    transition:
+      border-color 0.3s,
+      color 0.3s;
+  }
+  .menu a:hover,
+  .menu a[aria-current='page'] {
+    border-color: var(--glina);
+    color: var(--glina-ciemna);
+  }
+
+  /* ---------- mobile navigation ---------- */
+
+  .nav-toggle {
+    display: none;
+    position: relative;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: var(--tekst);
+  }
+  .nav-toggle span {
+    position: absolute;
+    left: 11px;
+    width: 22px;
+    height: 1px;
+    background: currentColor;
+    transition:
+      transform 0.3s ease,
+      opacity 0.2s ease;
+  }
+  .nav-toggle span:nth-child(1) {
+    top: 16px;
+  }
+  .nav-toggle span:nth-child(2) {
+    top: 21.5px;
+  }
+  .nav-toggle span:nth-child(3) {
+    top: 27px;
+  }
+  .nav-toggle[aria-expanded='true'] span:nth-child(1) {
+    transform: translateY(5.5px) rotate(45deg);
+  }
+  .nav-toggle[aria-expanded='true'] span:nth-child(2) {
+    opacity: 0;
+  }
+  .nav-toggle[aria-expanded='true'] span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  .nav-panel {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .menu {
+      display: none;
+    }
+    .nav {
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding-block: 1.1rem;
+    }
+    /* The panel carries the social links on mobile, so the header copies would
+       only crowd the wordmark and push the toggle off-screen. */
+    .nav :global(.header-socials) {
+      display: none;
+    }
+    .nav-toggle {
+      display: block;
+      margin-left: auto;
+    }
+    .wordmark {
+      font-size: 1.05rem;
+      letter-spacing: 0.22em;
+    }
+
+    .nav-panel {
+      display: block;
+      position: absolute;
+      left: 0;
+      right: 0;
+      z-index: 60;
+      padding: 1.5rem var(--pad-x) 2rem;
+      background: var(--kremowy);
+      border-bottom: 1px solid var(--piaskowy);
+      box-shadow: 0 22px 40px -30px rgba(74, 64, 56, 0.55);
+      /* On a short phone the links alone can exceed the viewport, which would
+         put the phone number out of reach. Cap it and let the panel scroll. */
+      max-height: calc(100dvh - 5.5rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      transform: translateY(-8px);
+      opacity: 0;
+      visibility: hidden;
+      /* visibility flips instantly on open so links are focusable straight
+         away, and is delayed on close so the fade-out stays visible. */
+      transition:
+        transform 0.28s ease,
+        opacity 0.28s ease,
+        visibility 0s linear 0.28s;
+    }
+    .nav-panel[data-open='true'] {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+      transition:
+        transform 0.28s ease,
+        opacity 0.28s ease,
+        visibility 0s;
+    }
+
+    .nav-panel ul {
+      display: grid;
+      gap: 0.35rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .nav-panel a {
+      display: block;
+      padding: 0.55rem 0;
+      font-family: var(--display);
+      font-size: 1.65rem;
+      text-decoration: none;
+      border-bottom: 1px solid var(--piaskowy);
+    }
+    .nav-panel a[aria-current='page'] {
+      color: var(--glina-ciemna);
+    }
+    .nav-panel li:last-child a {
+      border-bottom: 0;
+    }
+
+    .nav-panel-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--piaskowy);
+    }
+    .phone {
+      font-size: 0.82rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--glina-ciemna);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-panel {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const panel = document.getElementById('nav-panel');
+
+  if (toggle && panel) {
+    const setMenu = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      panel.setAttribute('data-open', String(open));
+      document.body.style.overflow = open ? 'hidden' : '';
+      if (open) {
+        // Flush styles before focusing: the link is still visibility:hidden
+        // until the new state applies, and hidden elements cannot take focus.
+        void panel.offsetWidth;
+        panel.querySelector('a')?.focus();
+      }
+    };
+
+    const closeMenu = (returnFocus: boolean) => {
+      if (toggle.getAttribute('aria-expanded') !== 'true') return;
+      setMenu(false);
+      if (returnFocus) toggle.focus();
+    };
+
+    toggle.addEventListener('click', () => {
+      setMenu(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeMenu(true);
+    });
+
+    document.addEventListener('click', (event) => {
+      if (panel.getAttribute('data-open') !== 'true') return;
+      const target = event.target as Node;
+      if (panel.contains(target) || toggle.contains(target)) return;
+      closeMenu(false);
+    });
+
+    // Above the breakpoint the panel is hidden by CSS, so drop the scroll lock.
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 900) closeMenu(false);
+    });
+  }
+</script>

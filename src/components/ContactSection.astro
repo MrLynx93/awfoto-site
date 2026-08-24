@@ -1,0 +1,92 @@
+---
+import BotanicalDivider from './BotanicalDivider.astro';
+import type { Settings } from '../lib/siteContent';
+
+interface Props {
+  settings: Settings;
+  heading: string;
+  lead?: string;
+  withDivider?: boolean;
+  warm?: boolean;
+}
+
+const { settings, heading, lead, withDivider = false, warm = false } = Astro.props;
+
+// No contact form anywhere on this site — every route is a direct action:
+// tap to call, open the mail client, or jump into a DM.
+const telHref = `tel:${settings.phone.replace(/\s/g, '')}`;
+---
+
+<section class:list={['section', 'centered', warm && 'warm']}>
+  <div class="container">
+    {withDivider && <BotanicalDivider />}
+    <div class:list={['heading-block', withDivider && 'heading-block--spaced']}>
+      <p class="label">Kontakt</p>
+      <h2 class="section-title">{heading}</h2>
+      {lead && <p class="lead">{lead}</p>}
+    </div>
+
+    <div class="contact-buttons">
+      {
+        settings.phone && (
+          <a class="button" href={telHref}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M5 3.5h3.5l1.8 4.4-2.2 1.6a12.5 12.5 0 0 0 6.4 6.4l1.6-2.2 4.4 1.8V19a1.6 1.6 0 0 1-1.7 1.6A16.7 16.7 0 0 1 3.4 5.2 1.6 1.6 0 0 1 5 3.5Z" />
+            </svg>
+            {settings.phone}
+          </a>
+        )
+      }
+      {
+        settings.email && (
+          <a class="button button--ghost" href={`mailto:${settings.email}`}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <rect x="2.5" y="5" width="19" height="14" rx="2.5" />
+              <path d="m3.5 7 8.5 6 8.5-6" />
+            </svg>
+            E-mail
+          </a>
+        )
+      }
+      {
+        settings.instagram && (
+          <a class="button button--ghost" href={settings.instagram} rel="noopener noreferrer" target="_blank">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" />
+              <circle cx="12" cy="12" r="4.2" />
+              <circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none" />
+            </svg>
+            Instagram
+          </a>
+        )
+      }
+      {
+        settings.messenger && (
+          <a class="button button--ghost" href={settings.messenger} rel="noopener noreferrer" target="_blank">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M12 2.6c-5.2 0-9.4 3.9-9.4 8.8 0 2.8 1.4 5.2 3.5 6.8v3.3l3.2-1.8c.9.2 1.8.4 2.7.4 5.2 0 9.4-3.9 9.4-8.7S17.2 2.6 12 2.6Z" />
+              <path d="m6.9 13.7 4.4-4.7 2.3 2.4 3.6-2.4-4.4 4.7-2.3-2.4-3.6 2.4Z" />
+            </svg>
+            Messenger
+          </a>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .heading-block--spaced {
+    margin-top: 2.5rem;
+  }
+  .section-title {
+    font-size: clamp(2.3rem, 5.5vw, 4rem);
+  }
+  .contact-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.9rem;
+    margin-top: 2.5rem;
+  }
+</style>

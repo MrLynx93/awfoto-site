@@ -1,0 +1,75 @@
+---
+import { Image } from 'astro:assets';
+import { formatDate, type Session } from '../lib/sessions';
+
+interface Props {
+  session: Session;
+  /** The homepage shows a teaser line; the full list does not need one. */
+  showIntro?: boolean;
+  /** The first card in a grid is often above the fold. */
+  eager?: boolean;
+}
+
+const { session, showIntro = false, eager = false } = Astro.props;
+const { title, date, category, intro, coverImage } = session.data;
+
+const meta = [formatDate(date), category].filter(Boolean).join(' · ');
+// Trim to roughly one line rather than letting long intros unbalance the grid.
+const teaser = intro.length > 110 ? `${intro.slice(0, 110).trimEnd()}…` : intro;
+---
+
+<a class="session-card" href={`/moje-sesje/${session.id}`}>
+  <Image
+    src={coverImage}
+    alt=""
+    widths={[300, 600, 900]}
+    sizes="(max-width: 820px) 90vw, (max-width: 1240px) 33vw, 380px"
+    loading={eager ? 'eager' : 'lazy'}
+  />
+  <p class="session-date">{meta}</p>
+  <h3>{title}</h3>
+  {showIntro && <p class="teaser">{teaser}</p>}
+</a>
+
+<style>
+  .session-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    text-decoration: none;
+  }
+
+  .session-card img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 3px;
+    transition:
+      transform 0.5s ease,
+      box-shadow 0.5s ease;
+  }
+  .session-card:hover img {
+    transform: translateY(-5px);
+    box-shadow: 0 22px 40px -28px rgba(74, 64, 56, 0.6);
+  }
+
+  .session-date {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--szalwia);
+  }
+
+  .session-card h3 {
+    font-size: 1.5rem;
+    transition: color 0.3s;
+  }
+  .session-card:hover h3 {
+    color: var(--glina-ciemna);
+  }
+
+  .teaser {
+    font-size: 0.92rem;
+    color: var(--tekst-jasny);
+  }
+</style>

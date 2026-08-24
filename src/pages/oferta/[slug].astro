@@ -1,0 +1,205 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContactSection from '../../components/ContactSection.astro';
+import SessionGrid from '../../components/SessionGrid.astro';
+import { getSettings } from '../../lib/siteContent';
+import { publishedSessions } from '../../lib/sessions';
+
+export async function getStaticPaths() {
+  const offers = await getCollection('offers');
+  const sessions = await publishedSessions();
+
+  return offers.map((offer) => ({
+    params: { slug: offer.id },
+    props: {
+      offer,
+      // Show real work of this kind, when there is any — a session's category
+      // matching the offer name is the closest link we have.
+      examples: sessions
+        .filter((session) =>
+          offer.data.name.toLowerCase().includes(session.data.category.toLowerCase()),
+        )
+        .slice(0, 3),
+    },
+  }));
+}
+
+interface Props {
+  offer: CollectionEntry<'offers'>;
+  examples: Awaited<ReturnType<typeof publishedSessions>>;
+}
+
+const { offer, examples } = Astro.props;
+const { name, description, includes, duration, photoCount, price, image } = offer.data;
+const settings = getSettings();
+
+const facts = [
+  ['Czas trwania', duration],
+  ['Liczba zdjęć', photoCount],
+  ['Cena', price],
+].filter(([, value]) => value);
+---
+
+<BaseLayout title={name} description={description} ogImage={image.src}>
+  <article class="offer">
+    <Image
+      class="offer-photo arch"
+      src={image}
+      alt=""
+      widths={[400, 800, 1200]}
+      sizes="(max-width: 900px) 90vw, 45vw"
+      loading="eager"
+    />
+
+    <div>
+      <p class="label">Oferta</p>
+      <h1>{name}</h1>
+      <p class="lead">{description}</p>
+
+      {
+        facts.length > 0 && (
+          <dl class="facts">
+            {facts.map(([term, value]) => (
+              <div>
+                <dt>{term}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+        )
+      }
+
+      {
+        includes.length > 0 && (
+          <>
+            <h2 class="includes-title">Co obejmuje</h2>
+            <ul class="checklist">
+              {includes.map((line) => (
+                <li>
+                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                    <path d="m4 10.5 4 4 8-9" />
+                  </svg>
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+
+      <div class="buttons">
+        <a class="button" href="/cennik">Zobacz cennik</a>
+        <a class="button button--ghost" href="/oferta">Inne sesje</a>
+      </div>
+    </div>
+  </article>
+
+  {
+    examples.length > 0 && (
+      <section class="section warm">
+        <div class="container">
+          <div class="title-row">
+            <div>
+              <p class="label">Przykłady</p>
+              <h2 class="section-title">Takie sesje już robiłam</h2>
+            </div>
+            <a class="more-link" href="/moje-sesje">
+              Wszystkie sesje →
+            </a>
+          </div>
+          <SessionGrid sessions={examples} />
+        </div>
+      </section>
+    )
+  }
+
+  <ContactSection settings={settings} heading="Zarezerwuj termin" />
+</BaseLayout>
+
+<style>
+  .offer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: clamp(2rem, 5vw, 5rem);
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: clamp(3rem, 7vw, 5.5rem) var(--pad-x) var(--gap);
+  }
+  .offer h1 {
+    margin-bottom: 1.25rem;
+    font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+  }
+  .offer-photo {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    position: sticky;
+    top: 2rem;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    gap: 1.25rem;
+    margin: 2rem 0;
+    padding: 1.5rem 0;
+    border-block: 1px solid var(--piaskowy);
+  }
+  .facts dt {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--tekst-jasny);
+  }
+  .facts dd {
+    margin: 0.4rem 0 0;
+    font-family: var(--display);
+    font-size: 1.4rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .includes-title {
+    margin-bottom: 1rem;
+    font-family: var(--body);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--glina);
+  }
+
+  .checklist {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0 0 2.25rem;
+    padding: 0;
+    list-style: none;
+  }
+  .checklist li {
+    display: grid;
+    grid-template-columns: 1.15rem 1fr;
+    gap: 0.6rem;
+    align-items: start;
+    font-size: 0.96rem;
+  }
+  .checklist svg {
+    width: 15px;
+    height: 15px;
+    margin-top: 0.45rem;
+    color: var(--szalwia);
+  }
+
+  @media (max-width: 900px) {
+    .offer {
+      grid-template-columns: 1fr;
+    }
+    .offer-photo {
+      position: static;
+      max-width: 22rem;
+      margin-inline: auto;
+    }
+  }
+</style>

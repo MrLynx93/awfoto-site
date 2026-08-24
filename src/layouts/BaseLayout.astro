@@ -1,0 +1,103 @@
+---
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { getSettings } from '../lib/siteContent';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Absolute or site-relative URL of the image used for link previews. */
+  ogImage?: string;
+  /** Keeps the panel subdomain out of Google. */
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = 'Fotografia rodzinna, plenerowa i świąteczna. Sesje zdjęciowe bez pozowania.',
+  ogImage,
+  noindex = false,
+} = Astro.props;
+
+const settings = getSettings();
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const fullTitle = title === 'AW Fotografia' ? title : `${title} — AW Fotografia`;
+const ogImageUrl = ogImage ? new URL(ogImage, Astro.site).href : undefined;
+
+/**
+ * Helps Google show the business in local results. Only fields that are
+ * actually filled in are emitted, so placeholder data never ships as fact.
+ */
+const businessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': Astro.site?.href,
+  name: 'AW Fotografia',
+  description,
+  url: Astro.site?.href,
+  ...(settings.phone && { telephone: settings.phone }),
+  ...(settings.email && { email: settings.email }),
+  ...(settings.city && { areaServed: settings.city }),
+  ...(settings.facebook || settings.instagram
+    ? { sameAs: [settings.facebook, settings.instagram].filter(Boolean) }
+    : {}),
+};
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="AW Fotografia" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:locale" content="pl_PL" />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#FDFBF7" />
+
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- The two faces used above the fold; the rest load on demand. -->
+    <link
+      rel="preload"
+      href="/fonts/cormorant-garamond-300.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="preload" href="/fonts/jost-300.woff2" as="font" type="font/woff2" crossorigin />
+
+    <set:html
+      value={`<script type="application/ld+json">${JSON.stringify(businessSchema)}</script>`}
+    />
+
+    <!--
+      No analytics by default: no cookies means no consent banner. To add
+      privacy-friendly stats later, uncomment and set your own domain:
+      <script defer data-domain="awfotografia.pl" src="https://plausible.io/js/script.js"></script>
+    -->
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Przejdź do treści</a>
+    <SiteHeader />
+    <main id="main">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>
