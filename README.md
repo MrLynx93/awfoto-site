@@ -144,24 +144,44 @@ Then create `~/domains/panel.awfotografia.pl/public_nodejs/.env` from
 
 ### Pointing the domain at the host
 
-The domain does not have to be bought from the host — it is bought at any
-registrar and pointed here. Two ways, both fine:
+The domain does not have to be bought from the host — buy it at any registrar
+and point it here. Order matters: DNS first, then the www entries, then the
+certificates. Issuing a certificate before the domain resolves fails, because
+Let's Encrypt validates over HTTP against the live name.
 
-**Delegate DNS to the host** (simplest — mail, SSL and subdomains all follow):
+**1 — create the DNS zone on the host.**
 
 ```bash
-devil dns add awfotografia.pl        # or: panel → Strefy DNS → + Dodaj nową strefę
+devil dns add awfotografia.pl     # or: panel → Strefy DNS → + Dodaj nową strefę
 ```
 
-Then read the host's nameservers out of the panel and set them as the domain's
-nameservers at the registrar. Do this *before* issuing certificates.
+**2 — hand the domain to the host's nameservers, at the registrar.** On mydevil
+they are `dns1.mydevil.net` and `dns2.mydevil.net`; on small.pl read them out of
+the panel rather than assuming — do not guess nameserver hostnames. At the
+registrar this is "serwery nazw" / "delegacja DNS".
 
-**Or keep DNS at the registrar** and point two A records — `@` and `panel` — at
-the account's IP (`devil www list` shows it). Let's Encrypt validates over HTTP,
-so certificates still work.
+Re-delegation is a registry change, so it is not instant: usually minutes, up to
+24 h. Wait for it before step 4:
 
-Either way, `devil www add` the two domains and issue the certificates as above
-once the records resolve.
+```bash
+dig +short NS awfotografia.pl     # must show the host's nameservers
+```
+
+*Alternative:* keep DNS at the registrar and add two A records instead — `@` and
+`panel`, both pointing at the account's IP (`devil www list` shows it). Works
+fine; you just lose the host's mail records, so pick this only if you don't want
+`kontakt@awfotografia.pl` on this host.
+
+**3 — add the two www entries**, as in the setup block above (`static` for the
+site, `nodejs` for the panel).
+
+**4 — issue the certificates**, once `dig +short A awfotografia.pl` returns the
+account IP for both names.
+
+**5 — tell the build about it:** set the `SITE_DOMAIN` repository variable, set
+`SITE_URL` in the server-side `.env`, and point the GitHub OAuth callback at
+`https://panel.<domain>/api/keystatic/github/oauth/callback`. See *Changing the
+domain* above — those three are the ones that actually break things.
 
 ### GitHub secrets and variables
 
