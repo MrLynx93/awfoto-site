@@ -46,7 +46,7 @@ is committed — hence `PUBLIC_KEYSTATIC_STORAGE=local` is opt-in, not the defau
 ## How it fits together
 
 ```
-Panel at panel.awfotografia.pl/keystatic
+Panel at panel.aw-foto.pl/keystatic
         │  commits Markdown/YAML + images
         ▼
    lynx-soft/awfotografia-site-content  (private)
@@ -56,8 +56,8 @@ Panel at panel.awfotografia.pl/keystatic
         │  checkout code          │  checkout site-content → ./site-content
         ▼  npm ci && npm run build ◄┘
    rsync over SSH to mydevil.net
-        ├── dist/client/ → awfotografia.pl/public_html        (static, nginx)
-        └── whole app    → panel.awfotografia.pl/public_nodejs (Passenger + Express)
+        ├── dist/client/ → aw-foto.pl/public_html        (static, nginx)
+        └── whole app    → panel.aw-foto.pl/public_nodejs (Passenger + Express)
 ```
 
 **Why the split:** the public site is static files served straight by nginx, so
@@ -124,22 +124,22 @@ the same pattern.
 
 ```bash
 # The static site: nginx serves the files directly, no Node in the request path.
-devil www add awfotografia.pl static
+devil www add aw-foto.pl static
 
 # The panel. The nodejs type takes the full path to the interpreter and an
 # environment — not a bare version number.
-devil www add panel.awfotografia.pl nodejs /usr/local/bin/node22 production
+devil www add panel.aw-foto.pl nodejs /usr/local/bin/node22 production
 
 # free, auto-renewing certificates for both
-devil ssl www add <IP> le le awfotografia.pl
-devil ssl www add <IP> le le panel.awfotografia.pl
+devil ssl www add <IP> le le aw-foto.pl
+devil ssl www add <IP> le le panel.aw-foto.pl
 ```
 
 Check the available interpreter path first (`ls /usr/local/bin/node*`); the host
 carries several versions and only the even-numbered ones are LTS. Node 22 is
 what CI builds with, so match it.
 
-Then create `~/domains/panel.awfotografia.pl/public_nodejs/.env` from
+Then create `~/domains/panel.aw-foto.pl/public_nodejs/.env` from
 [`.env.example`](./.env.example). It is never committed and survives deploys.
 
 ### Pointing the domain at the host
@@ -152,7 +152,7 @@ Let's Encrypt validates over HTTP against the live name.
 **1 — create the DNS zone on the host.**
 
 ```bash
-devil dns add awfotografia.pl     # or: panel → Strefy DNS → + Dodaj nową strefę
+devil dns add aw-foto.pl     # or: panel → Strefy DNS → + Dodaj nową strefę
 ```
 
 **2 — hand the domain to the host's nameservers, at the registrar.** On mydevil
@@ -164,18 +164,18 @@ Re-delegation is a registry change, so it is not instant: usually minutes, up to
 24 h. Wait for it before step 4:
 
 ```bash
-dig +short NS awfotografia.pl     # must show the host's nameservers
+dig +short NS aw-foto.pl     # must show the host's nameservers
 ```
 
 *Alternative:* keep DNS at the registrar and add two A records instead — `@` and
 `panel`, both pointing at the account's IP (`devil www list` shows it). Works
 fine; you just lose the host's mail records, so pick this only if you don't want
-`kontakt@awfotografia.pl` on this host.
+`kontakt@aw-foto.pl` on this host.
 
 **3 — add the two www entries**, as in the setup block above (`static` for the
 site, `nodejs` for the panel).
 
-**4 — issue the certificates**, once `dig +short A awfotografia.pl` returns the
+**4 — issue the certificates**, once `dig +short A aw-foto.pl` returns the
 account IP for both names.
 
 **5 — tell the build about it:** set the `SITE_DOMAIN` repository variable, set
@@ -195,7 +195,7 @@ In **this** repo:
 
 | Variable | Default |
 |---|---|
-| `SITE_DOMAIN` | `awfotografia.pl` — the only domain setting; the rest derives from it |
+| `SITE_DOMAIN` | `aw-foto.pl` — the only domain setting; the rest derives from it |
 | `PANEL_DOMAIN` | `panel.<SITE_DOMAIN>`, unless set explicitly |
 | `CONTENT_REPO` | `lynx-soft/awfotografia-site-content` |
 
@@ -238,7 +238,7 @@ triggers a rebuild. It refuses to run if the repo already has `content/` or
 ### GitHub OAuth app for the panel
 
 Register at *Settings → Developer settings → OAuth Apps* with callback
-`https://panel.awfotografia.pl/api/keystatic/github/oauth/callback`, then put the
+`https://panel.aw-foto.pl/api/keystatic/github/oauth/callback`, then put the
 client ID and secret in the server-side `.env` along with a
 `KEYSTATIC_SECRET` (`openssl rand -hex 32`).
 

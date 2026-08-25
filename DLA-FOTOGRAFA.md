@@ -7,7 +7,7 @@ ani znać się na programowaniu — wszystko robi się w przeglądarce.
 
 ## Logowanie do panelu
 
-1. Wejdź na **https://panel.awfotografia.pl**
+1. Wejdź na **https://panel.aw-foto.pl**
 2. Kliknij **Sign in with GitHub** i zaloguj się swoim kontem GitHub.
 
 Konto GitHub jest darmowe i zakłada się je raz. Jeśli jeszcze go nie masz albo

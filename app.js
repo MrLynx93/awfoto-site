@@ -28,7 +28,7 @@ app.disable('x-powered-by');
 // send anyone who lands on a content URL to the real site instead of serving
 // a duplicate copy of it.
 const panelOnly = process.env.PANEL_ONLY === 'true';
-const siteUrl = process.env.SITE_URL || 'https://awfotografia.pl';
+const siteUrl = process.env.SITE_URL || 'https://aw-foto.pl';
 
 if (panelOnly) {
   app.use((req, res, next) => {

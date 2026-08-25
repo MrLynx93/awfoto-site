@@ -14,8 +14,8 @@ env:
   # SITE_DOMAIN to change it everywhere: the canonical URLs baked into the
   # build, both rsync targets, and the panel restart. PANEL_DOMAIN is derived
   # unless you override it with a variable of its own.
-  SITE_DOMAIN: ${{ vars.SITE_DOMAIN || 'awfotografia.pl' }}
-  PANEL_DOMAIN: ${{ vars.PANEL_DOMAIN || format('panel.{0}', vars.SITE_DOMAIN || 'awfotografia.pl') }}
+  SITE_DOMAIN: ${{ vars.SITE_DOMAIN || 'aw-foto.pl' }}
+  PANEL_DOMAIN: ${{ vars.PANEL_DOMAIN || format('panel.{0}', vars.SITE_DOMAIN || 'aw-foto.pl') }}
 
 concurrency:
   # A newer save supersedes an in-flight build; never deploy out of order.

@@ -8,7 +8,7 @@ import keystatic from '@keystatic/astro';
 
 // Set this to the real domain once it is bought — it drives the sitemap and
 // canonical URLs.
-const site = process.env.SITE_URL || 'https://awfotografia.pl';
+const site = process.env.SITE_URL || 'https://aw-foto.pl';
 
 export default defineConfig({
   site,

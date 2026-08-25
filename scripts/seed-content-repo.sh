@@ -69,7 +69,7 @@ cp -a "$template/." .
 
 git add -A
 git -c user.name="${GIT_AUTHOR_NAME:-$(git config user.name || echo 'AW Fotografia')}" \
-    -c user.email="${GIT_AUTHOR_EMAIL:-$(git config user.email || echo 'noreply@awfotografia.pl')}" \
+    -c user.email="${GIT_AUTHOR_EMAIL:-$(git config user.email || echo 'noreply@aw-foto.pl')}" \
     commit --quiet -m "Treść startowa strony
 
 Przykładowe sesje, oferta, cennik i ustawienia wraz ze zdjęciami
