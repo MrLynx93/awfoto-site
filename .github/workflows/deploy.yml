@@ -4,7 +4,6 @@ name: Build i deploy
 # content repo whenever the panel saves something.
 on:
   push:
-    branches: [main]
   repository_dispatch:
     types: [content-updated]
   workflow_dispatch:
@@ -28,6 +27,10 @@ concurrency:
 
 jobs:
   deploy:
+    # Only the default branch deploys. Compared against the repo's actual
+    # default rather than a hardcoded 'main', so renaming it does not quietly
+    # stop every deploy.
+    if: github.event_name != 'push' || github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
     steps:
       - name: Pobierz kod

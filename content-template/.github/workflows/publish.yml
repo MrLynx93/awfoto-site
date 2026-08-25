@@ -33,11 +33,14 @@ jobs:
       # the path. So the earliest anything of ours can run is right here, after
       # the file has landed. It means photos can be uploaded straight from the
       # camera with no export step.
+      # HEAD, not a branch name: it resolves to the code repo's default
+      # branch whatever it is called, so renaming or not-yet-having main does
+      # not silently 404 here.
       - name: Zmniejsz zdjęcia
         run: |
           npm install sharp@0.34.4 --no-save
           curl -sSL -o resize-images.mjs \
-            "https://raw.githubusercontent.com/${{ vars.CODE_REPO || 'MrLynx93/awfotografia_page' }}/main/scripts/resize-images.mjs"
+            "https://raw.githubusercontent.com/${{ vars.CODE_REPO || 'MrLynx93/awfotografia_page' }}/HEAD/scripts/resize-images.mjs"
           node resize-images.mjs .
           rm -f resize-images.mjs
 
