@@ -16,6 +16,10 @@ env:
   # unless you override it with a variable of its own.
   SITE_DOMAIN: ${{ vars.SITE_DOMAIN || 'aw-foto.pl' }}
   PANEL_DOMAIN: ${{ vars.PANEL_DOMAIN || format('panel.{0}', vars.SITE_DOMAIN || 'aw-foto.pl') }}
+  # The content repo, split into owner and name: the build needs them
+  # separately, and so does the content checkout.
+  CONTENT_OWNER: ${{ vars.CONTENT_REPO_OWNER || 'lynx-soft' }}
+  CONTENT_NAME: ${{ vars.CONTENT_REPO_NAME || 'awfotografia-site-content' }}
 
 concurrency:
   # A newer save supersedes an in-flight build; never deploy out of order.
@@ -32,7 +36,7 @@ jobs:
       - name: Pobierz treść (prywatne repo)
         uses: actions/checkout@v4
         with:
-          repository: ${{ vars.CONTENT_REPO || 'lynx-soft/awfotografia-site-content' }}
+          repository: ${{ env.CONTENT_OWNER }}/${{ env.CONTENT_NAME }}
           token: ${{ secrets.CONTENT_REPO_TOKEN }}
           path: site-content
 
@@ -48,10 +52,15 @@ jobs:
       - name: Sprawdź rozmiary zdjęć
         run: npm run images:check
 
+      # PUBLIC_* vars are baked into the bundle here, not read from the
+      # server's .env at runtime: keystatic.config.ts ships to the browser,
+      # so import.meta.env is statically replaced at build time.
       - name: Zbuduj stronę
         run: npm run build
         env:
           SITE_URL: https://${{ env.SITE_DOMAIN }}
+          PUBLIC_CONTENT_REPO_OWNER: ${{ env.CONTENT_OWNER }}
+          PUBLIC_CONTENT_REPO_NAME: ${{ env.CONTENT_NAME }}
 
       - name: Skonfiguruj klucz SSH
         run: |
@@ -80,6 +89,52 @@ jobs:
             -e "ssh -i ~/.ssh/id_ed25519" \
             ./ \
             "${{ secrets.MYDEVIL_USER }}@${{ secrets.MYDEVIL_HOST }}:domains/${{ env.PANEL_DOMAIN }}/public_nodejs/"
+
+      # Writes the panel's .env from GitHub secrets, so it can be set up without
+      # SSH. Skipped entirely when the OAuth client id secret is unset, so it
+      # can never blank out a working .env that was created by hand.
+      #
+      # KEYSTATIC_SECRET signs panel sessions and only has to be stable, not
+      # known: if the secret is unset we keep whatever is already on the server,
+      # and generate one on the first deploy. Setting it as a repository secret
+      # overrides both.
+      - name: Zapisz .env panelu
+        env:
+          CLIENT_ID: ${{ secrets.KEYSTATIC_GITHUB_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.KEYSTATIC_GITHUB_CLIENT_SECRET }}
+          SESSION_SECRET: ${{ secrets.KEYSTATIC_SECRET }}
+          SSH_TARGET: ${{ secrets.MYDEVIL_USER }}@${{ secrets.MYDEVIL_HOST }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CLIENT_ID:-}" ]; then
+            echo "::notice::KEYSTATIC_GITHUB_CLIENT_ID nie jest ustawiony — pomijam zapis .env"
+            exit 0
+          fi
+
+          remote="domains/${PANEL_DOMAIN}/public_nodejs"
+          ssh_cmd="ssh -i ~/.ssh/id_ed25519 $SSH_TARGET"
+
+          # Keep the session key already on the server, so deploying does not
+          # log the photographer out of the panel.
+          existing=$($ssh_cmd "sed -n 's/^KEYSTATIC_SECRET=//p' $remote/.env 2>/dev/null | head -1" || true)
+          secret="${SESSION_SECRET:-}"
+          [ -n "$secret" ] || secret="$existing"
+          [ -n "$secret" ] || secret=$(openssl rand -hex 32)
+
+          # printf, not a heredoc: a secret containing shell metacharacters is
+          # then just data, never something the shell re-reads.
+          umask 077
+          {
+            printf 'SITE_URL=https://%s\n' "$SITE_DOMAIN"
+            printf 'KEYSTATIC_GITHUB_CLIENT_ID=%s\n' "$CLIENT_ID"
+            printf 'KEYSTATIC_GITHUB_CLIENT_SECRET=%s\n' "$CLIENT_SECRET"
+            printf 'KEYSTATIC_SECRET=%s\n' "$secret"
+            printf 'PANEL_ONLY=true\n'
+          } > panel.env
+
+          scp -i ~/.ssh/id_ed25519 panel.env "$SSH_TARGET:$remote/.env"
+          rm -f panel.env
+          $ssh_cmd "chmod 600 $remote/.env"
 
       - name: Zainstaluj zależności panelu i zrestartuj
         run: |

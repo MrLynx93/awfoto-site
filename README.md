@@ -193,11 +193,36 @@ In **this** repo:
 | `MYDEVIL_SSH_KEY` | Private key for that account |
 | `CONTENT_REPO_TOKEN` | Read access to the private content repo |
 
+| Secret | What | If unset |
+|---|---|---|
+| `KEYSTATIC_GITHUB_CLIENT_ID` | OAuth app client id | the `.env` step is skipped entirely |
+| `KEYSTATIC_GITHUB_CLIENT_SECRET` | OAuth app client secret | — |
+| `KEYSTATIC_SECRET` | signs panel sessions | kept from the server, generated on first deploy |
+
 | Variable | Default |
 |---|---|
 | `SITE_DOMAIN` | `aw-foto.pl` — the only domain setting; the rest derives from it |
 | `PANEL_DOMAIN` | `panel.<SITE_DOMAIN>`, unless set explicitly |
-| `CONTENT_REPO` | `lynx-soft/awfotografia-site-content` |
+| `CONTENT_REPO_OWNER` / `CONTENT_REPO_NAME` | `lynx-soft` / `awfotografia-site-content` |
+
+### The panel's `.env` is written by CI
+
+Setting the three `KEYSTATIC_*` secrets above is enough — the deploy writes
+`~/domains/<panel>/public_nodejs/.env` over SSH and `chmod 600`s it, so the
+panel can be set up without ever opening a shell. The step is skipped when
+`KEYSTATIC_GITHUB_CLIENT_ID` is unset, so it cannot blank out a hand-written
+`.env`; the rsync excludes `.env` either way.
+
+`KEYSTATIC_SECRET` only has to be *stable*, not known: CI reuses whatever is
+already on the server and generates one on the first deploy. Set it as a secret
+only if you want to control it.
+
+**The content repo is a build-time setting, not a runtime one.**
+`keystatic.config.ts` is bundled into the browser, so `import.meta.env.PUBLIC_*`
+is statically replaced when the site is built — putting `PUBLIC_CONTENT_REPO_*`
+in the server's `.env` does nothing. Verified by building with a probe value and
+finding it baked into `dist/client/_astro/keystatic-page.*.js`. CI passes them to
+`npm run build` from `CONTENT_REPO_OWNER` / `CONTENT_REPO_NAME`.
 
 ### Changing the domain
 
