@@ -36,6 +36,30 @@ jobs:
       - name: Pobierz kod
         uses: actions/checkout@v4
 
+      # An unseeded content repo has no commits, so actions/checkout below fails
+      # with "couldn't find remote ref refs/heads/main" — which says nothing
+      # about the actual problem. Check first and say what to do.
+      - name: Sprawdź, czy repo z treścią jest zasiane
+        env:
+          TOKEN: ${{ secrets.CONTENT_REPO_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${TOKEN:-}" ]; then
+            echo "::error::Brak sekretu CONTENT_REPO_TOKEN w tym repo."
+            exit 1
+          fi
+          git config --global credential.helper \
+            '!f() { echo username=x-access-token; echo "password=$TOKEN"; }; f'
+          url="https://github.com/${CONTENT_OWNER}/${CONTENT_NAME}.git"
+          if ! heads=$(git ls-remote --heads "$url" 2>&1); then
+            echo "::error::Nie mogę odczytać ${CONTENT_OWNER}/${CONTENT_NAME}. Sprawdź, czy repo istnieje i czy CONTENT_REPO_TOKEN ma do niego dostęp (Contents: Read)."
+            exit 1
+          fi
+          if [ -z "$heads" ]; then
+            echo "::error::Repo ${CONTENT_OWNER}/${CONTENT_NAME} jest puste — nie ma czego budować. Uruchom najpierw workflow 'Zasiej repo z treścią'."
+            exit 1
+          fi
+
       - name: Pobierz treść (prywatne repo)
         uses: actions/checkout@v4
         with:
