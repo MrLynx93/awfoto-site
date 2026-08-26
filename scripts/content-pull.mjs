@@ -9,7 +9,7 @@ import { execFileSync } from 'node:child_process';
 import { access } from 'node:fs/promises';
 import path from 'node:path';
 
-const repo = process.env.CONTENT_REPO || 'git@github.com:lynx-soft/awfotografia-site-content.git';
+const repo = process.env.CONTENT_REPO || 'git@github.com:MrLynx93/awfoto-site-content.git';
 const branch = process.env.CONTENT_BRANCH || 'main';
 const target = path.join(process.cwd(), 'site-content');
 

@@ -17,8 +17,8 @@ env:
   PANEL_DOMAIN: ${{ vars.PANEL_DOMAIN || format('panel.{0}', vars.SITE_DOMAIN || 'aw-foto.pl') }}
   # The content repo, split into owner and name: the build needs them
   # separately, and so does the content checkout.
-  CONTENT_OWNER: ${{ vars.CONTENT_REPO_OWNER || 'lynx-soft' }}
-  CONTENT_NAME: ${{ vars.CONTENT_REPO_NAME || 'awfotografia-site-content' }}
+  CONTENT_OWNER: ${{ vars.CONTENT_REPO_OWNER || 'MrLynx93' }}
+  CONTENT_NAME: ${{ vars.CONTENT_REPO_NAME || 'awfoto-site-content' }}
 
 concurrency:
   # A newer save supersedes an in-flight build; never deploy out of order.

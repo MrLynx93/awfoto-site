@@ -49,7 +49,7 @@ is committed — hence `PUBLIC_KEYSTATIC_STORAGE=local` is opt-in, not the defau
 Panel at panel.aw-foto.pl/keystatic
         │  commits Markdown/YAML + images
         ▼
-   lynx-soft/awfotografia-site-content  (private)
+   MrLynx93/awfoto-site-content  (private)
         │  publish.yml → repository_dispatch
         ▼
    this repo ── GitHub Actions ──┐
@@ -203,7 +203,7 @@ In **this** repo:
 |---|---|
 | `SITE_DOMAIN` | `aw-foto.pl` — the only domain setting; the rest derives from it |
 | `PANEL_DOMAIN` | `panel.<SITE_DOMAIN>`, unless set explicitly |
-| `CONTENT_REPO_OWNER` / `CONTENT_REPO_NAME` | `lynx-soft` / `awfotografia-site-content` |
+| `CONTENT_REPO_OWNER` / `CONTENT_REPO_NAME` | `MrLynx93` / `awfoto-site-content` |
 
 ### The panel's `.env` is written by CI
 
@@ -248,7 +248,7 @@ In the **content** repo: `CODE_REPO_TOKEN` (a token that can dispatch to this re
 
 ### Seeding the content repo
 
-While `lynx-soft/awfotografia-site-content` is still empty, fill it in one step:
+While `MrLynx93/awfoto-site-content` is still empty, fill it in one step:
 
 ```bash
 ./scripts/seed-content-repo.sh

@@ -16,7 +16,7 @@
 
 set -euo pipefail
 
-REPO="${1:-git@github.com:lynx-soft/awfotografia-site-content.git}"
+REPO="${1:-git@github.com:MrLynx93/awfoto-site-content.git}"
 BRANCH="${CONTENT_BRANCH:-main}"
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

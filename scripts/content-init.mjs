@@ -2,7 +2,7 @@
  * Offline fallback: copies content-template/ into site-content/ so the site
  * builds without access to the private content repo.
  *
- * The real content lives in lynx-soft/awfotografia-site-content — use
+ * The real content lives in MrLynx93/awfoto-site-content — use
  * `npm run content:pull` for that. This is only for working without it, and it
  * refuses to overwrite an existing site-content/.
  */
@@ -31,6 +31,6 @@ await cp(template, target, { recursive: true });
 
 console.log(
   'Skopiowano content-template/ → site-content/\n' +
-    'To treść zastępcza. Prawdziwa jest w lynx-soft/awfotografia-site-content —\n' +
+    'To treść zastępcza. Prawdziwa jest w MrLynx93/awfoto-site-content —\n' +
     'pobierz ją przez `npm run content:pull`.',
 );

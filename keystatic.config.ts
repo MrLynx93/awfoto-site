@@ -28,8 +28,8 @@ const storage =
     : ({
         kind: 'github',
         repo: {
-          owner: import.meta.env.PUBLIC_CONTENT_REPO_OWNER || 'lynx-soft',
-          name: import.meta.env.PUBLIC_CONTENT_REPO_NAME || 'awfotografia-site-content',
+          owner: import.meta.env.PUBLIC_CONTENT_REPO_OWNER || 'MrLynx93',
+          name: import.meta.env.PUBLIC_CONTENT_REPO_NAME || 'awfoto-site-content',
         },
       } as const);
 
