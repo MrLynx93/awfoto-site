@@ -250,9 +250,16 @@ In the **content** repo: `CODE_REPO_TOKEN` (a token that can dispatch to this re
 
 While `MrLynx93/awfoto-site-content` is still empty, fill it in one step:
 
+Either from a terminal:
+
 ```bash
 ./scripts/seed-content-repo.sh
 ```
+
+or, with no terminal at all, from **Actions → Zasiej repo z treścią → Run
+workflow**, typing the content repo's name to confirm. That workflow runs the
+same script; it needs `CONTENT_REPO_TOKEN` to have **write** access for the one
+run, which can go back to read-only afterwards since the deploy only reads.
 
 That pushes the seed sessions, offers, price list, settings and their photos —
 in Keystatic's exact directory layout, so the panel reads them on first load —
