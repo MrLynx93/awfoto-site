@@ -36,29 +36,62 @@ jobs:
       - name: Pobierz kod
         uses: actions/checkout@v4
 
-      # An unseeded content repo has no commits, so actions/checkout below fails
-      # with "couldn't find remote ref refs/heads/main" — which says nothing
-      # about the actual problem. Check first and say what to do.
-      - name: Sprawdź, czy repo z treścią jest zasiane
+      # Fails fast with a message that names the actual cause. The bare
+      # checkout below reports "couldn't find remote ref refs/heads/main" for
+      # an empty repo and a flat 403 for a token problem — neither says which.
+      - name: Sprawdź dostęp do repo z treścią
         env:
           TOKEN: ${{ secrets.CONTENT_REPO_TOKEN }}
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          repo="${CONTENT_OWNER}/${CONTENT_NAME}"
+
           if [ -z "${TOKEN:-}" ]; then
-            echo "::error::Brak sekretu CONTENT_REPO_TOKEN w tym repo."
+            echo "::error::Brak sekretu CONTENT_REPO_TOKEN w repo z kodem."
             exit 1
           fi
+
+          # The API separates the cases that git conflates.
+          code=$(curl -sS -o /tmp/repo.json -w '%{http_code}' \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${repo}" || echo 000)
+          echo "GET /repos/${repo} -> HTTP ${code}"
+
+          case "$code" in
+            200) ;;
+            401)
+              echo "::error::401 — token odrzucony. Sekret CONTENT_REPO_TOKEN jest nieprawidłowy, wygasł, albo wklejono go z białym znakiem na końcu."
+              exit 1 ;;
+            403)
+              echo "::error::403 — token istnieje, ale nie ma uprawnienia Contents: Read do ${repo}."
+              exit 1 ;;
+            404)
+              echo "::error::404 — token nie widzi ${repo}. Najczęstsza przyczyna: przy tworzeniu tokenu w 'Only select repositories' nie zaznaczono tego repo. Sprawdź też zmienne CONTENT_REPO_OWNER (${CONTENT_OWNER}) i CONTENT_REPO_NAME (${CONTENT_NAME})."
+              exit 1 ;;
+            *)
+              echo "::error::Nieoczekiwana odpowiedź API (${code}) dla ${repo}."
+              head -c 400 /tmp/repo.json || true
+              exit 1 ;;
+          esac
+
+          # Reaching here means the token can see the repo; now: has it commits?
           git config --global credential.helper \
             '!f() { echo username=x-access-token; echo "password=$TOKEN"; }; f'
-          url="https://github.com/${CONTENT_OWNER}/${CONTENT_NAME}.git"
-          if ! heads=$(git ls-remote --heads "$url" 2>&1); then
-            echo "::error::Nie mogę odczytać ${CONTENT_OWNER}/${CONTENT_NAME}. Sprawdź, czy repo istnieje i czy CONTENT_REPO_TOKEN ma do niego dostęp (Contents: Read)."
+
+          if ! heads=$(git ls-remote --heads "https://github.com/${repo}.git" 2>&1); then
+            echo "::error::API widzi ${repo}, ale git nie może go odczytać. Wyjście gita poniżej."
+            echo "$heads"
             exit 1
           fi
+
           if [ -z "$heads" ]; then
-            echo "::error::Repo ${CONTENT_OWNER}/${CONTENT_NAME} jest puste — nie ma czego budować. Uruchom najpierw workflow 'Zasiej repo z treścią'."
+            echo "::error::Repo ${repo} jest puste. Uruchom najpierw workflow 'Zasiej repo z treścią'."
             exit 1
           fi
+
+          echo "OK — ${repo} ma gałęzie:"
+          echo "$heads" | sed 's/^/  /'
 
       - name: Pobierz treść (prywatne repo)
         uses: actions/checkout@v4
