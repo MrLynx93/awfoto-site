@@ -41,7 +41,7 @@ if [ -z "$heads" ]; then
   git remote add origin "$REPO"
   git checkout --quiet -B "$BRANCH"
 else
-  echo "Klonuję $REPO…"
+  echo "Klonuję ${REPO}…"
   git clone --quiet "$REPO" "$work/repo" || {
     echo "Nie udało się sklonować. Sprawdź dostęp (klucz SSH) i adres repo." >&2
     exit 1
@@ -78,7 +78,7 @@ zastępczymi, w układzie katalogów, którego oczekuje panel.
 Zawiera też .github/workflows/publish.yml — to on zmniejsza wgrywane
 zdjęcia i uruchamia przebudowę strony."
 
-echo "Wysyłam na $BRANCH…"
+echo "Wysyłam na ${BRANCH}…"
 git push --quiet -u origin "$BRANCH"
 
 echo
