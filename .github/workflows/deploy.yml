@@ -36,9 +36,12 @@ jobs:
       - name: Pobierz kod
         uses: actions/checkout@v4
 
-      # Fails fast with a message that names the actual cause. The bare
-      # checkout below reports "couldn't find remote ref refs/heads/main" for
-      # an empty repo and a flat 403 for a token problem — neither says which.
+      # Checks with the API only — deliberately no git. actions/checkout above
+      # persists http.https://github.com/.extraheader in .git/config carrying
+      # the workflow's own GITHUB_TOKEN, and any git command run from this
+      # directory sends that header instead of consulting a credential helper.
+      # That token cannot see the private content repo, so git answers 404 and
+      # the check fails even when CONTENT_REPO_TOKEN is perfectly good.
       - name: Sprawdź dostęp do repo z treścią
         env:
           TOKEN: ${{ secrets.CONTENT_REPO_TOKEN }}
@@ -51,47 +54,35 @@ jobs:
             exit 1
           fi
 
-          # The API separates the cases that git conflates.
-          code=$(curl -sS -o /tmp/repo.json -w '%{http_code}' \
-            -H "Authorization: Bearer $TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${repo}" || echo 000)
-          echo "GET /repos/${repo} -> HTTP ${code}"
+          api() {
+            curl -sS -o /tmp/body.json -w '%{http_code}' \
+              -H "Authorization: Bearer $TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${repo}$1" || echo 000
+          }
 
+          code=$(api "")
+          echo "GET /repos/${repo} -> HTTP ${code}"
           case "$code" in
             200) ;;
-            401)
-              echo "::error::401 — token odrzucony. Sekret CONTENT_REPO_TOKEN jest nieprawidłowy, wygasł, albo wklejono go z białym znakiem na końcu."
-              exit 1 ;;
-            403)
-              echo "::error::403 — token istnieje, ale nie ma uprawnienia Contents: Read do ${repo}."
-              exit 1 ;;
-            404)
-              echo "::error::404 — token nie widzi ${repo}. Najczęstsza przyczyna: przy tworzeniu tokenu w 'Only select repositories' nie zaznaczono tego repo. Sprawdź też, czy CONTENT_OWNER/CONTENT_NAME na górze deploy.yml wskazują właściwe repo."
-              exit 1 ;;
-            *)
-              echo "::error::Nieoczekiwana odpowiedź API (${code}) dla ${repo}."
-              head -c 400 /tmp/repo.json || true
-              exit 1 ;;
+            401) echo "::error::401 — token odrzucony. CONTENT_REPO_TOKEN jest nieprawidłowy, wygasł, albo wklejono go ze spacją."; exit 1 ;;
+            403) echo "::error::403 — token nie ma uprawnienia Contents: Read do ${repo}."; exit 1 ;;
+            404) echo "::error::404 — token nie widzi ${repo}. Sprawdź, czy w tokenie zaznaczono to repo w 'Only select repositories', oraz czy CONTENT_OWNER/CONTENT_NAME na górze deploy.yml są poprawne."; exit 1 ;;
+            *)   echo "::error::Nieoczekiwana odpowiedź API (${code}) dla ${repo}."; head -c 400 /tmp/body.json; exit 1 ;;
           esac
 
-          # Reaching here means the token can see the repo; now: has it commits?
-          git config --global credential.helper \
-            '!f() { echo username=x-access-token; echo "password=$TOKEN"; }; f'
-
-          if ! heads=$(git ls-remote --heads "https://github.com/${repo}.git" 2>&1); then
-            echo "::error::API widzi ${repo}, ale git nie może go odczytać. Wyjście gita poniżej."
-            echo "$heads"
+          code=$(api "/branches?per_page=1")
+          if [ "$code" != "200" ]; then
+            echo "::error::Nie mogę odczytać gałęzi ${repo} (HTTP ${code})."
+            head -c 400 /tmp/body.json
             exit 1
           fi
-
-          if [ -z "$heads" ]; then
+          if grep -q '^\[\s*\]$' /tmp/body.json; then
             echo "::error::Repo ${repo} jest puste. Zasiej je najpierw: ./scripts/seed-content-repo.sh"
             exit 1
           fi
 
-          echo "OK — ${repo} ma gałęzie:"
-          echo "$heads" | sed 's/^/  /'
+          echo "OK — ${repo} jest dostępne i ma treść."
 
       - name: Pobierz treść (prywatne repo)
         uses: actions/checkout@v4
