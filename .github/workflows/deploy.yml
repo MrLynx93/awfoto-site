@@ -1,4 +1,4 @@
-name: Build i deploy
+name: build and deploy
 
 # Runs on a push to this repo, and on a repository_dispatch fired by the
 # content repo whenever the panel saves something.
