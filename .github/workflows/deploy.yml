@@ -26,14 +26,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  # One build serves both deploys: output:'static' plus the node adapter emits
+  # dist/client (the public site) and dist/server (the panel) in a single pass,
+  # so building twice would only duplicate work.
+  build:
     # Only the default branch deploys. Compared against the repo's actual
     # default rather than a hardcoded 'main', so renaming it does not quietly
-    # stop every deploy.
+    # stop every deploy. Skipping this job skips both deploys with it.
     if: github.event_name != 'push' || github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
     steps:
-      - name: Pobierz kod
+      - name: Check out code
         uses: actions/checkout@v4
 
       # Checks with the API only — deliberately no git. actions/checkout above
@@ -42,7 +45,7 @@ jobs:
       # directory sends that header instead of consulting a credential helper.
       # That token cannot see the private content repo, so git answers 404 and
       # the check fails even when CONTENT_REPO_TOKEN is perfectly good.
-      - name: Sprawdź dostęp do repo z treścią
+      - name: Verify access to the content repo
         env:
           TOKEN: ${{ secrets.CONTENT_REPO_TOKEN }}
         run: |
@@ -84,54 +87,99 @@ jobs:
 
           echo "OK — ${repo} jest dostępne i ma treść."
 
-      - name: Pobierz treść (prywatne repo)
+      - name: Check out content (private repo)
         uses: actions/checkout@v4
         with:
           repository: ${{ env.CONTENT_OWNER }}/${{ env.CONTENT_NAME }}
           token: ${{ secrets.CONTENT_REPO_TOKEN }}
           path: site-content
 
-      - uses: actions/setup-node@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
       # The content repo resizes photos on push, so this should always pass.
       # Kept as a net in case content ever lands without going through it.
-      - name: Sprawdź rozmiary zdjęć
+      - name: Check photo sizes
         run: npm run images:check
 
       # PUBLIC_* vars are baked into the bundle here, not read from the
       # server's .env at runtime: keystatic.config.ts ships to the browser,
       # so import.meta.env is statically replaced at build time.
-      - name: Zbuduj stronę
+      - name: Build
         run: npm run build
         env:
           SITE_URL: https://${{ env.SITE_DOMAIN }}
           PUBLIC_CONTENT_REPO_OWNER: ${{ env.CONTENT_OWNER }}
           PUBLIC_CONTENT_REPO_NAME: ${{ env.CONTENT_NAME }}
 
-      - name: Skonfiguruj klucz SSH
+      # The whole tree, because the panel deploy rsyncs the app itself, not
+      # just dist/. node_modules is reinstalled on the server; .git is useless
+      # there and large.
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: app
+          retention-days: 1
+          include-hidden-files: true
+          path: |
+            .
+            !node_modules
+            !.git
+
+  # The public site: static files only, served straight by nginx so no photo
+  # request ever touches Node. Runs on every trigger, including content saves.
+  deploy-site:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build output
+        uses: actions/download-artifact@v4
+        with:
+          name: app
+
+      - name: Configure SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.MYDEVIL_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H "${{ secrets.MYDEVIL_HOST }}" >> ~/.ssh/known_hosts
 
-      # The public site: static files only, served straight by nginx so no
-      # photo request ever touches Node.
-      - name: Wyślij stronę
+      - name: Upload site
         run: |
           rsync -az --delete \
             -e "ssh -i ~/.ssh/id_ed25519" \
             dist/client/ \
             "${{ secrets.MYDEVIL_USER }}@${{ secrets.MYDEVIL_HOST }}:domains/${{ env.SITE_DOMAIN }}/public_html/"
 
-      # The panel: the whole app, because Keystatic's API routes need Node.
+  # The panel: only its own code changes matter, and it reads content from
+  # GitHub at runtime rather than from disk. So a content save must not touch
+  # it — redeploying would restart the app underneath whoever is editing.
+  deploy-panel:
+    needs: build
+    if: github.event_name != 'repository_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build output
+        uses: actions/download-artifact@v4
+        with:
+          name: app
+
+      - name: Configure SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.MYDEVIL_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.MYDEVIL_HOST }}" >> ~/.ssh/known_hosts
+
+      # The whole app, because Keystatic's API routes need Node.
       # node_modules and .env stay on the server between deploys.
-      - name: Wyślij panel
+      - name: Upload panel
         run: |
           rsync -az --delete \
             --exclude 'node_modules' \
@@ -149,7 +197,7 @@ jobs:
       # known: if the secret is unset we keep whatever is already on the server,
       # and generate one on the first deploy. Setting it as a repository secret
       # overrides both.
-      - name: Zapisz .env panelu
+      - name: Write the panel's .env
         env:
           CLIENT_ID: ${{ secrets.KEYSTATIC_GITHUB_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.KEYSTATIC_GITHUB_CLIENT_SECRET }}
@@ -187,7 +235,7 @@ jobs:
           rm -f panel.env
           $ssh_cmd "chmod 600 $remote/.env"
 
-      - name: Zainstaluj zależności panelu i zrestartuj
+      - name: Install panel dependencies and restart
         run: |
           ssh -i ~/.ssh/id_ed25519 \
             "${{ secrets.MYDEVIL_USER }}@${{ secrets.MYDEVIL_HOST }}" \

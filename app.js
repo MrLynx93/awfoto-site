@@ -12,6 +12,10 @@
  * photo request ever touches Node. It still serves dist/client as a fallback so
  * a single-domain setup (or a local check) works without extra configuration.
  */
+// Must come first: it populates process.env before the Astro/Keystatic
+// bundle below is evaluated.
+import './load-env.mjs';
+
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
