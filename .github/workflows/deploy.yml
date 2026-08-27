@@ -117,6 +117,10 @@ jobs:
           SITE_URL: https://${{ env.SITE_DOMAIN }}
           PUBLIC_CONTENT_REPO_OWNER: ${{ env.CONTENT_OWNER }}
           PUBLIC_CONTENT_REPO_NAME: ${{ env.CONTENT_NAME }}
+          # The GitHub App's slug, so the panel's "repo not found" page can link
+          # straight to the app's install page. Cosmetic, but that page is
+          # exactly where someone lands when the app is not installed yet.
+          PUBLIC_KEYSTATIC_GITHUB_APP_SLUG: ${{ vars.KEYSTATIC_GITHUB_APP_SLUG }}
 
       # The whole tree, because the panel deploy rsyncs the app itself, not
       # just dist/. node_modules is reinstalled on the server; .git is useless
