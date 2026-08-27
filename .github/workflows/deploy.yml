@@ -15,10 +15,10 @@ env:
   # unless you override it with a variable of its own.
   SITE_DOMAIN: ${{ vars.SITE_DOMAIN || 'aw-foto.pl' }}
   PANEL_DOMAIN: ${{ vars.PANEL_DOMAIN || format('panel.{0}', vars.SITE_DOMAIN || 'aw-foto.pl') }}
-  # The content repo, split into owner and name: the build needs them
-  # separately, and so does the content checkout.
-  CONTENT_OWNER: ${{ vars.CONTENT_REPO_OWNER || 'MrLynx93' }}
-  CONTENT_NAME: ${{ vars.CONTENT_REPO_NAME || 'awfoto-site-content' }}
+  # The content repo, named directly. Split into owner and name because the
+  # build needs them separately from the checkout.
+  CONTENT_OWNER: MrLynx93
+  CONTENT_NAME: awfoto-site-content
 
 concurrency:
   # A newer save supersedes an in-flight build; never deploy out of order.
@@ -67,7 +67,7 @@ jobs:
               echo "::error::403 — token istnieje, ale nie ma uprawnienia Contents: Read do ${repo}."
               exit 1 ;;
             404)
-              echo "::error::404 — token nie widzi ${repo}. Najczęstsza przyczyna: przy tworzeniu tokenu w 'Only select repositories' nie zaznaczono tego repo. Sprawdź też zmienne CONTENT_REPO_OWNER (${CONTENT_OWNER}) i CONTENT_REPO_NAME (${CONTENT_NAME})."
+              echo "::error::404 — token nie widzi ${repo}. Najczęstsza przyczyna: przy tworzeniu tokenu w 'Only select repositories' nie zaznaczono tego repo. Sprawdź też, czy CONTENT_OWNER/CONTENT_NAME na górze deploy.yml wskazują właściwe repo."
               exit 1 ;;
             *)
               echo "::error::Nieoczekiwana odpowiedź API (${code}) dla ${repo}."
@@ -86,7 +86,7 @@ jobs:
           fi
 
           if [ -z "$heads" ]; then
-            echo "::error::Repo ${repo} jest puste. Uruchom najpierw workflow 'Zasiej repo z treścią'."
+            echo "::error::Repo ${repo} jest puste. Zasiej je najpierw: ./scripts/seed-content-repo.sh"
             exit 1
           fi
 

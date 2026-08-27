@@ -203,7 +203,6 @@ In **this** repo:
 |---|---|
 | `SITE_DOMAIN` | `aw-foto.pl` — the only domain setting; the rest derives from it |
 | `PANEL_DOMAIN` | `panel.<SITE_DOMAIN>`, unless set explicitly |
-| `CONTENT_REPO_OWNER` / `CONTENT_REPO_NAME` | `MrLynx93` / `awfoto-site-content` |
 
 ### The panel's `.env` is written by CI
 
@@ -222,7 +221,8 @@ only if you want to control it.
 is statically replaced when the site is built — putting `PUBLIC_CONTENT_REPO_*`
 in the server's `.env` does nothing. Verified by building with a probe value and
 finding it baked into `dist/client/_astro/keystatic-page.*.js`. CI passes them to
-`npm run build` from `CONTENT_REPO_OWNER` / `CONTENT_REPO_NAME`.
+`npm run build` from the `CONTENT_OWNER` / `CONTENT_NAME` values set at the top
+of `deploy.yml`, which name the repo directly rather than through a variable.
 
 ### Changing the domain
 
@@ -250,16 +250,9 @@ In the **content** repo: `CODE_REPO_TOKEN` (a token that can dispatch to this re
 
 While `MrLynx93/awfoto-site-content` is still empty, fill it in one step:
 
-Either from a terminal:
-
 ```bash
 ./scripts/seed-content-repo.sh
 ```
-
-or, with no terminal at all, from **Actions → Zasiej repo z treścią → Run
-workflow**, typing the content repo's name to confirm. That workflow runs the
-same script; it needs `CONTENT_REPO_TOKEN` to have **write** access for the one
-run, which can go back to read-only afterwards since the deploy only reads.
 
 That pushes the seed sessions, offers, price list, settings and their photos —
 in Keystatic's exact directory layout, so the panel reads them on first load —
