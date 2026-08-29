@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BotanicalDivider from '../components/BotanicalDivider.astro';
-import ChristmasOffer from '../components/ChristmasOffer.astro';
 import PhotoGallery from '../components/PhotoGallery.astro';
 import Lightbox from '../components/Lightbox.astro';
 import PricingTable from '../components/PricingTable.astro';
@@ -25,9 +24,10 @@ const offers = (await getCollection('offers'))
   .filter((offer) => offer.data.season === 'swiateczna')
   .sort((a, b) => a.data.order - b.data.order);
 
-// One gallery for the whole page rather than one per offer: the lightbox binds
-// to a single #photo-grid, and a visitor wants "the Christmas photos", not a
-// separate strip under each package.
+// Every Christmas offer's photos in one grid: the lightbox binds to a single
+// #photo-grid per page, and a visitor wants "the Christmas photos" anyway.
+// The offers' own text lives on /oferta/<slug>; here the photos and the price
+// list carry the page.
 const galleryPhotos = offers.flatMap((offer) => offer.data.gallery);
 
 const packages = pricing.christmas.packages;
@@ -61,20 +61,8 @@ const description = christmas.lead || 'Sesje świąteczne — scenografia, termi
           </div>
         </header>
 
-        {offers.length > 0 && (
-          <section class="section">
-            {offers.map((offer, index) => (
-              <ChristmasOffer offer={offer} mirrored={index % 2 === 1} eager={index === 0} />
-            ))}
-          </section>
-        )}
-
         {galleryPhotos.length > 0 && (
           <section class="section gallery">
-            <div class="centered heading-block gallery-heading">
-              <p class="label">Galeria</p>
-              <h2 class="section-title">Tak wyglądają te sesje</h2>
-            </div>
             <PhotoGallery photos={galleryPhotos} />
           </section>
         )}
@@ -174,14 +162,6 @@ const description = christmas.lead || 'Sesje świąteczne — scenografia, termi
     margin-top: 2.5rem;
   }
 
-  /* The offer block above already ends on the page's bottom padding. */
-  .gallery {
-    padding-top: 0;
-  }
-  .gallery-heading {
-    margin-top: 0;
-    margin-bottom: 3rem;
-  }
 
   /* Same dark band as the Christmas block on /cennik, so the two read as one
      offer wherever the visitor meets it first. */
