@@ -35,7 +35,6 @@ packages:
       - 25 odbitek 15×21
       - Gotowe w 7 dni
 christmas:
-  active: true
   eyebrow: Listopad — grudzień
   title: Cennik świąteczny
   description: >-

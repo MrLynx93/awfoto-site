@@ -6,9 +6,19 @@ import { getSettings } from '../lib/siteContent';
 const settings = getSettings();
 const path = Astro.url.pathname;
 
-const NAV = [
+interface NavItem {
+  href: string;
+  label: string;
+  /** Drawn as a filled pill — reserved for the seasonal headline offer. */
+  highlight?: boolean;
+}
+
+// In season the Christmas page joins the menu as the one highlighted item;
+// out of season it disappears, so the nav never advertises a closed offer.
+const NAV: NavItem[] = [
   { href: '/sesje', label: 'Moje sesje' },
   { href: '/oferta', label: 'Oferta' },
+  ...(settings.christmas.active ? [{ href: '/swieta', label: 'Święta', highlight: true }] : []),
   { href: '/cennik', label: 'Cennik' },
   { href: '/o-mnie', label: 'O mnie' },
   { href: '/kontakt', label: 'Kontakt' },
@@ -28,7 +38,11 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
       {
         NAV.map((item) => (
           <li>
-            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+            <a
+              class:list={[item.highlight && 'is-highlight']}
+              href={item.href}
+              aria-current={isCurrent(item.href) ? 'page' : undefined}
+            >
               {item.label}
             </a>
           </li>
@@ -59,7 +73,11 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
       {
         NAV.map((item) => (
           <li>
-            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+            <a
+              class:list={[item.highlight && 'is-highlight']}
+              href={item.href}
+              aria-current={isCurrent(item.href) ? 'page' : undefined}
+            >
               {item.label}
             </a>
           </li>
@@ -125,6 +143,24 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
   .menu a[aria-current='page'] {
     border-color: var(--glina);
     color: var(--glina-ciemna);
+  }
+
+  /* The seasonal item is the one call to action in the menu, so it is filled
+     rather than underlined — it has to win against five plain links. */
+  .menu a.is-highlight,
+  .menu a.is-highlight:hover,
+  .menu a.is-highlight[aria-current='page'] {
+    padding: 0.45rem 1.1rem;
+    margin-block: -0.45rem;
+    border: 1px solid var(--glina);
+    border-radius: 999px;
+    background: var(--glina);
+    color: #fff9f2;
+  }
+  .menu a.is-highlight:hover,
+  .menu a.is-highlight[aria-current='page'] {
+    background: var(--glina-ciemna);
+    border-color: var(--glina-ciemna);
   }
 
   /* ---------- mobile navigation ---------- */
@@ -248,6 +284,16 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
     }
     .nav-panel a[aria-current='page'] {
       color: var(--glina-ciemna);
+    }
+    /* A pill would fight the large serif links here, so the seasonal item is
+       marked with the accent colour and a sprig instead. */
+    .nav-panel a.is-highlight {
+      color: var(--glina);
+    }
+    .nav-panel a.is-highlight::after {
+      content: ' ✻';
+      font-size: 0.7em;
+      vertical-align: 0.25em;
     }
     .nav-panel li:last-child a {
       border-bottom: 0;

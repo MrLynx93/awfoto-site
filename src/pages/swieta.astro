@@ -1,0 +1,217 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BotanicalDivider from '../components/BotanicalDivider.astro';
+import ChristmasOffer from '../components/ChristmasOffer.astro';
+import PricingTable from '../components/PricingTable.astro';
+import SessionGrid from '../components/SessionGrid.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { getPricing, getSettings } from '../lib/siteContent';
+import { publishedSessions, christmasSessions } from '../lib/sessions';
+
+const settings = getSettings();
+const pricing = getPricing();
+const { christmas } = settings;
+
+// The season is one switch in the panel. Off-season the page still answers —
+// links to it live on Instagram and in inboxes all year — but it shrinks to a
+// short note and drops out of Google (see `noindex` and the sitemap filter in
+// astro.config.mjs).
+const active = christmas.active;
+
+const offers = (await getCollection('offers'))
+  .filter((offer) => offer.data.season === 'swiateczna')
+  .sort((a, b) => a.data.order - b.data.order);
+
+const packages = pricing.christmas.packages;
+const past = christmasSessions(await publishedSessions());
+
+const description = christmas.lead || 'Sesje świąteczne — scenografia, terminy i cennik na ten sezon.';
+---
+
+<BaseLayout
+  title={christmas.heading}
+  description={active ? description : 'Sesje świąteczne wracają jesienią.'}
+  ogImage={active ? offers[0]?.data.image.src : undefined}
+  noindex={!active}
+>
+  {
+    active ? (
+      <>
+        <header class="hero warm">
+          <div class="hero-inner">
+            {christmas.eyebrow && <p class="label">{christmas.eyebrow}</p>}
+            <h1>{christmas.heading}</h1>
+            {christmas.lead && <p class="lead">{christmas.lead}</p>}
+            <div class="buttons hero-buttons">
+              <a class="button" href="#cennik-swiateczny">
+                Cennik świąteczny
+              </a>
+              <a class="button button--ghost" href="#kontakt">
+                Zarezerwuj termin
+              </a>
+            </div>
+          </div>
+        </header>
+
+        {offers.length > 0 && (
+          <section class="section">
+            {offers.map((offer, index) => (
+              <ChristmasOffer offer={offer} mirrored={index % 2 === 1} eager={index === 0} />
+            ))}
+          </section>
+        )}
+
+        {packages.length > 0 && (
+          <section class="section christmas-pricing" id="cennik-swiateczny">
+            <div class="container">
+              <BotanicalDivider />
+              <div class="centered heading-block">
+                {pricing.christmas.eyebrow && <p class="label">{pricing.christmas.eyebrow}</p>}
+                <h2 class="section-title">{pricing.christmas.title || 'Cennik świąteczny'}</h2>
+                {pricing.christmas.description && (
+                  <p class="lead">{pricing.christmas.description}</p>
+                )}
+              </div>
+              <PricingTable packages={packages} />
+              <p class="pricing-more">
+                <a class="more-link" href="/cennik">
+                  Cennik całoroczny →
+                </a>
+              </p>
+            </div>
+          </section>
+        )}
+
+        {past.length > 0 && (
+          <section class="section warm">
+            <div class="container">
+              <div class="title-row">
+                <div>
+                  <p class="label">Portfolio</p>
+                  <h2 class="section-title">Świąteczne sesje, które już zrobiłam</h2>
+                </div>
+                <a class="more-link" href="/sesje">
+                  Wszystkie sesje →
+                </a>
+              </div>
+              <SessionGrid sessions={past} />
+            </div>
+          </section>
+        )}
+
+        <div id="kontakt">
+          <ContactSection
+            settings={settings}
+            heading="Zarezerwuj termin świąteczny"
+            lead="Terminy listopadowe i grudniowe rezerwują się najszybciej — napisz albo zadzwoń."
+          />
+        </div>
+      </>
+    ) : (
+      <section class="section centered off-season">
+        <div class="container">
+          <BotanicalDivider />
+          <div class="heading-block">
+            <p class="label">Poza sezonem</p>
+            <h1 class="section-title">Sesje świąteczne wracają jesienią</h1>
+            <p class="lead">
+              Zapisy otwieram zwykle w listopadzie. W międzyczasie zapraszam na sesje
+              rodzinne i plenerowe — te robię przez cały rok.
+            </p>
+          </div>
+          <div class="buttons off-season-buttons">
+            <a class="button" href="/oferta">Zobacz ofertę</a>
+            <a class="button button--ghost" href="/kontakt">Kontakt</a>
+          </div>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: clamp(3.5rem, 8vw, 6.5rem) var(--pad-x);
+    text-align: center;
+  }
+  .hero-inner {
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+  .hero h1 {
+    margin-bottom: 1.5rem;
+    font-size: clamp(2.9rem, 7vw, 5rem);
+  }
+  .hero .lead {
+    margin-inline: auto;
+  }
+  .hero-buttons {
+    justify-content: center;
+    margin-top: 2.5rem;
+  }
+
+  .heading-block {
+    margin-top: 2.5rem;
+  }
+
+  /* Same dark band as the Christmas block on /cennik, so the two read as one
+     offer wherever the visitor meets it first. */
+  .christmas-pricing {
+    background: var(--tekst);
+    color: var(--bez);
+    scroll-margin-top: 1rem;
+  }
+  .christmas-pricing :global(.section-title),
+  .christmas-pricing :global(.package h3),
+  .christmas-pricing :global(.price) {
+    color: var(--bez);
+  }
+  .christmas-pricing :global(.label) {
+    color: var(--taupe);
+  }
+  .christmas-pricing :global(.lead) {
+    color: #c3b8ac;
+  }
+  .christmas-pricing :global(.package) {
+    background: rgba(255, 255, 255, 0.045);
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+  .christmas-pricing :global(.package--highlight) {
+    background: rgba(176, 137, 104, 0.16);
+    border-color: var(--glina);
+    box-shadow: none;
+  }
+  .christmas-pricing :global(.checklist li) {
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+  }
+  .christmas-pricing :global(.checklist svg) {
+    color: var(--taupe);
+  }
+  .christmas-pricing :global(.price small) {
+    color: #b4a99d;
+  }
+  .christmas-pricing :global(.sprig) {
+    color: var(--taupe);
+  }
+
+  .pricing-more {
+    margin-top: 2.5rem;
+    text-align: center;
+  }
+  .christmas-pricing .pricing-more :global(.more-link) {
+    color: var(--bez);
+    border-bottom-color: rgba(255, 255, 255, 0.35);
+  }
+
+  .off-season {
+    padding-block: clamp(4rem, 10vw, 7rem);
+  }
+  .off-season .lead {
+    margin-inline: auto;
+  }
+  .off-season-buttons {
+    justify-content: center;
+    margin-top: 2.5rem;
+  }
+</style>

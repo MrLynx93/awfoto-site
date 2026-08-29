@@ -1,0 +1,121 @@
+---
+import { Image } from 'astro:assets';
+import type { Settings } from '../lib/siteContent';
+
+interface Props {
+  christmas: Settings['christmas'];
+  /** The lead Christmas offer's photo, when there is one. */
+  image?: ImageMetadata;
+  /** That offer's "od 450 zł" line, shown as the band's one hard number. */
+  price?: string;
+}
+
+const { christmas, image, price } = Astro.props;
+---
+
+<section class="feature">
+  <div class="feature-inner">
+    {
+      image && (
+        <Image
+          class="photo arch"
+          src={image}
+          alt=""
+          widths={[400, 800]}
+          sizes="(max-width: 900px) 80vw, 40vw"
+          loading="lazy"
+        />
+      )
+    }
+
+    <div class="body">
+      {christmas.eyebrow && <p class="label">{christmas.eyebrow}</p>}
+      <h2 class="section-title">{christmas.heading}</h2>
+      {christmas.lead && <p class="lead">{christmas.lead}</p>}
+      {price && <p class="price">{price}</p>}
+      <div class="buttons">
+        <a class="button" href="/swieta">Sesje świąteczne</a>
+        <a class="button button--ghost" href="/swieta#cennik-swiateczny">Cennik świąteczny</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* The one dark band on the homepage. It is the seasonal headline offer, so
+     it deliberately breaks the cream rhythm rather than blending into it. */
+  .feature {
+    padding: var(--gap) var(--pad-x);
+    background: var(--tekst);
+    color: var(--bez);
+  }
+
+  .feature-inner {
+    display: grid;
+    grid-template-columns: 0.8fr 1fr;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    max-width: var(--max);
+    margin: 0 auto;
+  }
+  /* No photo yet — let the text use the full width instead of half of it. */
+  .feature-inner:not(:has(.photo)) {
+    grid-template-columns: 1fr;
+    max-width: 46rem;
+    text-align: center;
+  }
+  .feature-inner:not(:has(.photo)) .lead,
+  .feature-inner:not(:has(.photo)) .buttons {
+    margin-inline: auto;
+  }
+  .feature-inner:not(:has(.photo)) .buttons {
+    justify-content: center;
+  }
+
+  .photo {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .section-title,
+  .price {
+    color: var(--bez);
+  }
+  .label {
+    color: var(--taupe);
+  }
+  .lead {
+    color: #c3b8ac;
+  }
+
+  .price {
+    margin-top: 1.5rem;
+    font-family: var(--display);
+    font-size: 2.2rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .buttons {
+    margin-top: 2.25rem;
+  }
+  .button--ghost {
+    color: var(--bez);
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+  .button--ghost:hover {
+    color: var(--kremowy);
+    border-color: var(--glina);
+  }
+
+  @media (max-width: 900px) {
+    .feature-inner {
+      grid-template-columns: 1fr;
+    }
+    .photo {
+      max-width: 20rem;
+      margin-inline: auto;
+    }
+  }
+</style>

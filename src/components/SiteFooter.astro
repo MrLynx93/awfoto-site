@@ -21,6 +21,7 @@ const year = new Date().getFullYear();
       <ul>
         <li><a href="/sesje">Moje sesje</a></li>
         <li><a href="/oferta">Oferta</a></li>
+        {settings.christmas.active && <li><a href="/swieta">Święta</a></li>}
         <li><a href="/cennik">Cennik</a></li>
         <li><a href="/o-mnie">O mnie</a></li>
       </ul>

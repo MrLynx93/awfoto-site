@@ -25,7 +25,6 @@ const pricingSchema = z.object({
   packages: z.array(pricingPackageSchema).default([]),
   christmas: z
     .object({
-      active: z.boolean().default(false),
       eyebrow: z.string().default(''),
       title: z.string().default(''),
       description: z.string().default(''),
@@ -49,6 +48,14 @@ const settingsSchema = z.object({
   facebook: z.string().default(''),
   instagram: z.string().default(''),
   messenger: z.string().default(''),
+  christmas: z
+    .object({
+      active: z.boolean().default(false),
+      eyebrow: z.string().default(''),
+      heading: z.string().default('Sesje świąteczne'),
+      lead: z.string().default(''),
+    })
+    .default({}),
   seasonalBanner: z
     .object({
       active: z.boolean().default(false),

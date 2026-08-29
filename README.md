@@ -74,7 +74,8 @@ public repo.
 - **Code is English** — identifiers, filenames, components, CSS classes.
   **Only the colour tokens keep Polish names** (`--kremowy`, `--glina`, …),
   as do all user-facing strings and panel labels.
-- **URLs are Polish**: `/sesje`, `/oferta`, `/cennik`, `/o-mnie`, `/kontakt`.
+- **URLs are Polish**: `/sesje`, `/oferta`, `/cennik`, `/swieta`, `/o-mnie`,
+  `/kontakt`.
 - **Portfolio and blog are one thing.** A session is a short piece of text plus
   its photos, rendered as intro → text → photos, at `/sesje`.
 
@@ -117,6 +118,33 @@ Keystatic rewrites the paths to this shape and moves the files to match.
 panel-created content are byte-identical. `scripts/generate-placeholders.mjs`
 generates the files in the right places; if you add a seed entry by hand, follow
 the same pattern.
+
+## The Christmas season
+
+Christmas is the year's main event for this business, so it gets its own page
+at **`/swieta`**: the season's offer, then the Christmas price list, then past
+Christmas shoots.
+
+**One switch drives all of it** — `settings.christmas.active` in the panel
+("Sezon świąteczny"). It gates the `/swieta` page body, the highlighted menu
+item, the footer link, the dark band under the homepage hero, and the Christmas
+block on `/cennik`. There is deliberately no second flag: the price list used to
+carry its own `christmas.active`, which meant the season could be half on.
+
+What feeds the page:
+
+| Section | Source |
+|---|---|
+| Hero copy | `settings.christmas.{eyebrow,heading,lead}` |
+| The offer(s) | `offers` entries with `season: swiateczna`, by `order` |
+| Price list | `pricing.christmas.{eyebrow,title,description,packages}` |
+| Past shoots | `sessions` with `category: Świąteczna` |
+
+**Off season the page still answers** rather than 404ing — links to it live on
+Instagram and in inboxes long after December. It shrinks to a short "back in
+autumn" note, carries `noindex`, and drops out of the sitemap (the filter in
+`astro.config.mjs` reads the same YAML flag). The announcement bar is
+independent of this switch: it is a generic strip that can advertise anything.
 
 ## Deployment
 
@@ -330,6 +358,8 @@ depending on which of the two you pick.
   If a second save lands mid-run the lease refuses and that run bows out; the
   new push is resized by its own run. The bot's push is skipped via an
   `actor != github-actions[bot]` guard so the workflow doesn't loop.
+- **The Christmas page is always built**, in or out of season — see *The
+  Christmas season* above for why, and how it is kept out of Google.
 - **Publishing is not instant** — save → commit → build → deploy ≈ 2–3 minutes.
 - **No analytics, no cookies, no contact form**, so there is no consent banner
   and no spam surface. A commented-out Plausible snippet sits in `BaseLayout.astro`.

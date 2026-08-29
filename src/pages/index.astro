@@ -6,6 +6,7 @@ import SessionGrid from '../components/SessionGrid.astro';
 import OfferCard from '../components/OfferCard.astro';
 import BotanicalDivider from '../components/BotanicalDivider.astro';
 import ContactSection from '../components/ContactSection.astro';
+import ChristmasFeature from '../components/ChristmasFeature.astro';
 import { getSettings } from '../lib/siteContent';
 import { publishedSessions } from '../lib/sessions';
 
@@ -17,9 +18,14 @@ const highlighted = [...sessions]
   .sort((a, b) => Number(b.data.featured) - Number(a.data.featured))
   .slice(0, 3);
 
-const offers = (await getCollection('offers'))
-  .filter((offer) => offer.data.featured)
-  .sort((a, b) => a.data.order - b.data.order);
+const allOffers = (await getCollection('offers')).sort((a, b) => a.data.order - b.data.order);
+const offers = allOffers.filter((offer) => offer.data.featured);
+
+// In season the Christmas offer gets its own band straight below the hero —
+// it is the year's main event, so it outranks everything but the headline.
+const christmasOffer = settings.christmas.active
+  ? allOffers.find((offer) => offer.data.season === 'swiateczna')
+  : undefined;
 
 const heroImage = highlighted[0]?.data.coverImage;
 ---
@@ -50,6 +56,16 @@ const heroImage = highlighted[0]?.data.coverImage;
       )
     }
   </section>
+
+  {
+    settings.christmas.active && (
+      <ChristmasFeature
+        christmas={settings.christmas}
+        image={christmasOffer?.data.image}
+        price={christmasOffer?.data.price}
+      />
+    )
+  }
 
   <section class="section warm">
     <div class="container">

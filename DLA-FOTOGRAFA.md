@@ -87,15 +87,47 @@ TIFF-ów. Zapisz je najpierw jako JPEG.
 
 Ceny wpisuje się jako zwykły tekst, razem ze złotówkami: `850 zł`.
 
-### Cennik świąteczny — włączanie i wyłączanie
+### Cennik świąteczny
 
-W sekcji **Cennik świąteczny** jest pole **Pokaż cennik świąteczny**:
+W sekcji **Cennik świąteczny** wpisujesz pakiety świąteczne — tak samo jak
+zwykłe. Nie ma tu przełącznika: pokazuje je **Sezon świąteczny** z Ustawień
+(niżej). Po wyłączeniu sezonu pakiety **zostają zapisane**, więc w przyszłym
+roku wystarczy poprawić ceny.
 
-- **listopad** — zaznacz. Sekcja pojawia się na stronie `/cennik`.
-- **styczeń** — odznacz. Sekcja znika, ale **pakiety zostają zapisane**.
+---
 
-W przyszłym roku wystarczy zaznaczyć z powrotem i poprawić ceny. Nic nie trzeba
-wpisywać od nowa.
+## Sezon świąteczny — jeden przełącznik
+
+**Ustawienia → Ustawienia → Sezon świąteczny.**
+
+Święta to najważniejszy moment w roku, więc mają na stronie osobne miejsce:
+**aw-foto.pl/swieta**. Jest tam po kolei tegoroczna oferta świąteczna, cennik
+świąteczny i świąteczne sesje z poprzednich lat.
+
+Pole **Sezon świąteczny — włączony** obsługuje to wszystko naraz:
+
+| Zaznaczone | Odznaczone |
+|---|---|
+| Strona **Święta** działa i widać na niej ofertę, cennik i portfolio | Zostaje krótka informacja „Sesje świąteczne wracają jesienią" |
+| W menu pojawia się wyróżniony przycisk **Święta** | Przycisk znika z menu i ze stopki |
+| Na stronie głównej, tuż pod nagłówkiem, pojawia się ciemny blok świąteczny | Blok znika |
+| Na `/cennik` pojawia się cennik świąteczny | Sekcja znika, pakiety zostają zapisane |
+| Strona **Święta** trafia do Google | Google ją pomija |
+
+Czyli w praktyce: **listopad** — zaznacz, **styczeń** — odznacz. Nic nie kasujesz.
+
+Pozostałe pola w tej sekcji to teksty na samej górze strony **Święta**:
+
+- **Nadtytuł** — mały tekst nad nagłówkiem, np. „Listopad — grudzień 2026".
+- **Nagłówek strony „Święta"** — duży napis, np. „Święta 2026".
+- **Tekst wstępny** — kilka zdań pod nagłówkiem.
+
+### Co pokazać na stronie Święta
+
+- **Oferta świąteczna** — w **Oferta** ustaw sesji pole **Sezon** na
+  *Świąteczna*. Każda taka oferta pojawi się na stronie Święta.
+- **Świąteczne sesje z poprzednich lat** — przy sesji ustaw **Rodzaj sesji**
+  na *Świąteczna*. Wtedy trafi na dół strony Święta, do portfolio.
 
 ---
 
@@ -103,10 +135,14 @@ wpisywać od nowa.
 
 **Ustawienia → Ustawienia → Pasek ogłoszeniowy.**
 
-Ten brązowy pasek na samej górze każdej strony. Działa tak samo:
-zaznacz **Pokaż pasek**, wpisz tekst, odznacz kiedy nieaktualny.
+Ten brązowy pasek na samej górze każdej strony. Działa osobno od sezonu
+świątecznego: zaznacz **Pokaż pasek**, wpisz tekst, odznacz kiedy nieaktualny.
 
-Przykład: „Sesje świąteczne 2026 — zapisy otwarte, zostały 3 terminy".
+Przykład: „Sesje świąteczne 2026 — zapisy otwarte, zostały 3 terminy",
+z linkiem **zobacz szczegóły** prowadzącym na `/swieta`.
+
+Możesz go użyć też do czegoś innego niż święta — wtedy zmień adres linku
+(np. na `/cennik` albo `/kontakt`).
 
 ---
 

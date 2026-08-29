@@ -16,8 +16,16 @@ hours: 'Pon.–pt. 9:00–18:00, weekendy — sesje'
 facebook: 'https://facebook.com/'
 instagram: 'https://instagram.com/'
 messenger: 'https://m.me/'
+christmas:
+  active: true
+  eyebrow: Listopad — grudzień 2026
+  heading: Święta 2026
+  lead: >-
+    Raz w roku wszyscy są razem i wszyscy są odświętni — szkoda tego nie
+    zatrzymać. Zapisy trwają, terminy weekendowe schodzą pierwsze, a zdjęcia
+    są gotowe przed Wigilią.
 seasonalBanner:
   active: true
   text: Sesje świąteczne 2026 — zapisy otwarte, zostały 3 terminy
-  linkText: zobacz cennik
-  linkHref: /cennik
+  linkText: zobacz szczegóły
+  linkHref: /swieta

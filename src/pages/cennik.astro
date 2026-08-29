@@ -8,9 +8,10 @@ import { getPricing, getSettings } from '../lib/siteContent';
 const pricing = getPricing();
 const settings = getSettings();
 
-// The Christmas list is switched on in November and off in January from the
-// panel — no code change, and the packages stay saved in between.
-const showChristmas = pricing.christmas.active && pricing.christmas.packages.length > 0;
+// One switch in the panel ("Sezon świąteczny") drives this block, the /swieta
+// page and the menu link — turned on in November and off in January. The
+// packages stay saved in between.
+const showChristmas = settings.christmas.active && pricing.christmas.packages.length > 0;
 ---
 
 <BaseLayout
@@ -42,6 +43,11 @@ const showChristmas = pricing.christmas.active && pricing.christmas.packages.len
             )}
           </div>
           <PricingTable packages={pricing.christmas.packages} />
+          <p class="christmas-more">
+            <a class="more-link" href="/swieta">
+              Wszystko o sesjach świątecznych →
+            </a>
+          </p>
         </div>
       </section>
     )
@@ -126,6 +132,15 @@ const showChristmas = pricing.christmas.active && pricing.christmas.packages.len
   }
   .christmas :global(.sprig) {
     color: var(--taupe);
+  }
+
+  .christmas-more {
+    margin-top: 2.5rem;
+    text-align: center;
+  }
+  .christmas-more :global(.more-link) {
+    color: var(--bez);
+    border-bottom-color: rgba(255, 255, 255, 0.35);
   }
 
   .notes {

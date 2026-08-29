@@ -232,11 +232,6 @@ export default config({
         }),
         christmas: fields.object(
           {
-            active: fields.checkbox({
-              label: 'Pokaż cennik świąteczny',
-              description: 'Włącz w listopadzie, wyłącz w styczniu. Nie trzeba nic kasować.',
-              defaultValue: false,
-            }),
             eyebrow: fields.text({ label: 'Nadtytuł', description: 'Np. „Listopad — grudzień”' }),
             title: fields.text({ label: 'Tytuł sekcji' }),
             description: fields.text({ label: 'Opis', multiline: true }),
@@ -245,7 +240,11 @@ export default config({
               itemLabel: (item) => `${item.fields.name.value} — ${item.fields.price.value}`,
             }),
           },
-          { label: 'Cennik świąteczny' },
+          {
+            label: 'Cennik świąteczny',
+            description:
+              'Pokazuje się, gdy w Ustawieniach włączysz „Sezon świąteczny”. Pakiety zostają zapisane także po wyłączeniu.',
+          },
         ),
         notes: fields.array(
           fields.object({
@@ -284,6 +283,30 @@ export default config({
         facebook: fields.url({ label: 'Facebook — link do profilu' }),
         instagram: fields.url({ label: 'Instagram — link do profilu' }),
         messenger: fields.url({ label: 'Messenger — link', description: 'Np. https://m.me/twojprofil' }),
+        christmas: fields.object(
+          {
+            active: fields.checkbox({
+              label: 'Sezon świąteczny — włączony',
+              description:
+                'Jeden przełącznik: pokazuje stronę „Święta”, link w menu, blok na stronie głównej i cennik świąteczny. Włącz w listopadzie, wyłącz w styczniu.',
+              defaultValue: false,
+            }),
+            eyebrow: fields.text({
+              label: 'Nadtytuł',
+              description: 'Np. „Listopad — grudzień 2026”',
+            }),
+            heading: fields.text({
+              label: 'Nagłówek strony „Święta”',
+              defaultValue: 'Sesje świąteczne',
+            }),
+            lead: fields.text({
+              label: 'Tekst wstępny',
+              description: 'Kilka zdań na górze strony „Święta”.',
+              multiline: true,
+            }),
+          },
+          { label: 'Sezon świąteczny' },
+        ),
         seasonalBanner: fields.object(
           {
             active: fields.checkbox({
@@ -291,8 +314,12 @@ export default config({
               defaultValue: false,
             }),
             text: fields.text({ label: 'Tekst paska' }),
-            linkText: fields.text({ label: 'Tekst linku', description: 'Np. „zobacz cennik”' }),
-            linkHref: fields.text({ label: 'Adres linku', defaultValue: '/cennik' }),
+            linkText: fields.text({ label: 'Tekst linku', description: 'Np. „zobacz szczegóły”' }),
+            linkHref: fields.text({
+              label: 'Adres linku',
+              description: 'Np. /swieta, /cennik albo /kontakt.',
+              defaultValue: '/swieta',
+            }),
           },
           { label: 'Pasek ogłoszeniowy' },
         ),

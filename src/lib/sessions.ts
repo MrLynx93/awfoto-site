@@ -16,6 +16,17 @@ export async function publishedSessions(): Promise<Session[]> {
 }
 
 /**
+ * The category value that marks a shoot as a Christmas one. It is one of the
+ * fixed options in the panel's "Rodzaj sesji" select, so this is a stable
+ * match rather than free text the photographer could mistype.
+ */
+export const CHRISTMAS_CATEGORY = 'Świąteczna';
+
+/** Every published Christmas shoot, newest first — the portfolio on /swieta. */
+export const christmasSessions = (all: Session[]): Session[] =>
+  all.filter((session) => session.data.category === CHRISTMAS_CATEGORY);
+
+/**
  * Up to `limit` sessions other than `current`, for the "Inne sesje" block.
  * Falls back to the newest ones when there is nothing in the same category.
  */

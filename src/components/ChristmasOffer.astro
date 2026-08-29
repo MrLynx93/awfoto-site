@@ -1,0 +1,180 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  offer: CollectionEntry<'offers'>;
+  /** Photo on the right for every other block, so a run of offers alternates. */
+  mirrored?: boolean;
+  /** The first block sits above the fold. */
+  eager?: boolean;
+}
+
+const { offer, mirrored = false, eager = false } = Astro.props;
+const { name, description, includes, duration, photoCount, price, image } = offer.data;
+
+const facts = [
+  ['Czas trwania', duration],
+  ['Liczba zdjęć', photoCount],
+  ['Cena', price],
+].filter(([, value]) => value);
+---
+
+<article class:list={['christmas-offer', mirrored && 'christmas-offer--mirrored']}>
+  <Image
+    class="photo arch"
+    src={image}
+    alt=""
+    widths={[400, 800, 1200]}
+    sizes="(max-width: 900px) 90vw, 45vw"
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : undefined}
+  />
+
+  <div class="body">
+    <p class="label">Oferta</p>
+    <h2>{name}</h2>
+    <p class="lead">{description}</p>
+
+    {
+      facts.length > 0 && (
+        <dl class="facts">
+          {facts.map(([term, value]) => (
+            <div>
+              <dt>{term}</dt>
+              <dd>{value}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+
+    {
+      includes.length > 0 && (
+        <>
+          <h3 class="includes-title">Co obejmuje</h3>
+          <ul class="checklist">
+            {includes.map((line) => (
+              <li>
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                  <path d="m4 10.5 4 4 8-9" />
+                </svg>
+                <span>{line}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )
+    }
+
+    <div class="buttons">
+      <a class="button" href="#cennik-swiateczny">Cennik świąteczny</a>
+      <a class="button button--ghost" href={`/oferta/${offer.id}`}>Pełny opis sesji</a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .christmas-offer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5rem);
+    max-width: var(--max);
+    margin: 0 auto;
+  }
+  /* The photo keeps its DOM position (it leads for screen readers and on
+     mobile) and only swaps columns visually. */
+  .christmas-offer--mirrored .photo {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .christmas-offer--mirrored .body {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .christmas-offer + .christmas-offer {
+    margin-top: var(--gap);
+  }
+
+  .photo {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .christmas-offer h2 {
+    margin-bottom: 1.25rem;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    gap: 1.25rem;
+    margin: 2rem 0;
+    padding: 1.5rem 0;
+    border-block: 1px solid var(--piaskowy);
+  }
+  .facts dt {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--tekst-jasny);
+  }
+  .facts dd {
+    margin: 0.4rem 0 0;
+    font-family: var(--display);
+    font-size: 1.4rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .includes-title {
+    margin-bottom: 1rem;
+    font-family: var(--body);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--glina);
+  }
+
+  .checklist {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0 0 2.25rem;
+    padding: 0;
+    list-style: none;
+  }
+  .checklist li {
+    display: grid;
+    grid-template-columns: 1.15rem 1fr;
+    gap: 0.6rem;
+    align-items: start;
+    font-size: 0.96rem;
+  }
+  .checklist svg {
+    width: 15px;
+    height: 15px;
+    margin-top: 0.45rem;
+    color: var(--szalwia);
+  }
+
+  @media (max-width: 900px) {
+    .christmas-offer,
+    .christmas-offer--mirrored {
+      grid-template-columns: 1fr;
+    }
+    /* Undo the visual swap — one column has nothing to mirror. */
+    .christmas-offer--mirrored .photo,
+    .christmas-offer--mirrored .body {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    .photo {
+      max-width: 22rem;
+      margin-inline: auto;
+    }
+  }
+</style>
