@@ -1,0 +1,183 @@
+---
+/**
+ * A horizontal, swipeable row of cards with dots underneath.
+ *
+ * The scrolling is pure CSS (flex + scroll-snap), so it works before the
+ * script runs and keeps native momentum on touch. The script only adds the
+ * dots, and only shows them when the track actually overflows — at three
+ * across on a wide screen everything fits, and a row of dots would be a lie.
+ */
+interface Props {
+  /** Accessible name for the scrollable region. */
+  label: string;
+  /** Singular noun for the dot labels, e.g. "Sesja" → "Sesja 2". */
+  dotLabel?: string;
+  /** Cards shown at once on a wide screen. */
+  perView?: number;
+}
+
+const { label, dotLabel = 'Pozycja', perView = 3 } = Astro.props;
+---
+
+<div class="carousel" data-dot-label={dotLabel} style={`--wide-per-view: ${perView}`}>
+  <div class="carousel-track" role="region" aria-label={label} tabindex="0">
+    <slot />
+  </div>
+  <div class="carousel-dots" hidden></div>
+</div>
+
+<style>
+  .carousel {
+    --gap: clamp(1.5rem, 3vw, 2.75rem);
+    /* The prop arrives as --wide-per-view rather than --per-view: an inline
+       style beats a media query, so setting --per-view inline would pin every
+       screen to the wide count. */
+    --per-view: var(--wide-per-view, 3);
+    margin-top: 3.5rem;
+  }
+
+  .carousel-track {
+    /* Slides measure their offsetLeft against this box, which is what the
+       script scrolls to. */
+    position: relative;
+    display: flex;
+    gap: var(--gap);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    /* Room for focus rings and card hover shadows, which would otherwise be
+       clipped by the scroll container. */
+    padding: 4px;
+    margin: -4px;
+    /* The dots are the affordance; a scrollbar under the cards is noise. */
+    scrollbar-width: none;
+  }
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-track > :global(*) {
+    flex: 0 0 calc((100% - (var(--per-view) - 1) * var(--gap)) / var(--per-view));
+    scroll-snap-align: start;
+  }
+
+  /* `display: flex` below would otherwise beat the browser's own
+     [hidden] { display: none }, leaving the dots on screen when the script
+     hides them. */
+  .carousel-dots[hidden] {
+    display: none;
+  }
+
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.35rem;
+    margin-top: 2.25rem;
+  }
+  /* The button is a comfortable tap target; the dot inside it is the mark. */
+  .carousel-dots :global(button) {
+    position: relative;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+  .carousel-dots :global(button)::before {
+    content: '';
+    position: absolute;
+    inset: 7px;
+    border: 1px solid var(--taupe);
+    border-radius: 50%;
+    transition:
+      background 0.3s,
+      border-color 0.3s,
+      transform 0.3s;
+  }
+  .carousel-dots :global(button[aria-current='true'])::before {
+    background: var(--glina);
+    border-color: var(--glina);
+    transform: scale(1.3);
+  }
+
+  @media (max-width: 900px) {
+    .carousel {
+      --per-view: 2;
+    }
+  }
+  /* A sliver of the next card is what tells a thumb the row scrolls. */
+  @media (max-width: 620px) {
+    .carousel {
+      --per-view: 1.15;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-track {
+      scroll-behavior: auto;
+    }
+  }
+</style>
+
+<script>
+  for (const carousel of document.querySelectorAll<HTMLElement>('.carousel')) {
+    const track = carousel.querySelector<HTMLElement>('.carousel-track');
+    const dots = carousel.querySelector<HTMLElement>('.carousel-dots');
+    if (!track || !dots) continue;
+
+    const slides = Array.from(track.children) as HTMLElement[];
+    if (slides.length < 2) continue;
+
+    const noun = carousel.dataset.dotLabel || 'Pozycja';
+    const buttons = slides.map((slide, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.setAttribute('aria-label', `${noun} ${index + 1}`);
+      button.addEventListener('click', () => {
+        track.scrollTo({ left: slide.offsetLeft, behavior: 'smooth' });
+      });
+      dots.append(button);
+      return button;
+    });
+
+    const sync = () => {
+      const scrollable = track.scrollWidth - track.clientWidth > 1;
+      dots.hidden = !scrollable;
+      if (!scrollable) return;
+
+      // Whichever slide sits closest to the track's left edge is the one the
+      // reader is on — true for a snapped position and mid-drag alike.
+      let active = 0;
+      let nearest = Infinity;
+      slides.forEach((slide, index) => {
+        const distance = Math.abs(slide.offsetLeft - track.scrollLeft);
+        if (distance < nearest) {
+          nearest = distance;
+          active = index;
+        }
+      });
+
+      buttons.forEach((button, index) => {
+        if (index === active) button.setAttribute('aria-current', 'true');
+        else button.removeAttribute('aria-current');
+      });
+    };
+
+    let queued = false;
+    track.addEventListener(
+      'scroll',
+      () => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(() => {
+          queued = false;
+          sync();
+        });
+      },
+      { passive: true },
+    );
+    window.addEventListener('resize', sync);
+    sync();
+  }
+</script>
