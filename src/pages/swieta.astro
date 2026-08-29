@@ -88,6 +88,16 @@ const description = christmas.lead || 'Sesje świąteczne — scenografia, termi
           </section>
         )}
 
+        {galleryPhotos.length > 0 && <Lightbox />}
+
+        <div id="kontakt">
+          <ContactSection
+            settings={settings}
+            heading="Zarezerwuj termin świąteczny"
+            lead="Terminy listopadowe i grudniowe rezerwują się najszybciej — napisz albo zadzwoń."
+          />
+        </div>
+
         {past.length > 0 && (
           <section class="section warm">
             <div class="container">
@@ -104,16 +114,6 @@ const description = christmas.lead || 'Sesje świąteczne — scenografia, termi
             </div>
           </section>
         )}
-
-        {galleryPhotos.length > 0 && <Lightbox />}
-
-        <div id="kontakt">
-          <ContactSection
-            settings={settings}
-            heading="Zarezerwuj termin świąteczny"
-            lead="Terminy listopadowe i grudniowe rezerwują się najszybciej — napisz albo zadzwoń."
-          />
-        </div>
       </>
     ) : (
       <section class="section centered off-season">
