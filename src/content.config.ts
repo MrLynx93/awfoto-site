@@ -43,6 +43,11 @@ const offers = defineCollection({
       photoCount: z.string().default(''),
       price: z.string().default(''),
       image: image(),
+      // Extra photos of this kind of shoot. The single `image` above stays the
+      // card/hero shot; these are the gallery beneath it.
+      gallery: z
+        .array(z.object({ image: image(), alt: z.string().default('') }))
+        .default([]),
       order: z.number().default(99),
       featured: z.boolean().default(false),
       season: z.enum(['caloroczna', 'swiateczna']).default('caloroczna'),

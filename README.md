@@ -97,6 +97,11 @@ a blank section.
 Keystatic image fields write into `site-content/images/…` with a `publicPath` that
 resolves relative to the content file, which is what lets Astro optimise them.
 
+An offer carries one `image` (the card and hero shot) plus an optional `gallery`
+array, rendered under the offer on `/oferta/<slug>` and — for Christmas offers —
+merged into the single gallery on `/swieta`. The merge is deliberate: `Lightbox`
+binds to one `#photo-grid` per page, so one grid per page is the rule.
+
 ### Image paths are Keystatic's convention, not ours
 
 An entry's images must live under `images/<collection>/<entry-slug>/`, named after
@@ -137,6 +142,7 @@ What feeds the page:
 |---|---|
 | Hero copy | `settings.christmas.{eyebrow,heading,lead}` |
 | The offer(s) | `offers` entries with `season: swiateczna`, by `order` |
+| Gallery | those offers' `gallery` arrays, merged into one grid |
 | Price list | `pricing.christmas.{eyebrow,title,description,packages}` |
 | Past shoots | `sessions` with `category: Świąteczna` |
 

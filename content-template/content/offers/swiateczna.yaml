@@ -6,6 +6,19 @@ duration: ok. 60 minut
 photoCount: 15 zdjęć
 price: od 450 zł
 image: ../../images/offers/swiateczna/image.jpg
+gallery:
+  - image: ../../images/offers/swiateczna/gallery/0/image.jpg
+    alt: Rodzina przy choince w ciepłym świetle lampek
+  - image: ../../images/offers/swiateczna/gallery/1/image.jpg
+    alt: Dziewczynka w swetrze trzyma bombkę
+  - image: ../../images/offers/swiateczna/gallery/2/image.jpg
+    alt: Scenografia świąteczna — choinka, koc i świece
+  - image: ../../images/offers/swiateczna/gallery/3/image.jpg
+    alt: Rodzeństwo rozpakowuje prezent na dywanie
+  - image: ../../images/offers/swiateczna/gallery/4/image.jpg
+    alt: Detal — dłonie dziecka i drewniana ozdoba
+  - image: ../../images/offers/swiateczna/gallery/5/image.jpg
+    alt: Portret przy oknie w świetle grudniowego popołudnia
 description: >-
   Ciepła, kameralna scenografia z choinką i światełkami. Terminy tylko
   w listopadzie i grudniu — rezerwują się szybko.

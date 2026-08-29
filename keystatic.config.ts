@@ -189,11 +189,33 @@ export default config({
         photoCount: fields.text({ label: 'Liczba zdjęć', description: 'Np. „25 zdjęć”' }),
         price: fields.text({ label: 'Cena', description: 'Np. „od 550 zł”' }),
         image: fields.image({
-          label: 'Zdjęcie',
+          label: 'Zdjęcie główne',
+          description: 'Jedno zdjęcie — widać je na liście ofert i na górze strony.',
           directory: inRepo('images/offers'),
           publicPath: '../../images/offers/',
           validation: { isRequired: true },
         }),
+        gallery: fields.array(
+          fields.object({
+            image: fields.image({
+              label: 'Zdjęcie',
+              directory: inRepo('images/offers'),
+              publicPath: '../../images/offers/',
+              validation: { isRequired: true },
+            }),
+            alt: fields.text({
+              label: 'Opis zdjęcia',
+              description:
+                'Krótki opis dla osób niewidomych i wyszukiwarek. Np. „Dziecko przy choince”.',
+            }),
+          }),
+          {
+            label: 'Więcej zdjęć',
+            description:
+              'Galeria pod opisem oferty. Przeciągnij, żeby zmienić kolejność. Możesz zostawić puste.',
+            itemLabel: (item) => item.fields.alt.value || 'Zdjęcie',
+          },
+        ),
         order: fields.integer({
           label: 'Kolejność',
           description: 'Mniejsza liczba = wyżej na liście.',

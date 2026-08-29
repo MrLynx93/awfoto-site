@@ -165,9 +165,16 @@ Zmiana telefonu czy Instagrama tutaj podmienia go **wszędzie na stronie** naraz
 **Oferta** to opisy rodzajów sesji (plenerowa, rodzinna, świąteczna…).
 Każda ma swoją stronę i pokazuje się na `/oferta`.
 
+- **Zdjęcie główne** — jedno. Widać je na liście ofert i na górze strony oferty.
+- **Więcej zdjęć** — galeria pod opisem. Możesz wrzucić ile chcesz; kliknięte
+  zdjęcie otwiera się na pełnym ekranie. Zostaw puste, jeśli nie masz jeszcze
+  zdjęć tego rodzaju sesji.
 - **Kolejność** — mniejsza liczba = wyżej na liście.
 - **Pokaż na stronie głównej** — trzy wystarczą.
 - **Cena** — tu wpisz orientacyjnie („od 550 zł"). Dokładne pakiety są w cenniku.
+
+Galeria z oferty świątecznej pokazuje się **także na stronie Święta**, pod
+opisem sesji — nie trzeba wgrywać tych zdjęć drugi raz.
 
 ---
 

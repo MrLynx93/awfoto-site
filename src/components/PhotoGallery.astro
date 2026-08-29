@@ -1,9 +1,14 @@
 ---
 import { Image } from 'astro:assets';
-import type { Session } from '../lib/sessions';
+
+/** Sessions and offers both carry photos in this shape. */
+export interface GalleryPhoto {
+  image: ImageMetadata;
+  alt: string;
+}
 
 interface Props {
-  photos: Session['data']['photos'];
+  photos: GalleryPhoto[];
 }
 
 const { photos } = Astro.props;

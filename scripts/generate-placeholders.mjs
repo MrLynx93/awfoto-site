@@ -65,6 +65,14 @@ const files = [
   ['offers/plenerowa/image.jpg', 1400, 1750, 2],
   ['offers/rodzinna/image.jpg', 1400, 1750, 4],
   ['offers/swiateczna/image.jpg', 1400, 1750, 6],
+  // The offers' `gallery` array, same layout Keystatic writes for any array of
+  // images: gallery/<index>/image.jpg under the entry's own folder.
+  ['offers/swiateczna/gallery/0/image.jpg', 2000, 1333, 5],
+  ['offers/swiateczna/gallery/1/image.jpg', 1500, 2000, 7],
+  ['offers/swiateczna/gallery/2/image.jpg', 1800, 1350, 1],
+  ['offers/swiateczna/gallery/3/image.jpg', 1800, 1350, 3],
+  ['offers/swiateczna/gallery/4/image.jpg', 1600, 1600, 6],
+  ['offers/swiateczna/gallery/5/image.jpg', 1600, 1600, 0],
   // Not a collection image — imported directly by the pages, so it can live anywhere.
   ['about/portret.jpg', 1400, 1750, 3],
 ];

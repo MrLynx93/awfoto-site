@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BotanicalDivider from '../components/BotanicalDivider.astro';
 import ChristmasOffer from '../components/ChristmasOffer.astro';
+import PhotoGallery from '../components/PhotoGallery.astro';
+import Lightbox from '../components/Lightbox.astro';
 import PricingTable from '../components/PricingTable.astro';
 import SessionGrid from '../components/SessionGrid.astro';
 import ContactSection from '../components/ContactSection.astro';
@@ -22,6 +24,11 @@ const active = christmas.active;
 const offers = (await getCollection('offers'))
   .filter((offer) => offer.data.season === 'swiateczna')
   .sort((a, b) => a.data.order - b.data.order);
+
+// One gallery for the whole page rather than one per offer: the lightbox binds
+// to a single #photo-grid, and a visitor wants "the Christmas photos", not a
+// separate strip under each package.
+const galleryPhotos = offers.flatMap((offer) => offer.data.gallery);
 
 const packages = pricing.christmas.packages;
 const past = christmasSessions(await publishedSessions());
@@ -62,6 +69,16 @@ const description = christmas.lead || 'Sesje świąteczne — scenografia, termi
           </section>
         )}
 
+        {galleryPhotos.length > 0 && (
+          <section class="section gallery">
+            <div class="centered heading-block gallery-heading">
+              <p class="label">Galeria</p>
+              <h2 class="section-title">Tak wyglądają te sesje</h2>
+            </div>
+            <PhotoGallery photos={galleryPhotos} />
+          </section>
+        )}
+
         {packages.length > 0 && (
           <section class="section christmas-pricing" id="cennik-swiateczny">
             <div class="container">
@@ -99,6 +116,8 @@ const description = christmas.lead || 'Sesje świąteczne — scenografia, termi
             </div>
           </section>
         )}
+
+        {galleryPhotos.length > 0 && <Lightbox />}
 
         <div id="kontakt">
           <ContactSection
@@ -153,6 +172,15 @@ const description = christmas.lead || 'Sesje świąteczne — scenografia, termi
 
   .heading-block {
     margin-top: 2.5rem;
+  }
+
+  /* The offer block above already ends on the page's bottom padding. */
+  .gallery {
+    padding-top: 0;
+  }
+  .gallery-heading {
+    margin-top: 0;
+    margin-bottom: 3rem;
   }
 
   /* Same dark band as the Christmas block on /cennik, so the two read as one
