@@ -2,13 +2,14 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactSection from '../components/ContactSection.astro';
-import SessionGrid from '../components/SessionGrid.astro';
+import SessionCard from '../components/SessionCard.astro';
+import Carousel from '../components/Carousel.astro';
 import { getSettings } from '../lib/siteContent';
 import { publishedSessions } from '../lib/sessions';
 import portrait from '../../site-content/images/about/portret.jpg';
 
 const settings = getSettings();
-const latest = (await publishedSessions()).slice(0, 3);
+const latest = (await publishedSessions()).slice(0, 8);
 ---
 
 <BaseLayout title="O mnie" description={settings.aboutText}>
@@ -49,7 +50,11 @@ const latest = (await publishedSessions()).slice(0, 3);
               Wszystkie sesje →
             </a>
           </div>
-          <SessionGrid sessions={latest} />
+          <Carousel label="Najnowsze sesje" dotLabel="Sesja">
+            {latest.map((session) => (
+              <SessionCard session={session} />
+            ))}
+          </Carousel>
         </div>
       </section>
     )
