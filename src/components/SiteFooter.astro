@@ -1,9 +1,10 @@
 ---
 import SocialLinks from './SocialLinks.astro';
-import { getSettings } from '../lib/siteContent';
+import { getSettings, whatsappHref } from '../lib/siteContent';
 
 const settings = getSettings();
 const year = new Date().getFullYear();
+const waHref = whatsappHref(settings.whatsapp);
 ---
 
 <footer class="footer">
@@ -38,10 +39,20 @@ const year = new Date().getFullYear();
           )
         }
         {settings.email && <li><a href={`mailto:${settings.email}`}>{settings.email}</a></li>}
+        {
+          waHref && (
+            <li>
+              <a href={waHref} rel="noopener noreferrer" target="_blank">
+                WhatsApp
+              </a>
+            </li>
+          )
+        }
       </ul>
       <SocialLinks
         facebook={settings.facebook}
         instagram={settings.instagram}
+        whatsapp={waHref}
         class="footer-socials"
       />
     </div>

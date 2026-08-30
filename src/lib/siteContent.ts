@@ -48,6 +48,7 @@ const settingsSchema = z.object({
   facebook: z.string().default(''),
   instagram: z.string().default(''),
   messenger: z.string().default(''),
+  whatsapp: z.string().default(''),
   christmas: z
     .object({
       active: z.boolean().default(false),
@@ -91,6 +92,18 @@ function readYaml<T>(fileName: string, schema: z.ZodType<T>): T {
     );
   }
   return result.data;
+}
+
+/**
+ * WhatsApp links want an international number with no punctuation. The panel
+ * asks for the number, but a pasted wa.me link is the other thing a person
+ * naturally puts in that box, so accept either.
+ */
+export function whatsappHref(value: string): string {
+  if (!value) return '';
+  if (/^https?:\/\//i.test(value)) return value;
+  const digits = value.replace(/\D/g, '');
+  return digits ? `https://wa.me/${digits}` : '';
 }
 
 export const getPricing = () => readYaml('pricing.yaml', pricingSchema);

@@ -1,10 +1,11 @@
 ---
 import SocialLinks from './SocialLinks.astro';
 import SeasonalBanner from './SeasonalBanner.astro';
-import { getSettings } from '../lib/siteContent';
+import { getSettings, whatsappHref } from '../lib/siteContent';
 
 const settings = getSettings();
 const path = Astro.url.pathname;
+const waHref = whatsappHref(settings.whatsapp);
 
 interface NavItem {
   href: string;
@@ -53,6 +54,7 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
     <SocialLinks
       facebook={settings.facebook}
       instagram={settings.instagram}
+      whatsapp={waHref}
       class="header-socials"
     />
 
@@ -92,7 +94,11 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
           </a>
         )
       }
-      <SocialLinks facebook={settings.facebook} instagram={settings.instagram} />
+      <SocialLinks
+        facebook={settings.facebook}
+        instagram={settings.instagram}
+        whatsapp={waHref}
+      />
     </div>
   </div>
 </header>

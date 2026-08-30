@@ -153,7 +153,12 @@ Możesz go użyć też do czegoś innego niż święta — wtedy zmień adres li
 - nagłówek i tekst na stronie głównej,
 - tekst „O mnie" i podpis,
 - telefon, e-mail, miasto, godziny kontaktu,
-- linki do Facebooka, Instagrama i Messengera.
+- linki do Facebooka, Instagrama i Messengera,
+- **numer WhatsApp**.
+
+**WhatsApp — jak wpisać numer.** Z kierunkowym kraju, bez plusa i bez spacji:
+dla polskiego numeru 555 123 456 wpisz `48555123456`. Przycisk pojawi się wtedy
+w kontakcie, w stopce i na górze strony. Zostaw pole puste, żeby go ukryć.
 
 Zmiana telefonu czy Instagrama tutaj podmienia go **wszędzie na stronie** naraz
 — w stopce, w kontakcie i pod każdą sesją.
