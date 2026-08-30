@@ -39,46 +39,43 @@ const waHref = whatsappHref(settings.whatsapp);
         )
       }
       {
-        waHref && (
-          <a class="button button--ghost" href={waHref} rel="noopener noreferrer" target="_blank">
-            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
-              <path d="M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.3-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.44 9.9-9.9 0-2.64-1.03-5.13-2.9-7A9.82 9.82 0 0 0 12.04 2Zm0 18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.39c0-4.54 3.7-8.23 8.24-8.23a8.2 8.2 0 0 1 8.23 8.24c0 4.54-3.69 8.24-8.23 8.24Zm4.52-6.17c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.79.97-.14.16-.29.19-.54.06-.25-.12-1.05-.38-1.99-1.23-.74-.65-1.24-1.46-1.38-1.71-.15-.25-.02-.38.11-.5.11-.12.25-.29.37-.44.13-.15.17-.25.25-.42.09-.16.04-.31-.02-.43-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.55-.42h-.48c-.16 0-.43.06-.65.31-.22.25-.85.83-.85 2.03s.87 2.35.99 2.51c.12.17 1.72 2.62 4.16 3.67.58.25 1.03.4 1.39.51.58.19 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.05.14-1.16-.06-.1-.22-.16-.47-.28Z" />
-            </svg>
-            WhatsApp
-          </a>
-        )
-      }
-      {
         settings.email && (
-          <a class="button button--ghost" href={`mailto:${settings.email}`}>
+          <a class="button button--ghost button--address" href={`mailto:${settings.email}`}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
               <rect x="2.5" y="5" width="19" height="14" rx="2.5" />
               <path d="m3.5 7 8.5 6 8.5-6" />
             </svg>
-            E-mail
+            {settings.email}
+          </a>
+        )
+      }
+      {
+        waHref && (
+          <a class="button button--ghost button--icon" href={waHref} aria-label="WhatsApp" rel="noopener noreferrer" target="_blank">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+              <path d="M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.3-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.44 9.9-9.9 0-2.64-1.03-5.13-2.9-7A9.82 9.82 0 0 0 12.04 2Zm0 18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.39c0-4.54 3.7-8.23 8.24-8.23a8.2 8.2 0 0 1 8.23 8.24c0 4.54-3.69 8.24-8.23 8.24Zm4.52-6.17c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.79.97-.14.16-.29.19-.54.06-.25-.12-1.05-.38-1.99-1.23-.74-.65-1.24-1.46-1.38-1.71-.15-.25-.02-.38.11-.5.11-.12.25-.29.37-.44.13-.15.17-.25.25-.42.09-.16.04-.31-.02-.43-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.55-.42h-.48c-.16 0-.43.06-.65.31-.22.25-.85.83-.85 2.03s.87 2.35.99 2.51c.12.17 1.72 2.62 4.16 3.67.58.25 1.03.4 1.39.51.58.19 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.05.14-1.16-.06-.1-.22-.16-.47-.28Z" />
+            </svg>
           </a>
         )
       }
       {
         settings.instagram && (
-          <a class="button button--ghost" href={settings.instagram} rel="noopener noreferrer" target="_blank">
+          <a class="button button--ghost button--icon" href={settings.instagram} aria-label="Instagram" rel="noopener noreferrer" target="_blank">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
               <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" />
               <circle cx="12" cy="12" r="4.2" />
               <circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none" />
             </svg>
-            Instagram
           </a>
         )
       }
       {
         settings.messenger && (
-          <a class="button button--ghost" href={settings.messenger} rel="noopener noreferrer" target="_blank">
+          <a class="button button--ghost button--icon" href={settings.messenger} aria-label="Messenger" rel="noopener noreferrer" target="_blank">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
               <path d="M12 2.6c-5.2 0-9.4 3.9-9.4 8.8 0 2.8 1.4 5.2 3.5 6.8v3.3l3.2-1.8c.9.2 1.8.4 2.7.4 5.2 0 9.4-3.9 9.4-8.7S17.2 2.6 12 2.6Z" />
               <path d="m6.9 13.7 4.4-4.7 2.3 2.4 3.6-2.4-4.4 4.7-2.3-2.4-3.6 2.4Z" />
             </svg>
-            Messenger
           </a>
         )
       }
@@ -102,15 +99,29 @@ const waHref = whatsappHref(settings.whatsapp);
     margin: 2.5rem auto 0;
   }
   .contact-buttons .button {
-    flex: 0 1 13rem;
+    flex: 0 1 auto;
     justify-content: center;
-    padding-inline: 1rem;
+    padding-inline: 1.4rem;
     white-space: nowrap;
   }
+  /* The address is read, not shouted — the rest of the button set stays caps. */
+  .contact-buttons .button--address {
+    text-transform: none;
+    letter-spacing: 0.06em;
+    font-size: 0.85rem;
+  }
+  /* Icon-only: a circle the same height as its lettered neighbours. */
+  .contact-buttons .button--icon {
+    flex: none;
+    aspect-ratio: 1;
+    min-width: 2.9rem;
+    padding: 0;
+  }
 
-  /* One per row on a phone, rather than two narrow ones and a stray. */
+  /* On a phone the two lettered buttons take a row each; the icons share one. */
   @media (max-width: 520px) {
-    .contact-buttons .button {
+    .contact-buttons .button--address,
+    .contact-buttons .button:not(.button--icon) {
       flex-basis: 100%;
       max-width: 20rem;
     }

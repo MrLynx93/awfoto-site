@@ -14,12 +14,12 @@ interface NavItem {
   highlight?: boolean;
 }
 
-// In season the Christmas page joins the menu as the one highlighted item;
+// In season the Christmas page opens the menu as the one highlighted item;
 // out of season it disappears, so the nav never advertises a closed offer.
 const NAV: NavItem[] = [
+  ...(settings.christmas.active ? [{ href: '/swieta', label: 'Święta', highlight: true }] : []),
   { href: '/sesje', label: 'Moje sesje' },
   { href: '/oferta', label: 'Oferta' },
-  ...(settings.christmas.active ? [{ href: '/swieta', label: 'Święta', highlight: true }] : []),
   { href: '/cennik', label: 'Cennik' },
   { href: '/o-mnie', label: 'O mnie' },
   { href: '/kontakt', label: 'Kontakt' },
@@ -44,7 +44,20 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
               href={item.href}
               aria-current={isCurrent(item.href) ? 'page' : undefined}
             >
-              {item.label}
+              {item.highlight && (
+                <svg
+                  class="snowflake"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 12L12.0 3.0M12.0 6.6L10.0 4.4M12.0 6.6L14.0 4.4M12 12L4.2 7.5M7.3 9.3L4.4 9.9M7.3 9.3L6.4 6.4M12 12L4.2 16.5M7.3 14.7L6.4 17.6M7.3 14.7L4.4 14.1M12 12L12.0 21.0M12.0 17.4L14.0 19.6M12.0 17.4L10.0 19.6M12 12L19.8 16.5M16.7 14.7L19.6 14.1M16.7 14.7L17.6 17.6M12 12L19.8 7.5M16.7 9.3L17.6 6.4M16.7 9.3L19.6 9.9" />
+                </svg>
+              )}
+              <span>{item.label}</span>
             </a>
           </li>
         ))
@@ -80,7 +93,20 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
               href={item.href}
               aria-current={isCurrent(item.href) ? 'page' : undefined}
             >
-              {item.label}
+              {item.highlight && (
+                <svg
+                  class="snowflake"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 12L12.0 3.0M12.0 6.6L10.0 4.4M12.0 6.6L14.0 4.4M12 12L4.2 7.5M7.3 9.3L4.4 9.9M7.3 9.3L6.4 6.4M12 12L4.2 16.5M7.3 14.7L6.4 17.6M7.3 14.7L4.4 14.1M12 12L12.0 21.0M12.0 17.4L14.0 19.6M12.0 17.4L10.0 19.6M12 12L19.8 16.5M16.7 14.7L19.6 14.1M16.7 14.7L17.6 17.6M12 12L19.8 7.5M16.7 9.3L17.6 6.4M16.7 9.3L19.6 9.9" />
+                </svg>
+              )}
+              <span>{item.label}</span>
             </a>
           </li>
         ))
@@ -152,16 +178,27 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
   }
 
   /* The seasonal item is the one call to action in the menu, so it is filled
-     rather than underlined — it has to win against five plain links. */
+     rather than underlined — it has to win against five plain links. The
+     snowflake sits above the word; the negative margin lets the taller pill
+     grow into the bar's padding instead of stretching the whole header. */
   .menu a.is-highlight,
   .menu a.is-highlight:hover,
   .menu a.is-highlight[aria-current='page'] {
-    padding: 0.45rem 1.1rem;
-    margin-block: -0.45rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+    padding: 0.4rem 1.1rem 0.45rem;
+    margin-block: -0.85rem;
+    line-height: 1.15;
     border: 1px solid var(--glina);
     border-radius: 999px;
     background: var(--glina);
     color: #fff9f2;
+  }
+  .menu .snowflake {
+    width: 15px;
+    height: 15px;
   }
   .menu a.is-highlight:hover,
   .menu a.is-highlight[aria-current='page'] {
@@ -292,14 +329,18 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
       color: var(--glina-ciemna);
     }
     /* A pill would fight the large serif links here, so the seasonal item is
-       marked with the accent colour and a sprig instead. */
+       marked with the accent colour and a snowflake instead. Full-width rows
+       leave no room to stack, so it sits beside the word. */
     .nav-panel a.is-highlight {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
       color: var(--glina);
     }
-    .nav-panel a.is-highlight::after {
-      content: ' ✻';
-      font-size: 0.7em;
-      vertical-align: 0.25em;
+    .nav-panel .snowflake {
+      width: 20px;
+      height: 20px;
+      flex: none;
     }
     .nav-panel li:last-child a {
       border-bottom: 0;
