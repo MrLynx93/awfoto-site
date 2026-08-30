@@ -4,7 +4,8 @@ import { whatsappHref, type Settings } from '../lib/siteContent';
 
 interface Props {
   settings: Settings;
-  heading: string;
+  /** Omit where the page's own header already says this is the contact block. */
+  heading?: string;
   lead?: string;
   withDivider?: boolean;
   warm?: boolean;
@@ -18,16 +19,20 @@ const telHref = `tel:${settings.phone.replace(/\s/g, '')}`;
 const waHref = whatsappHref(settings.whatsapp);
 ---
 
-<section class:list={['section', 'centered', warm && 'warm']}>
+<section class:list={['section', 'centered', warm && 'warm', !heading && 'section--bare']}>
   <div class="container">
     {withDivider && <BotanicalDivider />}
-    <div class:list={['heading-block', withDivider && 'heading-block--spaced']}>
-      <p class="label">Kontakt</p>
-      <h2 class="section-title">{heading}</h2>
-      {lead && <p class="lead">{lead}</p>}
-    </div>
+    {
+      heading && (
+        <div class:list={['heading-block', withDivider && 'heading-block--spaced']}>
+          <p class="label">Kontakt</p>
+          <h2 class="section-title">{heading}</h2>
+          {lead && <p class="lead">{lead}</p>}
+        </div>
+      )
+    }
 
-    <div class="contact-buttons">
+    <div class:list={['contact-buttons', !heading && 'contact-buttons--bare']}>
       {
         settings.phone && (
           <a class="button" href={telHref}>
@@ -87,6 +92,11 @@ const waHref = whatsappHref(settings.whatsapp);
   .heading-block--spaced {
     margin-top: 2.5rem;
   }
+  /* With no heading the block continues the page's own header rather than
+     opening a new band, so it drops most of the gap above it. */
+  .section--bare {
+    padding-top: clamp(2.25rem, 5vw, 3.5rem);
+  }
   .section-title {
     font-size: clamp(2.3rem, 5.5vw, 4rem);
   }
@@ -97,6 +107,11 @@ const waHref = whatsappHref(settings.whatsapp);
     gap: 0.9rem;
     max-width: 46rem;
     margin: 2.5rem auto 0;
+  }
+  /* With no heading above them the buttons are the section, so the space that
+     separated them from it goes too. */
+  .contact-buttons--bare {
+    margin-top: 0;
   }
   .contact-buttons .button {
     flex: 0 1 auto;

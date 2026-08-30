@@ -1,17 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactSection from '../components/ContactSection.astro';
-import BotanicalDivider from '../components/BotanicalDivider.astro';
 import { getSettings } from '../lib/siteContent';
 
 const settings = getSettings();
-
-const details = [
-  ['Telefon', settings.phone],
-  ['E-mail', settings.email],
-  ['Obszar', settings.city],
-  ['Kontakt', settings.hours],
-].filter(([, value]) => value);
 ---
 
 <BaseLayout
@@ -27,25 +19,7 @@ const details = [
     </p>
   </header>
 
-  <ContactSection settings={settings} heading="Wybierz, co Ci wygodniej" />
-
-  {
-    details.length > 0 && (
-      <section class="section warm">
-        <div class="container">
-          <BotanicalDivider />
-          <dl class="details">
-            {details.map(([term, value]) => (
-              <div>
-                <dt>{term}</dt>
-                <dd>{value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
-    )
-  }
+  <ContactSection settings={settings} />
 </BaseLayout>
 
 <style>
@@ -61,24 +35,5 @@ const details = [
   }
   .page-header p {
     margin-inline: auto;
-  }
-
-  .details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-    gap: clamp(1.5rem, 3vw, 3rem);
-    margin: 3rem 0 0;
-    text-align: center;
-  }
-  .details dt {
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--glina);
-  }
-  .details dd {
-    margin: 0.6rem 0 0;
-    font-family: var(--display);
-    font-size: 1.35rem;
   }
 </style>
