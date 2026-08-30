@@ -49,6 +49,7 @@ const description = showChristmas
             )}
           </div>
           <PricingTable packages={pricing.christmas.packages} />
+          <PricingNotes notes={pricing.notes} dark />
           <p class="christmas-more">
             <a class="more-link" href="/swieta">
               Wszystko o sesjach świątecznych →
@@ -59,7 +60,9 @@ const description = showChristmas
     )
   }
 
-  <PricingNotes notes={pricing.notes} />
+  {/* In season the notes sit inside the band above; out of season there is no
+      band to sit in, so they get their own section under the year-round list. */}
+  {!showChristmas && <PricingNotes notes={pricing.notes} />}
 
   <ContactSection
     settings={settings}
