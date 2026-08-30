@@ -3,7 +3,8 @@ import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PhotoGallery from '../../components/PhotoGallery.astro';
 import Lightbox from '../../components/Lightbox.astro';
-import SessionGrid from '../../components/SessionGrid.astro';
+import SessionCard from '../../components/SessionCard.astro';
+import Carousel from '../../components/Carousel.astro';
 import ContactSection from '../../components/ContactSection.astro';
 import { getSettings } from '../../lib/siteContent';
 import { publishedSessions, otherSessions, formatDate, type Session } from '../../lib/sessions';
@@ -12,7 +13,7 @@ export async function getStaticPaths() {
   const sessions = await publishedSessions();
   return sessions.map((session) => ({
     params: { slug: session.id },
-    props: { session, others: otherSessions(sessions, session) },
+    props: { session, others: otherSessions(sessions, session, 8) },
   }));
 }
 
@@ -61,7 +62,11 @@ const meta = [formatDate(date), category].filter(Boolean).join(' · ');
               Wszystkie sesje →
             </a>
           </div>
-          <SessionGrid sessions={others} />
+          <Carousel label="Inne sesje" dotLabel="Sesja">
+            {others.map((other) => (
+              <SessionCard session={other} />
+            ))}
+          </Carousel>
         </div>
       </section>
     )
