@@ -38,20 +38,25 @@ const { packages } = Astro.props;
 </div>
 
 <style>
+  /* The name, the price and the list are tracks of the row rather than of each
+     card, so they line up across the three: a badge, or a name that wraps to a
+     second line, lifts every card's price together instead of just its own.
+     Cards are as tall as the tallest for the same reason — a package listing
+     three things should not sit in a visibly smaller box. */
   .packages {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: clamp(1.25rem, 2.5vw, 2rem);
-    /* Every card is as tall as the tallest: a package with fewer lines should
-       not look like a smaller offer. */
+    grid-template-rows: auto auto auto;
+    column-gap: clamp(1.25rem, 2.5vw, 2rem);
+    row-gap: 1.25rem;
     align-items: stretch;
     margin-top: 3.5rem;
   }
 
   .package {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
     padding: clamp(1.75rem, 3vw, 2.5rem);
     background: var(--biel);
     border: 1px solid var(--piaskowy);
@@ -127,11 +132,29 @@ const { packages } = Astro.props;
     color: var(--szalwia);
   }
 
+  @supports not (grid-template-rows: subgrid) {
+    .package {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+  }
+
+  /* One column: each card is its own block again, and the gap between them is
+     the gap between cards rather than between a card's own rows. */
   @media (max-width: 900px) {
     .packages {
       grid-template-columns: 1fr;
+      grid-template-rows: none;
+      row-gap: clamp(1.25rem, 2.5vw, 2rem);
       max-width: 26rem;
       margin-inline: auto;
+    }
+    .package {
+      display: flex;
+      flex-direction: column;
+      grid-row: auto;
+      gap: 1.25rem;
     }
   }
 </style>
