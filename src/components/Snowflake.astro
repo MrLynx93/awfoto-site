@@ -1,0 +1,28 @@
+---
+/**
+ * The season's mark: on the menu's Święta pill, in the mobile panel and either
+ * side of the announcement bar. Six arms with a pair of branches each — any
+ * more detail is lost at the sizes it is drawn.
+ *
+ * Sized by the caller; it carries no dimensions of its own.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+  class:list={['snowflake', className]}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.4"
+  stroke-linecap="round"
+  aria-hidden="true"
+>
+  <path
+    d="M12 12L12.0 3.0M12.0 6.6L10.0 4.4M12.0 6.6L14.0 4.4M12 12L4.2 7.5M7.3 9.3L4.4 9.9M7.3 9.3L6.4 6.4M12 12L4.2 16.5M7.3 14.7L6.4 17.6M7.3 14.7L4.4 14.1M12 12L12.0 21.0M12.0 17.4L14.0 19.6M12.0 17.4L10.0 19.6M12 12L19.8 16.5M16.7 14.7L19.6 14.1M16.7 14.7L17.6 17.6M12 12L19.8 7.5M16.7 9.3L17.6 6.4M16.7 9.3L19.6 9.9"
+  />
+</svg>

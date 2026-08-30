@@ -1,4 +1,5 @@
 ---
+import Snowflake from './Snowflake.astro';
 import type { Settings } from '../lib/siteContent';
 
 interface Props {
@@ -13,19 +14,27 @@ const show = banner.active && banner.text;
 {
   show && (
     <div class="banner">
-      {banner.text}
-      {banner.linkText && (
-        <>
-          {' · '}
-          <a href={banner.linkHref}>{banner.linkText}</a>
-        </>
-      )}
+      <Snowflake />
+      <p class="banner-text">
+        {banner.text}
+        {banner.linkText && (
+          <>
+            {' · '}
+            <a href={banner.linkHref}>{banner.linkText}</a>
+          </>
+        )}
+      </p>
+      <Snowflake />
     </div>
   )
 }
 
 <style>
   .banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
     padding: 0.6rem 1rem;
     background: var(--glina);
     color: #fff9f2;
@@ -34,9 +43,32 @@ const show = banner.active && banner.text;
     letter-spacing: 0.11em;
     text-transform: uppercase;
   }
+  /* The global 62ch measure is for reading paragraphs; this is one line of
+     announcement and would otherwise break at about 450px on any screen. */
+  .banner-text {
+    margin: 0;
+    max-width: none;
+  }
+  /* The flakes flank the whole message, so they stay centred against it on a
+     phone where it runs to two lines rather than riding the first one. */
+  .banner :global(.snowflake) {
+    width: 15px;
+    height: 15px;
+    flex: none;
+  }
   .banner a {
     color: inherit;
     text-underline-offset: 4px;
     text-decoration-thickness: 1px;
+  }
+
+  @media (max-width: 520px) {
+    .banner {
+      gap: 0.6rem;
+    }
+    .banner :global(.snowflake) {
+      width: 13px;
+      height: 13px;
+    }
   }
 </style>
