@@ -146,11 +146,14 @@ const description = christmas.lead || 'Sesje świąteczne — scenografia, termi
      sits on the grid's own measure and is centred against it, so it reads as
      the caption to the photos rather than as a paragraph beside them. */
   .gallery-intro {
-    max-width: 40rem;
+    max-width: 44rem;
     margin: 0 auto clamp(2rem, 4vw, 3rem);
     text-align: center;
-    font-size: 1.02rem;
-    color: var(--tekst-jasny);
+    /* Larger than a lead: it is one line carrying a whole row of photos, and
+       at body size it read as a caption that had drifted above them. */
+    font-size: clamp(1.2rem, 2vw, 1.55rem);
+    line-height: 1.5;
+    color: var(--tekst);
   }
 
   /* The link follows the work rather than announcing it: whoever has scrolled
