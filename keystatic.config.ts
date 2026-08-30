@@ -194,7 +194,6 @@ export default config({
           itemLabel: (item) => item.value || 'Pozycja',
         }),
         duration: fields.text({ label: 'Czas trwania', description: 'Np. „ok. 90 minut”' }),
-        photoCount: fields.text({ label: 'Liczba zdjęć', description: 'Np. „25 zdjęć”' }),
         price: fields.text({ label: 'Cena', description: 'Np. „od 550 zł”' }),
         image: fields.image({
           label: 'Zdjęcie główne',

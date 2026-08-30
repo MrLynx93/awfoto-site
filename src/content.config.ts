@@ -40,7 +40,6 @@ const offers = defineCollection({
       description: z.string(),
       includes: z.array(z.string()).default([]),
       duration: z.string().default(''),
-      photoCount: z.string().default(''),
       price: z.string().default(''),
       image: image(),
       // Extra photos of this kind of shoot. The single `image` above stays the

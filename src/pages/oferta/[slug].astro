@@ -36,12 +36,11 @@ interface Props {
 }
 
 const { offer, examples } = Astro.props;
-const { name, description, includes, duration, photoCount, price, image, gallery } = offer.data;
+const { name, description, includes, duration, price, image, gallery } = offer.data;
 const settings = getSettings();
 
 const facts = [
   ['Czas trwania', duration],
-  ['Liczba zdjęć', photoCount],
   ['Cena', price],
 ].filter(([, value]) => value);
 ---
