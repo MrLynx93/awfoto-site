@@ -42,7 +42,9 @@ const { packages } = Astro.props;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: clamp(1.25rem, 2.5vw, 2rem);
-    align-items: start;
+    /* Every card is as tall as the tallest: a package with fewer lines should
+       not look like a smaller offer. */
+    align-items: stretch;
     margin-top: 3.5rem;
   }
 
