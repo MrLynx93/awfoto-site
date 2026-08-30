@@ -14,7 +14,11 @@ const show = banner.active && banner.text;
 {
   show && (
     <div class="banner">
-      <Snowflake />
+      <span class="banner-flakes">
+        <Snowflake />
+        <Snowflake />
+        <Snowflake />
+      </span>
       <p class="banner-text">
         {banner.text}
         {banner.linkText && (
@@ -24,7 +28,11 @@ const show = banner.active && banner.text;
           </>
         )}
       </p>
-      <Snowflake />
+      <span class="banner-flakes banner-flakes--right">
+        <Snowflake />
+        <Snowflake />
+        <Snowflake />
+      </span>
     </div>
   )
 }
@@ -49,26 +57,64 @@ const show = banner.active && banner.text;
     margin: 0;
     max-width: none;
   }
-  /* The flakes flank the whole message, so they stay centred against it on a
-     phone where it runs to two lines rather than riding the first one. */
-  .banner :global(.snowflake) {
-    width: 15px;
-    height: 15px;
+
+  /* Each side is a drift rather than a row of three identical marks: the sizes
+     and the nudges differ, and the right-hand group runs backwards so it
+     mirrors the left. They flank the whole message, so they stay centred
+     against it on a phone where it runs to several lines. */
+  .banner-flakes {
+    display: flex;
+    align-items: center;
+    flex: none;
+    gap: 0.35rem;
+  }
+  .banner-flakes--right {
+    flex-direction: row-reverse;
+  }
+  .banner-flakes :global(.snowflake) {
     flex: none;
   }
+  .banner-flakes :global(.snowflake:nth-child(1)) {
+    width: 11px;
+    height: 11px;
+    transform: translateY(3px);
+  }
+  .banner-flakes :global(.snowflake:nth-child(2)) {
+    width: 15px;
+    height: 15px;
+    transform: translateY(-3px);
+  }
+  .banner-flakes :global(.snowflake:nth-child(3)) {
+    width: 12px;
+    height: 12px;
+    transform: translateY(2px);
+  }
+
   .banner a {
     color: inherit;
     text-underline-offset: 4px;
     text-decoration-thickness: 1px;
   }
 
+  /* On a phone the drift has to leave the message room to break sensibly. */
   @media (max-width: 520px) {
     .banner {
-      gap: 0.6rem;
+      gap: 0.5rem;
     }
-    .banner :global(.snowflake) {
-      width: 13px;
-      height: 13px;
+    .banner-flakes {
+      gap: 0.2rem;
+    }
+    .banner-flakes :global(.snowflake:nth-child(1)) {
+      width: 9px;
+      height: 9px;
+    }
+    .banner-flakes :global(.snowflake:nth-child(2)) {
+      width: 12px;
+      height: 12px;
+    }
+    .banner-flakes :global(.snowflake:nth-child(3)) {
+      width: 10px;
+      height: 10px;
     }
   }
 </style>
