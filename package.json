@@ -13,6 +13,7 @@
     "serve": "node app.js",
     "fetch:fonts": "node scripts/fetch-fonts.mjs",
     "og:card": "node scripts/generate-og-card.mjs",
+    "icons": "node scripts/generate-favicons.mjs",
     "images:resize": "node scripts/resize-images.mjs site-content",
     "images:check": "node scripts/resize-images.mjs site-content --check"
   },
