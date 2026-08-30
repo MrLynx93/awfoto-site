@@ -44,6 +44,22 @@ const storage =
  */
 const inRepo = (p: string) => (storageMode === 'local' ? `site-content/${p}` : p);
 
+/**
+ * The kinds of shoot. Sessions pick one to say what they are; offers pick one
+ * to say which sessions illustrate them, which is what fills "Takie sesje już
+ * robiłam" on an offer page. Shared so the two lists cannot drift apart.
+ */
+const SESSION_CATEGORIES = [
+  { label: 'Plener', value: 'Plener' },
+  { label: 'Rodzinna', value: 'Rodzinna' },
+  { label: 'Roczek', value: 'Roczek' },
+  { label: 'Noworodkowa', value: 'Noworodkowa' },
+  { label: 'Ciążowa', value: 'Ciążowa' },
+  { label: 'Świąteczna', value: 'Świąteczna' },
+  { label: 'Ślubna', value: 'Ślubna' },
+  { label: 'Inna', value: 'Inna' },
+] as const;
+
 /** Reused by the regular and the Christmas price list — identical shape. */
 const pricingPackage = fields.object(
   {
@@ -107,16 +123,7 @@ export default config({
         }),
         category: fields.select({
           label: 'Rodzaj sesji',
-          options: [
-            { label: 'Plener', value: 'Plener' },
-            { label: 'Rodzinna', value: 'Rodzinna' },
-            { label: 'Roczek', value: 'Roczek' },
-            { label: 'Noworodkowa', value: 'Noworodkowa' },
-            { label: 'Ciążowa', value: 'Ciążowa' },
-            { label: 'Świąteczna', value: 'Świąteczna' },
-            { label: 'Ślubna', value: 'Ślubna' },
-            { label: 'Inna', value: 'Inna' },
-          ],
+          options: [...SESSION_CATEGORIES],
           defaultValue: 'Rodzinna',
         }),
         intro: fields.text({
@@ -216,6 +223,13 @@ export default config({
             itemLabel: (item) => item.fields.alt.value || 'Zdjęcie',
           },
         ),
+        category: fields.select({
+          label: 'Pokaż przykłady sesji',
+          description:
+            'Które sesje wyświetlić pod ofertą, w sekcji „Takie sesje już robiłam”. Wybierz rodzaj, którym oznaczasz takie sesje.',
+          options: [{ label: '— nie pokazuj —', value: '' }, ...SESSION_CATEGORIES],
+          defaultValue: '',
+        }),
         order: fields.integer({
           label: 'Kolejność',
           description: 'Mniejsza liczba = wyżej na liście.',

@@ -48,6 +48,8 @@ const offers = defineCollection({
       gallery: z
         .array(z.object({ image: image(), alt: z.string().default('') }))
         .default([]),
+      /** Which session category illustrates this offer; '' shows none. */
+      category: z.string().default(''),
       order: z.number().default(99),
       featured: z.boolean().default(false),
       season: z.enum(['caloroczna', 'swiateczna']).default('caloroczna'),

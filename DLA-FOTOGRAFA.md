@@ -170,6 +170,9 @@ Zmiana telefonu czy Instagrama tutaj podmienia go **wszędzie na stronie** naraz
 **Oferta** to opisy rodzajów sesji (plenerowa, rodzinna, świąteczna…).
 Każda ma swoją stronę i pokazuje się na `/oferta`.
 
+- **Pokaż przykłady sesji** — wybierz rodzaj sesji (np. *Świąteczna*). Pod
+  ofertą pojawią się Twoje sesje oznaczone tym rodzajem, w sekcji „Takie sesje
+  już robiłam". Zostaw „— nie pokazuj —", jeśli nie chcesz tam nic pokazywać.
 - **Zdjęcie główne** — jedno. Widać je na liście ofert i na górze strony oferty.
 - **Więcej zdjęć** — galeria pod opisem. Możesz wrzucić ile chcesz; kliknięte
   zdjęcie otwiera się na pełnym ekranie. Zostaw puste, jeśli nie masz jeszcze
