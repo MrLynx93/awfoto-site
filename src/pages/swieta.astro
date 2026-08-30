@@ -5,6 +5,7 @@ import BotanicalDivider from '../components/BotanicalDivider.astro';
 import PhotoGallery from '../components/PhotoGallery.astro';
 import Lightbox from '../components/Lightbox.astro';
 import PricingTable from '../components/PricingTable.astro';
+import PricingNotes from '../components/PricingNotes.astro';
 import SessionCard from '../components/SessionCard.astro';
 import Carousel from '../components/Carousel.astro';
 import ContactSection from '../components/ContactSection.astro';
@@ -83,6 +84,8 @@ const description = christmas.lead || 'Sesje świąteczne — scenografia, termi
             </div>
           </section>
         )}
+
+        <PricingNotes notes={pricing.notes} />
 
         {galleryPhotos.length > 0 && <Lightbox />}
 
