@@ -285,7 +285,8 @@ export default config({
         notes: fields.array(
           fields.object({
             title: fields.text({ label: 'Tytuł' }),
-            text: fields.text({ label: 'Treść', multiline: true }),
+            // Rich text so a note can be a list rather than one block of prose.
+            text: fields.markdoc.inline({ label: 'Treść' }),
           }),
           {
             label: 'Uwagi (rezerwacja, dojazd, zdjęcia dodatkowe)',

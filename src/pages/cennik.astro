@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PricingTable from '../components/PricingTable.astro';
 import ContactSection from '../components/ContactSection.astro';
 import { getPricing, getSettings } from '../lib/siteContent';
+import { renderRichText } from '../lib/richText';
 
 const pricing = getPricing();
 const settings = getSettings();
@@ -65,7 +66,7 @@ const description = showChristmas
           {pricing.notes.map((note) => (
             <div>
               <h2>{note.title}</h2>
-              <p>{note.text}</p>
+              <div class="note-body" set:html={renderRichText(note.text)} />
             </div>
           ))}
         </div>
@@ -170,9 +171,39 @@ const description = showChristmas
     text-transform: uppercase;
     color: var(--glina);
   }
-  .notes p {
+  .note-body {
     font-size: 0.94rem;
     color: var(--tekst-jasny);
+  }
+  .note-body :global(p) {
+    margin: 0;
+  }
+  .note-body :global(p + *),
+  .note-body :global(ul + p),
+  .note-body :global(ol + p) {
+    margin-top: 0.7rem;
+  }
+  /* Bullets sit in the margin so the text keeps the column's left edge. */
+  .note-body :global(ul),
+  .note-body :global(ol) {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+  .note-body :global(li) {
+    margin-bottom: 0.35rem;
+  }
+  .note-body :global(li)::marker {
+    color: var(--taupe);
+  }
+  .note-body :global(li:last-child) {
+    margin-bottom: 0;
+  }
+  .note-body :global(strong) {
+    font-weight: 500;
+    color: var(--tekst);
+  }
+  .note-body :global(a) {
+    text-underline-offset: 3px;
   }
 
   @media (max-width: 820px) {

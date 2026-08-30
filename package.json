@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@astrojs/markdoc": "2.0.8",
+    "@markdoc/markdoc": "0.5.9",
     "@astrojs/node": "11.1.4",
     "@astrojs/react": "6.0.4",
     "@astrojs/sitemap": "3.7.3",
