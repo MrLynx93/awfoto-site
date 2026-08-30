@@ -4,18 +4,24 @@ import type { Pricing } from '../lib/siteContent';
 
 interface Props {
   notes: Pricing['notes'];
+  /**
+   * On /swieta the notes sit inside the dark price band rather than in a band
+   * of their own, so they render as a block for that container to place — and
+   * take the light text the dark ground needs.
+   */
+  dark?: boolean;
 }
 
 // The practical small print — booking, travel, extra photos — under whichever
 // price list the visitor is reading. One set of notes serves both /cennik and
 // /swieta, since the terms do not change with the season.
-const { notes } = Astro.props;
+const { notes, dark = false } = Astro.props;
 ---
 
 {
-  notes.length > 0 && (
-    <section class="section">
-      <div class="notes">
+  notes.length > 0 &&
+    (dark ? (
+      <div class="notes notes--dark">
         {notes.map((note) => (
           <div>
             <h2>{note.title}</h2>
@@ -23,8 +29,18 @@ const { notes } = Astro.props;
           </div>
         ))}
       </div>
-    </section>
-  )
+    ) : (
+      <section class="section">
+        <div class="notes">
+          {notes.map((note) => (
+            <div>
+              <h2>{note.title}</h2>
+              <div class="note-body" set:html={renderRichText(note.text)} />
+            </div>
+          ))}
+        </div>
+      </section>
+    ))
 }
 
 <style>
@@ -77,6 +93,21 @@ const { notes } = Astro.props;
   }
   .note-body :global(a) {
     text-underline-offset: 3px;
+  }
+
+  /* Inside the price band: it follows the packages rather than opening a
+     section, and the palette matches the rest of that band. */
+  .notes--dark {
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+  }
+  .notes--dark h2 {
+    color: var(--taupe);
+  }
+  .notes--dark .note-body {
+    color: #c3b8ac;
+  }
+  .notes--dark .note-body :global(strong) {
+    color: var(--bez);
   }
 
   @media (max-width: 820px) {

@@ -81,11 +81,10 @@ const description = christmas.lead || 'Sesje świąteczne — scenografia, termi
                 )}
               </div>
               <PricingTable packages={packages} />
+              <PricingNotes notes={pricing.notes} dark />
             </div>
           </section>
         )}
-
-        <PricingNotes notes={pricing.notes} />
 
         {galleryPhotos.length > 0 && <Lightbox />}
 
