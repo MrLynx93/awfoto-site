@@ -19,12 +19,12 @@ export async function getStaticPaths() {
     props: {
       offer,
       // Show real work of this kind, when there is any. The offer names the
-      // category outright: matching it against the offer's free-text name used
-      // to work only when the two happened to share a grammatical form —
-      // "Sesje świąteczne 2026" never contained "Świąteczna", so the Christmas
-      // offer silently showed nothing.
-      examples: offer.data.category
-        ? sessions.filter((session) => session.data.category === offer.data.category).slice(0, 8)
+      // tag outright: matching against the offer's free-text name used to work
+      // only when the two happened to share a grammatical form — "Sesje
+      // świąteczne 2026" never contained "Świąteczna", so the Christmas offer
+      // silently showed nothing.
+      examples: offer.data.tag
+        ? sessions.filter((session) => session.data.tags.includes(offer.data.tag)).slice(0, 8)
         : [],
     },
   }));

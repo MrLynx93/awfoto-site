@@ -21,7 +21,7 @@ const sessions = defineCollection({
     z.object({
       title: z.string(),
       date: z.coerce.date(),
-      category: z.string().default(''),
+      tags: z.array(z.string()).default([]),
       intro: z.string(),
       coverImage: image(),
       photos: z
@@ -48,8 +48,8 @@ const offers = defineCollection({
       gallery: z
         .array(z.object({ image: image(), alt: z.string().default('') }))
         .default([]),
-      /** Which session category illustrates this offer; '' shows none. */
-      category: z.string().default(''),
+      /** Sessions carrying this tag illustrate the offer; '' shows none. */
+      tag: z.string().default(''),
       order: z.number().default(99),
       featured: z.boolean().default(false),
       season: z.enum(['caloroczna', 'swiateczna']).default('caloroczna'),

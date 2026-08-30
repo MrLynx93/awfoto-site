@@ -30,7 +30,7 @@ Sesja to jednocześnie wpis na blogu i pozycja w portfolio — jedno i to samo.
 | **Tytuł** | Np. „Roczek Antosia" albo „Zuzia i Marek — plener jesienny" |
 | **Adres strony** | Uzupełni się sam. **Nie zmieniaj go po opublikowaniu** — stare linki przestaną działać |
 | **Data sesji** | Sesje układają się od najnowszej |
-| **Rodzaj sesji** | Wybierz z listy |
+| **Rodzaje sesji** | Zaznacz z listy. Możesz zaznaczyć kilka — np. sesja świąteczna u rodziny jest i *Świąteczna*, i *Rodzinna*. Po tym trafia do właściwych miejsc na stronie |
 | **Krótki opis** | Kilka zdań o tym, jak było. To widać nad zdjęciami i na liście sesji |
 | **Zdjęcie główne** | Jedno, najlepsze — pokazuje się na liście i przy wysyłaniu linku |
 | **Zdjęcia** | Cała galeria. Przeciągnij, żeby zmienić kolejność |
@@ -126,8 +126,9 @@ Pozostałe pola w tej sekcji to teksty na samej górze strony **Święta**:
 
 - **Oferta świąteczna** — w **Oferta** ustaw sesji pole **Sezon** na
   *Świąteczna*. Każda taka oferta pojawi się na stronie Święta.
-- **Świąteczne sesje z poprzednich lat** — przy sesji ustaw **Rodzaj sesji**
-  na *Świąteczna*. Wtedy trafi na dół strony Święta, do portfolio.
+- **Świąteczne sesje z poprzednich lat** — przy sesji zaznacz **Rodzaje sesji**
+  → *Świąteczna*. Wtedy trafi na dół strony Święta, do portfolio. Możesz
+  zaznaczyć przy tym inne rodzaje — sesja pokaże się w każdym z nich.
 
 ---
 
@@ -170,9 +171,10 @@ Zmiana telefonu czy Instagrama tutaj podmienia go **wszędzie na stronie** naraz
 **Oferta** to opisy rodzajów sesji (plenerowa, rodzinna, świąteczna…).
 Każda ma swoją stronę i pokazuje się na `/oferta`.
 
-- **Pokaż przykłady sesji** — wybierz rodzaj sesji (np. *Świąteczna*). Pod
-  ofertą pojawią się Twoje sesje oznaczone tym rodzajem, w sekcji „Takie sesje
-  już robiłam". Zostaw „— nie pokazuj —", jeśli nie chcesz tam nic pokazywać.
+- **Pokaż przykłady sesji** — wybierz rodzaj (np. *Świąteczna*). Pod ofertą
+  pojawią się wszystkie sesje, przy których zaznaczyłaś ten rodzaj, w sekcji
+  „Takie sesje już robiłam". Zostaw „— nie pokazuj —", jeśli nie chcesz tam
+  nic pokazywać.
 - **Zdjęcie główne** — jedno. Widać je na liście ofert i na górze strony oferty.
 - **Więcej zdjęć** — galeria pod opisem. Możesz wrzucić ile chcesz; kliknięte
   zdjęcie otwiera się na pełnym ekranie. Zostaw puste, jeśli nie masz jeszcze

@@ -23,13 +23,13 @@ interface Props {
 }
 
 const { session, others } = Astro.props;
-const { title, date, category, intro, photos, coverImage } = session.data;
+const { title, date, tags, intro, photos, coverImage } = session.data;
 const settings = getSettings();
 
 // The body is optional — most sessions are just the intro plus photos.
 const { Content } = await render(session);
 
-const meta = [formatDate(date), category].filter(Boolean).join(' · ');
+const meta = [formatDate(date), ...tags].filter(Boolean).join(' · ');
 ---
 
 <BaseLayout title={title} description={intro} ogImage={coverImage.src}>

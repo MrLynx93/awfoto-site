@@ -11,9 +11,9 @@ interface Props {
 }
 
 const { session, showIntro = false, eager = false } = Astro.props;
-const { title, date, category, intro, coverImage } = session.data;
+const { title, date, tags, intro, coverImage } = session.data;
 
-const meta = [formatDate(date), category].filter(Boolean).join(' · ');
+const meta = [formatDate(date), ...tags].filter(Boolean).join(' · ');
 // Trim to roughly one line rather than letting long intros unbalance the grid.
 const teaser = intro.length > 110 ? `${intro.slice(0, 110).trimEnd()}…` : intro;
 ---

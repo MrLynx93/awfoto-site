@@ -45,9 +45,9 @@ const storage =
 const inRepo = (p: string) => (storageMode === 'local' ? `site-content/${p}` : p);
 
 /**
- * The kinds of shoot. Sessions pick one to say what they are; offers pick one
- * to say which sessions illustrate them, which is what fills "Takie sesje już
- * robiłam" on an offer page. Shared so the two lists cannot drift apart.
+ * The kinds of shoot. A session carries any number of them — a Christmas shoot
+ * of a family is both — and an offer names the one that fills its "Takie sesje
+ * już robiłam". Shared so the two lists cannot drift apart.
  */
 const SESSION_CATEGORIES = [
   { label: 'Plener', value: 'Plener' },
@@ -121,10 +121,11 @@ export default config({
           defaultValue: { kind: 'today' },
           validation: { isRequired: true },
         }),
-        category: fields.select({
-          label: 'Rodzaj sesji',
+        tags: fields.multiselect({
+          label: 'Rodzaje sesji',
+          description: 'Możesz zaznaczyć kilka — np. sesja świąteczna rodzinna.',
           options: [...SESSION_CATEGORIES],
-          defaultValue: 'Rodzinna',
+          defaultValue: ['Rodzinna'],
         }),
         intro: fields.text({
           label: 'Krótki opis',
@@ -223,7 +224,7 @@ export default config({
             itemLabel: (item) => item.fields.alt.value || 'Zdjęcie',
           },
         ),
-        category: fields.select({
+        tag: fields.select({
           label: 'Pokaż przykłady sesji',
           description:
             'Które sesje wyświetlić pod ofertą, w sekcji „Takie sesje już robiłam”. Wybierz rodzaj, którym oznaczasz takie sesje.',

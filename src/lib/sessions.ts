@@ -16,27 +16,27 @@ export async function publishedSessions(): Promise<Session[]> {
 }
 
 /**
- * The category value that marks a shoot as a Christmas one. It is one of the
- * fixed options in the panel's "Rodzaj sesji" select, so this is a stable
- * match rather than free text the photographer could mistype.
+ * The tag that marks a shoot as a Christmas one. It is one of the fixed
+ * options in the panel, so this is a stable match rather than free text the
+ * photographer could mistype.
  */
-export const CHRISTMAS_CATEGORY = 'Świąteczna';
+export const CHRISTMAS_TAG = 'Świąteczna';
 
 /** Every published Christmas shoot, newest first — the portfolio on /swieta. */
 export const christmasSessions = (all: Session[]): Session[] =>
-  all.filter((session) => session.data.category === CHRISTMAS_CATEGORY);
+  all.filter((session) => session.data.tags.includes(CHRISTMAS_TAG));
 
 /**
  * Up to `limit` sessions other than `current`, for the "Inne sesje" block.
- * Falls back to the newest ones when there is nothing in the same category.
+ * Sessions sharing any tag come first; the newest fill whatever is left.
  */
 export function otherSessions(all: Session[], current: Session, limit = 3): Session[] {
   const rest = all.filter((session) => session.id !== current.id);
-  const sameCategory = rest.filter(
-    (session) => session.data.category && session.data.category === current.data.category,
+  const related = rest.filter((session) =>
+    session.data.tags.some((tag) => current.data.tags.includes(tag)),
   );
-  const others = rest.filter((session) => !sameCategory.includes(session));
-  return [...sameCategory, ...others].slice(0, limit);
+  const others = rest.filter((session) => !related.includes(session));
+  return [...related, ...others].slice(0, limit);
 }
 
 const dateFormatter = new Intl.DateTimeFormat('pl-PL', {
