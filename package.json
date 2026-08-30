@@ -12,6 +12,7 @@
     "content:pull": "node scripts/content-pull.mjs",
     "serve": "node app.js",
     "fetch:fonts": "node scripts/fetch-fonts.mjs",
+    "og:card": "node scripts/generate-og-card.mjs",
     "images:resize": "node scripts/resize-images.mjs site-content",
     "images:check": "node scripts/resize-images.mjs site-content --check"
   },

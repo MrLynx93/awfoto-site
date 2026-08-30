@@ -4,6 +4,12 @@ import SiteFooter from '../components/SiteFooter.astro';
 import { getSettings } from '../lib/siteContent';
 import '../styles/global.css';
 
+/**
+ * Shown when a page has no photograph of its own to share. Built from the logo
+ * by scripts/generate-og-card.mjs.
+ */
+const OG_DEFAULT = '/og-default.jpg';
+
 interface Props {
   title: string;
   description?: string;
@@ -16,7 +22,7 @@ interface Props {
 const {
   title,
   description = 'Fotografia rodzinna, plenerowa i świąteczna. Sesje zdjęciowe bez pozowania.',
-  ogImage,
+  ogImage = OG_DEFAULT,
   noindex = false,
 } = Astro.props;
 
@@ -24,6 +30,9 @@ const settings = getSettings();
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const fullTitle = title === 'AW Fotografia' ? title : `${title} — AW Fotografia`;
 const ogImageUrl = ogImage ? new URL(ogImage, Astro.site).href : undefined;
+// Declared only for the card, whose size is known here — a session's cover is
+// whatever the photographer uploaded, and a wrong pair is worse than none.
+const isDefaultOgImage = ogImage === OG_DEFAULT;
 
 /**
  * Helps Google show the business in local results. Only fields that are
@@ -62,6 +71,15 @@ const businessSchema = {
     <meta property="og:url" content={canonical.href} />
     <meta property="og:locale" content="pl_PL" />
     {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    {
+      isDefaultOgImage && (
+        <>
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content="AW Fotografia — Alicja Wicherek" />
+        </>
+      )
+    }
     <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
