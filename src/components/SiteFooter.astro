@@ -159,12 +159,22 @@ const waHref = whatsappHref(settings.whatsapp);
   .footer .footer-nav {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 0.2rem 0.5rem;
+  }
+  /* The separator is inline text, so in a taller row — an icon-only item is
+     14px against the ~24px of a text one — it settled on the baseline and read
+     as sitting low. Centring the item's own row lines it up with whatever it
+     follows. */
+  .footer .footer-nav li {
+    display: flex;
+    align-items: center;
   }
   .footer .footer-nav li:not(:last-child)::after {
     content: '·';
     margin-left: 0.5rem;
-    /* Sits a step below the links, but #6e6459 on this ground was invisible. */
+    line-height: 1;
+    /* A step below the links, but #6e6459 on this ground was invisible. */
     color: #a99e92;
   }
 
