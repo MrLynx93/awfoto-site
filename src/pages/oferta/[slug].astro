@@ -5,7 +5,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContactSection from '../../components/ContactSection.astro';
 import PhotoGallery from '../../components/PhotoGallery.astro';
 import Lightbox from '../../components/Lightbox.astro';
-import SessionGrid from '../../components/SessionGrid.astro';
+import SessionCard from '../../components/SessionCard.astro';
+import Carousel from '../../components/Carousel.astro';
 import { getSettings } from '../../lib/siteContent';
 import { publishedSessions } from '../../lib/sessions';
 
@@ -23,7 +24,7 @@ export async function getStaticPaths() {
         .filter((session) =>
           offer.data.name.toLowerCase().includes(session.data.category.toLowerCase()),
         )
-        .slice(0, 3),
+        .slice(0, 8),
     },
   }));
 }
@@ -119,7 +120,11 @@ const facts = [
               Wszystkie sesje →
             </a>
           </div>
-          <SessionGrid sessions={examples} />
+          <Carousel label="Takie sesje już robiłam" dotLabel="Sesja">
+            {examples.map((example) => (
+              <SessionCard session={example} />
+            ))}
+          </Carousel>
         </div>
       </section>
     )

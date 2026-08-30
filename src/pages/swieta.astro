@@ -5,7 +5,8 @@ import BotanicalDivider from '../components/BotanicalDivider.astro';
 import PhotoGallery from '../components/PhotoGallery.astro';
 import Lightbox from '../components/Lightbox.astro';
 import PricingTable from '../components/PricingTable.astro';
-import SessionGrid from '../components/SessionGrid.astro';
+import SessionCard from '../components/SessionCard.astro';
+import Carousel from '../components/Carousel.astro';
 import ContactSection from '../components/ContactSection.astro';
 import { getPricing, getSettings } from '../lib/siteContent';
 import { publishedSessions, christmasSessions } from '../lib/sessions';
@@ -110,7 +111,11 @@ const description = christmas.lead || 'Sesje świąteczne — scenografia, termi
                   Wszystkie sesje →
                 </a>
               </div>
-              <SessionGrid sessions={past} />
+              <Carousel label="Świąteczne sesje, które już zrobiłam" dotLabel="Sesja">
+                {past.map((session) => (
+                  <SessionCard session={session} />
+                ))}
+              </Carousel>
             </div>
           </section>
         )}
