@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PricingTable from '../components/PricingTable.astro';
-import BotanicalDivider from '../components/BotanicalDivider.astro';
 import ContactSection from '../components/ContactSection.astro';
 import { getPricing, getSettings } from '../lib/siteContent';
 
@@ -12,30 +11,36 @@ const settings = getSettings();
 // page and the menu link — turned on in November and off in January. The
 // packages stay saved in between.
 const showChristmas = settings.christmas.active && pricing.christmas.packages.length > 0;
+
+// In season the Christmas packages are the offer, so they replace the
+// year-round list rather than sitting under it.
+const description = showChristmas
+  ? 'Pakiety sesji świątecznych — co obejmują i ile kosztują.'
+  : 'Pakiety sesji: co obejmują, ile trwają i ile kosztują.';
 ---
 
-<BaseLayout
-  title="Cennik"
-  description="Pakiety sesji: mini, standard i max. Osobny cennik świąteczny."
->
+<BaseLayout title="Cennik" description={description}>
   <header class="page-header">
     <p class="label">Cennik</p>
     <h1>Pakiety sesji</h1>
     {pricing.intro && <p class="lead">{pricing.intro}</p>}
   </header>
 
-  <section class="section">
-    <div class="container">
-      <PricingTable packages={pricing.packages} />
-    </div>
-  </section>
+  {
+    !showChristmas && (
+      <section class="section">
+        <div class="container">
+          <PricingTable packages={pricing.packages} />
+        </div>
+      </section>
+    )
+  }
 
   {
     showChristmas && (
       <section class="section christmas">
         <div class="container">
-          <BotanicalDivider />
-          <div class="centered heading-block">
+          <div class="centered heading-block heading-block--lead">
             {pricing.christmas.eyebrow && <p class="label">{pricing.christmas.eyebrow}</p>}
             <h2 class="section-title">{pricing.christmas.title}</h2>
             {pricing.christmas.description && (
@@ -93,6 +98,11 @@ const showChristmas = settings.christmas.active && pricing.christmas.packages.le
 
   .heading-block {
     margin-top: 2.5rem;
+  }
+  /* Nothing precedes the Christmas block now, so it opens its band rather
+     than following a divider off the list above. */
+  .heading-block--lead {
+    margin-top: 0;
   }
 
   /* The Christmas list is a dark band, so it reads as a separate offer rather
