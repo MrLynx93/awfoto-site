@@ -30,7 +30,7 @@ const waHref = whatsappHref(settings.whatsapp);
 
     <div>
       <h2>Kontakt</h2>
-      <ul>
+      <ul class="footer-nav">
         {
           settings.phone && (
             <li>
@@ -72,12 +72,11 @@ const waHref = whatsappHref(settings.whatsapp);
     font-size: 0.86rem;
   }
 
+  /* One block under another rather than three columns. Both lists are a
+     single line now, so stacking them stays short. */
   .footer-grid {
     display: grid;
-    /* The middle column carries the whole page list on one line now, so it
-       gets the width the stacked version did not need. */
-    grid-template-columns: 1.2fr 1.5fr 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
     max-width: var(--max);
     margin: 0 auto;
   }
@@ -102,7 +101,7 @@ const waHref = whatsappHref(settings.whatsapp);
   }
 
   .footer h2 {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
     font-family: var(--body);
     font-size: 0.72rem;
     font-weight: 500;
@@ -119,8 +118,8 @@ const waHref = whatsappHref(settings.whatsapp);
     list-style: none;
   }
 
-  /* The page links read as one line separated by dots rather than a column,
-     which is what keeps the footer short. */
+  /* Both lists read as one line separated by dots rather than a column,
+     which is what keeps the stacked footer short. */
   .footer .footer-nav {
     display: flex;
     flex-wrap: wrap;
@@ -143,7 +142,7 @@ const waHref = whatsappHref(settings.whatsapp);
   }
 
   .footer :global(.footer-socials) {
-    margin-top: 1rem;
+    margin-top: 0.85rem;
   }
   .footer :global(.footer-socials a) {
     color: #a99e92;
@@ -160,12 +159,5 @@ const waHref = whatsappHref(settings.whatsapp);
     border-top: 1px solid rgba(255, 255, 255, 0.12);
     font-size: 0.76rem;
     color: #948a7f;
-  }
-
-  @media (max-width: 780px) {
-    .footer-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
   }
 </style>
