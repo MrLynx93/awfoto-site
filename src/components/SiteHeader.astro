@@ -53,8 +53,21 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
               href={item.href}
               aria-current={isCurrent(item.href) ? 'page' : undefined}
             >
-              {item.highlight && <Snowflake />}
+              {item.highlight && (
+                <span class="flakes">
+                  <Snowflake />
+                  <Snowflake />
+                  <Snowflake />
+                </span>
+              )}
               <span>{item.label}</span>
+              {item.highlight && (
+                <span class="flakes flakes--right">
+                  <Snowflake />
+                  <Snowflake />
+                  <Snowflake />
+                </span>
+              )}
             </a>
           </li>
         ))
@@ -90,8 +103,21 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
               href={item.href}
               aria-current={isCurrent(item.href) ? 'page' : undefined}
             >
-              {item.highlight && <Snowflake />}
+              {item.highlight && (
+                <span class="flakes">
+                  <Snowflake />
+                  <Snowflake />
+                  <Snowflake />
+                </span>
+              )}
               <span>{item.label}</span>
+              {item.highlight && (
+                <span class="flakes flakes--right">
+                  <Snowflake />
+                  <Snowflake />
+                  <Snowflake />
+                </span>
+              )}
             </a>
           </li>
         ))
@@ -192,10 +218,35 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
     background: var(--glina);
     color: #fff9f2;
   }
-  .menu :global(.snowflake) {
-    width: 14px;
-    height: 14px;
+  /* The same drift as the announcement bar, at the size the bar can spare:
+     stepped and nudged rather than three identical marks, and mirrored on the
+     right. */
+  .flakes {
+    display: flex;
+    align-items: center;
     flex: none;
+    gap: 0.12rem;
+  }
+  .flakes--right {
+    flex-direction: row-reverse;
+  }
+  .menu .flakes :global(.snowflake) {
+    flex: none;
+  }
+  .menu .flakes :global(.snowflake:nth-child(1)) {
+    width: 8px;
+    height: 8px;
+    transform: translateY(2px);
+  }
+  .menu .flakes :global(.snowflake:nth-child(2)) {
+    width: 11px;
+    height: 11px;
+    transform: translateY(-2px);
+  }
+  .menu .flakes :global(.snowflake:nth-child(3)) {
+    width: 9px;
+    height: 9px;
+    transform: translateY(1px);
   }
   .menu a.is-highlight:hover,
   .menu a.is-highlight[aria-current='page'] {
@@ -371,10 +422,26 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
       gap: 0.55rem;
       color: var(--glina);
     }
-    .nav-panel :global(.snowflake) {
-      width: 20px;
-      height: 20px;
+    .nav-panel .flakes {
+      gap: 0.2rem;
+    }
+    .nav-panel .flakes :global(.snowflake) {
       flex: none;
+    }
+    .nav-panel .flakes :global(.snowflake:nth-child(1)) {
+      width: 12px;
+      height: 12px;
+      transform: translateY(3px);
+    }
+    .nav-panel .flakes :global(.snowflake:nth-child(2)) {
+      width: 17px;
+      height: 17px;
+      transform: translateY(-3px);
+    }
+    .nav-panel .flakes :global(.snowflake:nth-child(3)) {
+      width: 13px;
+      height: 13px;
+      transform: translateY(2px);
     }
     .nav-panel li:last-child a {
       border-bottom: 0;
