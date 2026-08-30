@@ -148,6 +148,7 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
   .wordmark {
     display: inline-flex;
     align-items: center;
+    flex: none;
     gap: 0.7rem;
     font-family: var(--display);
     font-size: 1.35rem;
@@ -163,6 +164,7 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
   /* Sized by height so the mark keeps the bar's rhythm, and given the width it
      will actually occupy so the row does not jump once the image decodes. */
   .wordmark-mark {
+    flex: none;
     height: 2.9rem;
     width: auto;
   }
@@ -176,6 +178,9 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
     font-size: 0.82rem;
     letter-spacing: 0.13em;
     text-transform: uppercase;
+  }
+  .menu li {
+    white-space: nowrap;
   }
   .menu a {
     text-decoration: none;
@@ -218,6 +223,39 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
   .menu a.is-highlight[aria-current='page'] {
     background: var(--glina-ciemna);
     border-color: var(--glina-ciemna);
+  }
+
+  /* Between the phone menu and a full-width bar there is not room for all of
+     it at its full size: six links, a pill and the wordmark come to about
+     1150px. The spacing and a step of type go first, then the profile icons —
+     they are in the footer and the contact block too. Nothing here is allowed
+     to shrink the wordmark: overlapping the logo is worse than any of it. */
+  @media (max-width: 1180px) {
+    .nav {
+      gap: 1.25rem;
+    }
+    .wordmark {
+      font-size: 1.15rem;
+      letter-spacing: 0.2em;
+    }
+    .wordmark-mark {
+      height: 2.4rem;
+    }
+    .menu {
+      gap: 1.15rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+    }
+    .menu a.is-highlight,
+    .menu a.is-highlight:hover,
+    .menu a.is-highlight[aria-current='page'] {
+      padding-inline: 0.9rem;
+    }
+  }
+  @media (max-width: 1024px) {
+    .nav :global(.header-socials) {
+      display: none;
+    }
   }
 
   /* ---------- mobile navigation ---------- */
