@@ -21,7 +21,10 @@ interface NavItem {
 // out of season it disappears, so the nav never advertises a closed offer.
 const NAV: NavItem[] = [
   ...(settings.christmas.active ? [{ href: '/swieta', label: 'Święta', highlight: true }] : []),
-  { href: '/sesje', label: 'Moje sesje' },
+  // The row is already on the homepage, so there the item scrolls to it
+  // rather than leaving for the full listing; "Wszystkie sesje" under the row
+  // and the footer both still lead to /sesje.
+  { href: path === '/' ? '#moje-sesje' : '/sesje', label: 'Moje sesje' },
   { href: '/oferta', label: 'Oferta' },
   { href: '/cennik', label: 'Cennik' },
   { href: '/o-mnie', label: 'O mnie' },
@@ -432,6 +435,12 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') closeMenu(true);
+    });
+
+    // A link to a section on this page does not reload anything, so the panel
+    // would stay open over it with the body scroll still locked.
+    panel.addEventListener('click', (event) => {
+      if ((event.target as Element).closest('a')) closeMenu(false);
     });
 
     document.addEventListener('click', (event) => {
