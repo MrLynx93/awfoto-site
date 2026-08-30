@@ -55,6 +55,7 @@ const settingsSchema = z.object({
       eyebrow: z.string().default(''),
       heading: z.string().default('Sesje świąteczne'),
       lead: z.string().default(''),
+      galleryIntro: z.string().default(''),
     })
     .default({}),
   seasonalBanner: z

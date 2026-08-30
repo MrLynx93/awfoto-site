@@ -346,6 +346,11 @@ export default config({
               description: 'Kilka zdań na górze strony „Święta”.',
               multiline: true,
             }),
+            galleryIntro: fields.text({
+              label: 'Tekst nad zdjęciami',
+              description: 'Jedno–dwa zdania nad galerią scenek na stronie „Święta”.',
+              multiline: true,
+            }),
           },
           { label: 'Sezon świąteczny' },
         ),

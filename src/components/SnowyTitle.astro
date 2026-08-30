@@ -1,0 +1,96 @@
+---
+import Snowflake from './Snowflake.astro';
+
+/**
+ * A section title flanked by three flakes either side, as on the announcement
+ * bar and the Święta menu item — the same drift of stepped sizes, the right
+ * group mirrored.
+ *
+ * The flakes flank the whole heading rather than sitting on its first line, so
+ * they stay centred against a title that wraps on a phone.
+ */
+---
+
+<div class="snowy-title">
+  <span class="title-flakes">
+    <Snowflake />
+    <Snowflake />
+    <Snowflake />
+  </span>
+  <h2 class="section-title"><slot /></h2>
+  <span class="title-flakes title-flakes--right">
+    <Snowflake />
+    <Snowflake />
+    <Snowflake />
+  </span>
+</div>
+
+<style>
+  .snowy-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.6rem, 2vw, 1.4rem);
+    /* The margin the title carried on its own, moved out so the flakes centre
+       against the text rather than against the text plus its gap. */
+    margin-bottom: 1rem;
+  }
+  .snowy-title h2 {
+    margin-bottom: 0;
+  }
+
+  .title-flakes {
+    display: flex;
+    align-items: center;
+    flex: none;
+    gap: clamp(0.2rem, 0.6vw, 0.4rem);
+    color: var(--taupe);
+  }
+  .title-flakes--right {
+    flex-direction: row-reverse;
+  }
+  /* Sized against the title, which is itself fluid: large enough to read as
+     part of the heading, well short of the letters beside them. */
+  .title-flakes :global(.snowflake) {
+    flex: none;
+  }
+  .title-flakes :global(.snowflake:nth-child(1)) {
+    width: clamp(11px, 1.5vw, 20px);
+    height: clamp(11px, 1.5vw, 20px);
+    transform: translateY(0.4em);
+  }
+  .title-flakes :global(.snowflake:nth-child(2)) {
+    width: clamp(16px, 2.2vw, 29px);
+    height: clamp(16px, 2.2vw, 29px);
+    transform: translateY(-0.35em);
+  }
+  .title-flakes :global(.snowflake:nth-child(3)) {
+    width: clamp(13px, 1.8vw, 24px);
+    height: clamp(13px, 1.8vw, 24px);
+    transform: translateY(0.3em);
+  }
+
+  /* On a phone the title needs the width more than the drift does: the flakes
+     step down and close up so "Cennik świąteczny" still breaks in two lines
+     rather than three. */
+  @media (max-width: 620px) {
+    .snowy-title {
+      gap: 0.4rem;
+    }
+    .title-flakes {
+      gap: 0.12rem;
+    }
+    .title-flakes :global(.snowflake:nth-child(1)) {
+      width: 8px;
+      height: 8px;
+    }
+    .title-flakes :global(.snowflake:nth-child(2)) {
+      width: 11px;
+      height: 11px;
+    }
+    .title-flakes :global(.snowflake:nth-child(3)) {
+      width: 9px;
+      height: 9px;
+    }
+  }
+</style>

@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PricingTable from '../components/PricingTable.astro';
 import ContactSection from '../components/ContactSection.astro';
 import PricingNotes from '../components/PricingNotes.astro';
+import SnowyTitle from '../components/SnowyTitle.astro';
 import { getPricing, getSettings } from '../lib/siteContent';
 
 const pricing = getPricing();
@@ -43,7 +44,7 @@ const description = showChristmas
         <div class="container">
           <div class="centered heading-block heading-block--lead">
             {pricing.christmas.eyebrow && <p class="label">{pricing.christmas.eyebrow}</p>}
-            <h2 class="section-title">{pricing.christmas.title}</h2>
+            <SnowyTitle>{pricing.christmas.title}</SnowyTitle>
             {pricing.christmas.description && (
               <p class="lead">{pricing.christmas.description}</p>
             )}
