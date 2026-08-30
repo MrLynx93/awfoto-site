@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
 import { getSettings, whatsappHref } from '../lib/siteContent';
 
 const settings = getSettings();
@@ -9,7 +11,10 @@ const waHref = whatsappHref(settings.whatsapp);
 <footer class="footer">
   <div class="footer-grid">
     <div>
-      <a class="wordmark" href="/">AW<em>·</em>Fotografia</a>
+      <a class="wordmark" href="/">
+        <Image class="wordmark-mark" src={logo} alt="" width={60} densities={[1, 2, 3]} />
+        <span>AW<em>·</em>Fotografia</span>
+      </a>
       <p class="tagline">
         Fotografia rodzinna, plenerowa i świąteczna.
         {settings.city && <><br />{settings.city}</>}
@@ -118,6 +123,9 @@ const waHref = whatsappHref(settings.whatsapp);
   }
 
   .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
     font-family: var(--display);
     font-size: 1.15rem;
     letter-spacing: 0.36em;
@@ -128,6 +136,12 @@ const waHref = whatsappHref(settings.whatsapp);
   .wordmark em {
     font-style: normal;
     color: var(--glina);
+  }
+  /* The mark is a wash of cream over white, so it reads on the dark ground
+     without a plate behind it — the file carries its own alpha. */
+  .wordmark-mark {
+    height: 2.6rem;
+    width: auto;
   }
 
   .tagline {

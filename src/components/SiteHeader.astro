@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
 import SocialLinks from './SocialLinks.astro';
 import SeasonalBanner from './SeasonalBanner.astro';
 import { getSettings, whatsappHref } from '../lib/siteContent';
@@ -33,7 +35,10 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
   <SeasonalBanner banner={settings.seasonalBanner} />
 
   <nav class="nav" aria-label="Główne">
-    <a class="wordmark" href="/">AW<em>·</em>Fotografia</a>
+    <a class="wordmark" href="/">
+      <Image class="wordmark-mark" src={logo} alt="" width={60} densities={[1, 2, 3]} loading="eager" />
+      <span>AW<em>·</em>Fotografia</span>
+    </a>
 
     <ul class="menu">
       {
@@ -141,6 +146,9 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
   }
 
   .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
     font-family: var(--display);
     font-size: 1.35rem;
     letter-spacing: 0.36em;
@@ -151,6 +159,12 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
   .wordmark em {
     font-style: normal;
     color: var(--glina);
+  }
+  /* Sized by height so the mark keeps the bar's rhythm, and given the width it
+     will actually occupy so the row does not jump once the image decodes. */
+  .wordmark-mark {
+    height: 2.9rem;
+    width: auto;
   }
 
   .menu {
@@ -271,8 +285,12 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
       margin-left: auto;
     }
     .wordmark {
+      gap: 0.5rem;
       font-size: 1.05rem;
       letter-spacing: 0.22em;
+    }
+    .wordmark-mark {
+      height: 2.3rem;
     }
 
     .nav-panel {
