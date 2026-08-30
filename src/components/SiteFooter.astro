@@ -205,6 +205,26 @@ const waHref = whatsappHref(settings.whatsapp);
     color: var(--glina);
   }
 
+  /* The contact row wants 345px at the desktop sizing, which is more than a
+     360px phone leaves after the page padding — so the address wrapped onto a
+     line of its own with the rest of the row half empty. Tightening the
+     separators and dropping a step of type brings it under 310px, which fits
+     from about 340px up. */
+  @media (max-width: 520px) {
+    .footer {
+      font-size: 0.82rem;
+    }
+    .footer .footer-nav {
+      gap: 0.2rem 0.3rem;
+    }
+    .footer .footer-nav li:not(:last-child)::after {
+      margin-left: 0.3rem;
+    }
+    .footer-nav a:has(svg) {
+      gap: 0.3rem;
+    }
+  }
+
   .footer-bottom {
     display: flex;
     flex-wrap: wrap;
