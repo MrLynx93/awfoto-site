@@ -319,7 +319,6 @@ export default config({
         hours: fields.text({ label: 'Godziny kontaktu' }),
         facebook: fields.url({ label: 'Facebook — link do profilu' }),
         instagram: fields.url({ label: 'Instagram — link do profilu' }),
-        messenger: fields.url({ label: 'Messenger — link', description: 'Np. https://m.me/twojprofil' }),
         whatsapp: fields.text({
           label: 'WhatsApp — numer',
           description:

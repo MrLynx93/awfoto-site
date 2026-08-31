@@ -47,7 +47,6 @@ const settingsSchema = z.object({
   hours: z.string().default(''),
   facebook: z.string().default(''),
   instagram: z.string().default(''),
-  messenger: z.string().default(''),
   whatsapp: z.string().default(''),
   christmas: z
     .object({
