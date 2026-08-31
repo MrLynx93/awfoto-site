@@ -22,11 +22,17 @@ const description = showChristmas
 ---
 
 <BaseLayout title="Cennik" description={description}>
-  <header class="page-header">
-    <p class="label">Cennik</p>
-    <h1>Pakiety sesji</h1>
-    {pricing.intro && <p class="lead">{pricing.intro}</p>}
-  </header>
+  {/* In season the Christmas band carries the page's own heading, so this one
+      would sit above it saying the same thing about a list that is not there. */}
+  {
+    !showChristmas && (
+      <header class="page-header">
+        <p class="label">Cennik</p>
+        <h1>Pakiety sesji</h1>
+        {pricing.intro && <p class="lead">{pricing.intro}</p>}
+      </header>
+    )
+  }
 
   {
     !showChristmas && (
@@ -44,7 +50,7 @@ const description = showChristmas
         <div class="container">
           <div class="centered heading-block heading-block--lead">
             {pricing.christmas.eyebrow && <p class="label">{pricing.christmas.eyebrow}</p>}
-            <SnowyTitle>{pricing.christmas.title}</SnowyTitle>
+            <SnowyTitle as="h1">{pricing.christmas.title}</SnowyTitle>
             {pricing.christmas.description && (
               <p class="lead">{pricing.christmas.description}</p>
             )}

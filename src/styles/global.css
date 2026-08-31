@@ -110,6 +110,18 @@ body {
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  /* A short page — /kontakt is the shortest — used to leave the footer
+     floating mid-screen with cream below it. The column fills the viewport
+     and main takes the slack, so the footer sits on the bottom edge when
+     there is not enough content to push it there. */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+body > main {
+  flex: 1 0 auto;
 }
 
 h1,

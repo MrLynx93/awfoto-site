@@ -9,6 +9,12 @@ import Snowflake from './Snowflake.astro';
  * The flakes flank the whole heading rather than sitting on its first line, so
  * they stay centred against a title that wraps on a phone.
  */
+interface Props {
+  /** h1 where this is the page's own title, as on /cennik in season. */
+  as?: 'h1' | 'h2';
+}
+
+const { as: Tag = 'h2' } = Astro.props;
 ---
 
 <div class="snowy-title">
@@ -17,7 +23,7 @@ import Snowflake from './Snowflake.astro';
     <Snowflake />
     <Snowflake />
   </span>
-  <h2 class="section-title"><slot /></h2>
+  <Tag class="section-title"><slot /></Tag>
   <span class="title-flakes title-flakes--right">
     <Snowflake />
     <Snowflake />
@@ -35,7 +41,7 @@ import Snowflake from './Snowflake.astro';
        against the text rather than against the text plus its gap. */
     margin-bottom: 1rem;
   }
-  .snowy-title h2 {
+  .snowy-title .section-title {
     margin-bottom: 0;
   }
 
