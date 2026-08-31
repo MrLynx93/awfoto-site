@@ -4,9 +4,14 @@ import type { CollectionEntry } from 'astro:content';
 
 interface Props {
   offer: CollectionEntry<'offers'>;
+  /**
+   * The duration and price line. The homepage carousel turns it off: there the
+   * card is an invitation to look, and /cennik is where the numbers belong.
+   */
+  showMeta?: boolean;
 }
 
-const { offer } = Astro.props;
+const { offer, showMeta = true } = Astro.props;
 const { name, description, duration, price, image } = offer.data;
 ---
 
@@ -23,10 +28,12 @@ const { name, description, duration, price, image } = offer.data;
   </a>
   <h3><a href={`/oferta/${offer.id}`}>{name}</a></h3>
   <p>{description}</p>
-  <div class="offer-meta">
-    {duration && <span>{duration}</span>}
-    {price && <b>{price}</b>}
-  </div>
+  {showMeta && (duration || price) && (
+    <div class="offer-meta">
+      {duration && <span>{duration}</span>}
+      {price && <b>{price}</b>}
+    </div>
+  )}
 </article>
 
 <style>

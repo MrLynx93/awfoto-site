@@ -96,7 +96,7 @@ const heroImage = highlighted[0]?.data.coverImage;
           </div>
           <Carousel label="Rodzaje sesji" dotLabel="Oferta">
             {offers.map((offer) => (
-              <OfferCard offer={offer} />
+              <OfferCard offer={offer} showMeta={false} />
             ))}
           </Carousel>
         </div>
