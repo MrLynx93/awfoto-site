@@ -55,6 +55,8 @@ const settingsSchema = z.object({
       heading: z.string().default('Sesje świąteczne'),
       lead: z.string().default(''),
       galleryIntro: z.string().default(''),
+      contactHeading: z.string().default('Zarezerwuj termin świąteczny'),
+      contactLead: z.string().default('Terminy listopadowe i grudniowe rezerwują się najszybciej — napisz albo zadzwoń.'),
     })
     .default({}),
   seasonalBanner: z

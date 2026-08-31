@@ -6,6 +6,11 @@
  * script runs and keeps native momentum on touch. The script only adds the
  * dots, and only shows them when the track actually overflows — at three
  * across on a wide screen everything fits, and a row of dots would be a lie.
+ *
+ * A dot is a screenful, not a card: with three cards in view, one dot per card
+ * would light the first while the reader is looking at the first three. How
+ * many fit is measured rather than read off the prop, since the count steps
+ * down at the breakpoints below and the narrowest is a fractional 1.15.
  */
 interface Props {
   /** Accessible name for the scrollable region. */
@@ -130,36 +135,82 @@ const { label, dotLabel = 'Pozycja', perView = 3 } = Astro.props;
     if (slides.length < 2) continue;
 
     const noun = carousel.dataset.dotLabel || 'Pozycja';
-    const buttons = slides.map((slide, index) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.setAttribute('aria-label', `${noun} ${index + 1}`);
-      button.addEventListener('click', () => {
-        track.scrollTo({ left: slide.offsetLeft, behavior: 'smooth' });
-      });
-      dots.append(button);
-      return button;
-    });
+
+    /**
+     * How many cards a screenful holds. The step from one card's left edge to
+     * the next is its width plus the gap, so the track's width over that step
+     * is the count — rounded, because the last card in view is deliberately
+     * part-cut on a phone.
+     */
+    const measurePerPage = () => {
+      const step = slides[1].offsetLeft - slides[0].offsetLeft;
+      if (step <= 0) return 1;
+      return Math.max(1, Math.min(slides.length, Math.round(track.clientWidth / step)));
+    };
+
+    let perPage = 0;
+    let starts: number[] = [];
+    let buttons: HTMLButtonElement[] = [];
+
+    const buildDots = () => {
+      dots.textContent = '';
+      const pages = Math.ceil(slides.length / perPage);
+      starts = [];
+      buttons = [];
+
+      for (let page = 0; page < pages; page += 1) {
+        // The last page is pulled back to end flush with the track rather than
+        // starting a screenful the row cannot scroll to: six cards three at a
+        // time is two pages, but so is four, and that second one shows 2-4.
+        const first = Math.max(0, Math.min(page * perPage, slides.length - perPage));
+        const last = Math.min(first + perPage - 1, slides.length - 1);
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.setAttribute(
+          'aria-label',
+          first === last ? `${noun} ${first + 1}` : `${noun} ${first + 1}-${last + 1}`,
+        );
+        button.addEventListener('click', () => {
+          track.scrollTo({ left: slides[first].offsetLeft, behavior: 'smooth' });
+        });
+
+        dots.append(button);
+        starts.push(first);
+        buttons.push(button);
+      }
+    };
 
     const sync = () => {
-      const scrollable = track.scrollWidth - track.clientWidth > 1;
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      const scrollable = maxScroll > 1;
       dots.hidden = !scrollable;
       if (!scrollable) return;
 
-      // Whichever slide sits closest to the track's left edge is the one the
-      // reader is on — true for a snapped position and mid-drag alike.
-      let active = 0;
-      let nearest = Infinity;
-      slides.forEach((slide, index) => {
-        const distance = Math.abs(slide.offsetLeft - track.scrollLeft);
-        if (distance < nearest) {
-          nearest = distance;
-          active = index;
-        }
-      });
+      const measured = measurePerPage();
+      if (measured !== perPage) {
+        perPage = measured;
+        buildDots();
+      }
 
-      buttons.forEach((button, index) => {
-        if (index === active) button.setAttribute('aria-current', 'true');
+      // Whichever page's first card sits closest to the track's left edge is
+      // the one on screen — true for a snapped position and mid-drag alike.
+      // The end of the track is its own case: a last page that ends flush can
+      // sit a pixel short of its own start once widths are fractional.
+      let active = buttons.length - 1;
+      if (track.scrollLeft < maxScroll - 1) {
+        let nearest = Infinity;
+        starts.forEach((first, page) => {
+          const distance = Math.abs(slides[first].offsetLeft - track.scrollLeft);
+          if (distance < nearest) {
+            nearest = distance;
+            active = page;
+          }
+        });
+      }
+
+      buttons.forEach((button, page) => {
+        if (page === active) button.setAttribute('aria-current', 'true');
         else button.removeAttribute('aria-current');
       });
     };

@@ -350,6 +350,17 @@ export default config({
               description: 'Jedno–dwa zdania nad galerią scenek na stronie „Święta”.',
               multiline: true,
             }),
+            contactHeading: fields.text({
+              label: 'Nagłówek nad kontaktem',
+              description: 'Nad przyciskami kontaktu na dole strony „Święta”.',
+              defaultValue: 'Zarezerwuj termin świąteczny',
+            }),
+            contactLead: fields.text({
+              label: 'Tekst nad kontaktem',
+              description: 'Zdanie pod tym nagłówkiem. Zostaw puste, żeby go nie pokazywać.',
+              multiline: true,
+              defaultValue: 'Terminy listopadowe i grudniowe rezerwują się najszybciej — napisz albo zadzwoń.',
+            }),
           },
           { label: 'Sezon świąteczny' },
         ),
