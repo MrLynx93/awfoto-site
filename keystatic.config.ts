@@ -364,6 +364,18 @@ export default config({
           },
           { label: 'Sezon świąteczny' },
         ),
+        pages: fields.object(
+          {
+            sessionsHeading: fields.text({ label: 'Nagłówek strony „Moje sesje”' }),
+            sessionsIntro: fields.markdoc.inline({ label: 'Tekst wstępny — „Moje sesje”' }),
+            offersHeading: fields.text({ label: 'Nagłówek strony „Oferta”' }),
+            offersIntro: fields.markdoc.inline({ label: 'Tekst wstępny — „Oferta”' }),
+          },
+          {
+            label: 'Strony: Moje sesje i Oferta',
+            description: 'Nagłówek i kilka zdań na górze każdej z tych dwóch stron.',
+          },
+        ),
         seasonalBanner: fields.object(
           {
             active: fields.checkbox({

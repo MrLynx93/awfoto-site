@@ -59,6 +59,14 @@ const settingsSchema = z.object({
       contactLead: z.string().default('Terminy listopadowe i grudniowe rezerwują się najszybciej — napisz albo zadzwoń.'),
     })
     .default({}),
+  pages: z
+    .object({
+      sessionsHeading: z.string().default('Moje sesje'),
+      sessionsIntro: z.string().default('Każda sesja to osobny wpis — kilka zdań o tym, jak było, i zdjęcia. Kliknij w zdjęcie, żeby zobaczyć całą sesję.'),
+      offersHeading: z.string().default('Rodzaje sesji'),
+      offersIntro: z.string().default('Każda sesja wygląda inaczej, ale zawsze bez sztywnego pozowania. Ceny pakietów znajdziesz w [cenniku](/cennik).'),
+    })
+    .default({}),
   seasonalBanner: z
     .object({
       active: z.boolean().default(false),

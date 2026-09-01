@@ -4,8 +4,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import OfferCard from '../../components/OfferCard.astro';
 import ContactSection from '../../components/ContactSection.astro';
 import { getSettings } from '../../lib/siteContent';
+import { renderRichText } from '../../lib/richText';
 
 const settings = getSettings();
+const { pages } = settings;
 const offers = (await getCollection('offers')).sort((a, b) => a.data.order - b.data.order);
 ---
 
@@ -15,11 +17,10 @@ const offers = (await getCollection('offers')).sort((a, b) => a.data.order - b.d
 >
   <header class="page-header">
     <p class="label">Oferta</p>
-    <h1>Rodzaje sesji</h1>
-    <p class="lead">
-      Każda sesja wygląda inaczej, ale zawsze bez sztywnego pozowania.
-      Ceny pakietów znajdziesz w <a href="/cennik">cenniku</a>.
-    </p>
+    <h1>{pages.offersHeading}</h1>
+    {pages.offersIntro && (
+      <div class="lead page-lead" set:html={renderRichText(pages.offersIntro)} />
+    )}
   </header>
 
   <section class="section">
@@ -51,6 +52,14 @@ const offers = (await getCollection('offers')).sort((a, b) => a.data.order - b.d
   }
   .page-header p {
     margin-inline: auto;
+  }
+  /* The intro is rich text from the panel, so its paragraphs arrive without
+     this component's scope attribute and the rule above cannot reach them. */
+  .page-lead :global(p) {
+    margin: 0 auto;
+  }
+  .page-lead :global(p + p) {
+    margin-top: 0.8rem;
   }
 
   .offers {
