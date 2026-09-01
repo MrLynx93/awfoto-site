@@ -4,15 +4,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactSection from '../components/ContactSection.astro';
 import SessionCard from '../components/SessionCard.astro';
 import Carousel from '../components/Carousel.astro';
-import { getSettings } from '../lib/siteContent';
+import { getSettings, getAbout } from '../lib/siteContent';
 import { publishedSessions } from '../lib/sessions';
 import portrait from '../../site-content/images/about/portret.jpg';
 
 const settings = getSettings();
+const about = getAbout();
 const latest = (await publishedSessions()).slice(0, 8);
 ---
 
-<BaseLayout title="O mnie" description={settings.aboutText}>
+<BaseLayout title="O mnie" description={about.text}>
   <article class="about">
     <Image
       class="arch"
@@ -24,9 +25,9 @@ const latest = (await publishedSessions()).slice(0, 8);
     />
     <div>
       <p class="label">O mnie</p>
-      <h1>{settings.aboutHeading}</h1>
-      <p class="lead">{settings.aboutText}</p>
-      {settings.signature && <p class="signature">{settings.signature}</p>}
+      <h1>{about.heading}</h1>
+      <p class="lead">{about.text}</p>
+      {about.signature && <p class="signature">{about.signature}</p>}
       {
         settings.city && (
           <p class="where">

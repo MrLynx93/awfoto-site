@@ -90,7 +90,9 @@ export default config({
     brand: { name: 'AW Fotografia' },
     navigation: {
       Treść: ['sessions', 'offers'],
-      Ustawienia: ['pricing', 'settings'],
+      Strony: ['homePage', 'sessionsPage', 'offersPage', 'aboutPage', 'christmasPage'],
+      Cennik: ['pricing', 'christmasPricing'],
+      Ustawienia: ['settings'],
     },
   },
 
@@ -252,8 +254,88 @@ export default config({
   },
 
   singletons: {
+    homePage: singleton({
+      label: 'Strona główna',
+      path: inRepo('content/pages/home'),
+      format: { data: 'yaml' },
+      schema: {
+        eyebrow: fields.text({ label: 'Nadtytuł', description: 'Mały tekst nad nagłówkiem.' }),
+        heading: fields.text({ label: 'Nagłówek', validation: { length: { min: 1 } } }),
+        text: fields.text({ label: 'Tekst pod nagłówkiem', multiline: true }),
+      },
+    }),
+
+    sessionsPage: singleton({
+      label: 'Strona „Moje sesje”',
+      path: inRepo('content/pages/sessions'),
+      format: { data: 'yaml' },
+      schema: {
+        heading: fields.text({ label: 'Nagłówek' }),
+        intro: fields.markdoc.inline({ label: 'Tekst wstępny' }),
+      },
+    }),
+
+    offersPage: singleton({
+      label: 'Strona „Oferta”',
+      path: inRepo('content/pages/offers'),
+      format: { data: 'yaml' },
+      schema: {
+        heading: fields.text({ label: 'Nagłówek' }),
+        intro: fields.markdoc.inline({ label: 'Tekst wstępny' }),
+      },
+    }),
+
+    aboutPage: singleton({
+      label: 'Strona „O mnie”',
+      path: inRepo('content/pages/about'),
+      format: { data: 'yaml' },
+      schema: {
+        heading: fields.text({ label: 'Nagłówek' }),
+        text: fields.text({ label: 'Tekst', multiline: true }),
+        signature: fields.text({ label: 'Podpis', description: 'Np. imię pod tekstem.' }),
+      },
+    }),
+
+    christmasPage: singleton({
+      label: 'Strona „Święta”',
+      path: inRepo('content/pages/christmas'),
+      format: { data: 'yaml' },
+      schema: {
+        active: fields.checkbox({
+          label: 'Sezon świąteczny — włączony',
+          description:
+            'Jeden przełącznik: pokazuje stronę „Święta”, link w menu, blok na stronie głównej i cennik świąteczny. Włącz w listopadzie, wyłącz w styczniu.',
+          defaultValue: false,
+        }),
+        eyebrow: fields.text({ label: 'Nadtytuł', description: 'Np. „Listopad — grudzień 2026”' }),
+        heading: fields.text({ label: 'Nagłówek', defaultValue: 'Sesje świąteczne' }),
+        lead: fields.text({
+          label: 'Tekst wstępny',
+          description: 'Kilka zdań na górze strony.',
+          multiline: true,
+        }),
+        galleryIntro: fields.text({
+          label: 'Tekst nad zdjęciami',
+          description: 'Jedno–dwa zdania nad galerią scenek.',
+          multiline: true,
+        }),
+        contactHeading: fields.text({
+          label: 'Nagłówek nad kontaktem',
+          description: 'Nad przyciskami kontaktu na dole strony.',
+          defaultValue: 'Zarezerwuj termin świąteczny',
+        }),
+        contactLead: fields.text({
+          label: 'Tekst nad kontaktem',
+          description: 'Zdanie pod tym nagłówkiem. Zostaw puste, żeby go nie pokazywać.',
+          multiline: true,
+          defaultValue:
+            'Terminy listopadowe i grudniowe rezerwują się najszybciej — napisz albo zadzwoń.',
+        }),
+      },
+    }),
+
     pricing: singleton({
-      label: 'Cennik',
+      label: 'Cennik całoroczny',
       path: inRepo('content/pricing'),
       format: { data: 'yaml' },
       schema: {
@@ -266,22 +348,6 @@ export default config({
           label: 'Pakiety (mini / standard / max)',
           itemLabel: (item) => `${item.fields.name.value} — ${item.fields.price.value}`,
         }),
-        christmas: fields.object(
-          {
-            eyebrow: fields.text({ label: 'Nadtytuł', description: 'Np. „Listopad — grudzień”' }),
-            title: fields.text({ label: 'Tytuł sekcji' }),
-            description: fields.text({ label: 'Opis', multiline: true }),
-            packages: fields.array(pricingPackage, {
-              label: 'Pakiety świąteczne',
-              itemLabel: (item) => `${item.fields.name.value} — ${item.fields.price.value}`,
-            }),
-          },
-          {
-            label: 'Cennik świąteczny',
-            description:
-              'Pokazuje się, gdy w Ustawieniach włączysz „Sezon świąteczny”. Pakiety zostają zapisane także po wyłączeniu.',
-          },
-        ),
         notes: fields.array(
           fields.object({
             title: fields.text({ label: 'Tytuł' }),
@@ -290,9 +356,25 @@ export default config({
           }),
           {
             label: 'Uwagi (rezerwacja, dojazd, zdjęcia dodatkowe)',
+            description: 'Pokazują się pod obydwoma cennikami — całorocznym i świątecznym.',
             itemLabel: (item) => item.fields.title.value || 'Uwaga',
           },
         ),
+      },
+    }),
+
+    christmasPricing: singleton({
+      label: 'Cennik świąteczny',
+      path: inRepo('content/christmas-pricing'),
+      format: { data: 'yaml' },
+      schema: {
+        eyebrow: fields.text({ label: 'Nadtytuł', description: 'Np. „Listopad — grudzień”' }),
+        title: fields.text({ label: 'Tytuł sekcji', defaultValue: 'Cennik świąteczny' }),
+        description: fields.text({ label: 'Opis', multiline: true }),
+        packages: fields.array(pricingPackage, {
+          label: 'Pakiety świąteczne',
+          itemLabel: (item) => `${item.fields.name.value} — ${item.fields.price.value}`,
+        }),
       },
     }),
 
@@ -301,22 +383,9 @@ export default config({
       path: inRepo('content/settings'),
       format: { data: 'yaml' },
       schema: {
-        heroEyebrow: fields.text({
-          label: 'Nadtytuł na stronie głównej',
-          description: 'Mały tekst nad nagłówkiem.',
-        }),
-        heroHeading: fields.text({
-          label: 'Nagłówek na stronie głównej',
-          validation: { length: { min: 1 } },
-        }),
-        heroText: fields.text({ label: 'Tekst na stronie głównej', multiline: true }),
-        aboutHeading: fields.text({ label: 'Nagłówek „O mnie”' }),
-        aboutText: fields.text({ label: 'Tekst „O mnie”', multiline: true }),
-        signature: fields.text({ label: 'Podpis', description: 'Np. imię pod tekstem o mnie.' }),
         phone: fields.text({ label: 'Telefon', description: 'Np. „555 123 456”' }),
         email: fields.text({ label: 'E-mail' }),
         city: fields.text({ label: 'Miasto / obszar', description: 'Np. „Rzeszów i okolice”' }),
-        hours: fields.text({ label: 'Godziny kontaktu' }),
         facebook: fields.url({ label: 'Facebook — link do profilu' }),
         instagram: fields.url({ label: 'Instagram — link do profilu' }),
         whatsapp: fields.text({
@@ -324,58 +393,6 @@ export default config({
           description:
             'Numer z kierunkowym kraju, bez spacji i plusa. Np. 48555123456. Zostaw puste, żeby ukryć przycisk.',
         }),
-        christmas: fields.object(
-          {
-            active: fields.checkbox({
-              label: 'Sezon świąteczny — włączony',
-              description:
-                'Jeden przełącznik: pokazuje stronę „Święta”, link w menu, blok na stronie głównej i cennik świąteczny. Włącz w listopadzie, wyłącz w styczniu.',
-              defaultValue: false,
-            }),
-            eyebrow: fields.text({
-              label: 'Nadtytuł',
-              description: 'Np. „Listopad — grudzień 2026”',
-            }),
-            heading: fields.text({
-              label: 'Nagłówek strony „Święta”',
-              defaultValue: 'Sesje świąteczne',
-            }),
-            lead: fields.text({
-              label: 'Tekst wstępny',
-              description: 'Kilka zdań na górze strony „Święta”.',
-              multiline: true,
-            }),
-            galleryIntro: fields.text({
-              label: 'Tekst nad zdjęciami',
-              description: 'Jedno–dwa zdania nad galerią scenek na stronie „Święta”.',
-              multiline: true,
-            }),
-            contactHeading: fields.text({
-              label: 'Nagłówek nad kontaktem',
-              description: 'Nad przyciskami kontaktu na dole strony „Święta”.',
-              defaultValue: 'Zarezerwuj termin świąteczny',
-            }),
-            contactLead: fields.text({
-              label: 'Tekst nad kontaktem',
-              description: 'Zdanie pod tym nagłówkiem. Zostaw puste, żeby go nie pokazywać.',
-              multiline: true,
-              defaultValue: 'Terminy listopadowe i grudniowe rezerwują się najszybciej — napisz albo zadzwoń.',
-            }),
-          },
-          { label: 'Sezon świąteczny' },
-        ),
-        pages: fields.object(
-          {
-            sessionsHeading: fields.text({ label: 'Nagłówek strony „Moje sesje”' }),
-            sessionsIntro: fields.markdoc.inline({ label: 'Tekst wstępny — „Moje sesje”' }),
-            offersHeading: fields.text({ label: 'Nagłówek strony „Oferta”' }),
-            offersIntro: fields.markdoc.inline({ label: 'Tekst wstępny — „Oferta”' }),
-          },
-          {
-            label: 'Strony: Moje sesje i Oferta',
-            description: 'Nagłówek i kilka zdań na górze każdej z tych dwóch stron.',
-          },
-        ),
         seasonalBanner: fields.object(
           {
             active: fields.checkbox({
@@ -390,7 +407,10 @@ export default config({
               defaultValue: '/swieta',
             }),
           },
-          { label: 'Pasek ogłoszeniowy' },
+          {
+            label: 'Pasek ogłoszeniowy',
+            description: 'Wąski pasek nad menu, na każdej stronie.',
+          },
         ),
       },
     }),

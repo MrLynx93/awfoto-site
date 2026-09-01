@@ -3,11 +3,11 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import OfferCard from '../../components/OfferCard.astro';
 import ContactSection from '../../components/ContactSection.astro';
-import { getSettings } from '../../lib/siteContent';
+import { getSettings, getOffersPage } from '../../lib/siteContent';
 import { renderRichText } from '../../lib/richText';
 
 const settings = getSettings();
-const { pages } = settings;
+const page = getOffersPage();
 const offers = (await getCollection('offers')).sort((a, b) => a.data.order - b.data.order);
 ---
 
@@ -17,9 +17,9 @@ const offers = (await getCollection('offers')).sort((a, b) => a.data.order - b.d
 >
   <header class="page-header">
     <p class="label">Oferta</p>
-    <h1>{pages.offersHeading}</h1>
-    {pages.offersIntro && (
-      <div class="lead page-lead" set:html={renderRichText(pages.offersIntro)} />
+    <h1>{page.heading}</h1>
+    {page.intro && (
+      <div class="lead page-lead" set:html={renderRichText(page.intro)} />
     )}
   </header>
 

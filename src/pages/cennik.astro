@@ -4,15 +4,17 @@ import PricingTable from '../components/PricingTable.astro';
 import ContactSection from '../components/ContactSection.astro';
 import PricingNotes from '../components/PricingNotes.astro';
 import SnowyTitle from '../components/SnowyTitle.astro';
-import { getPricing, getSettings } from '../lib/siteContent';
+import { getChristmas, getChristmasPricing, getPricing, getSettings } from '../lib/siteContent';
 
 const pricing = getPricing();
 const settings = getSettings();
+const christmas = getChristmas();
+const christmasPricing = getChristmasPricing();
 
 // One switch in the panel ("Sezon świąteczny") drives this block, the /swieta
 // page and the menu link — turned on in November and off in January. The
 // packages stay saved in between.
-const showChristmas = settings.christmas.active && pricing.christmas.packages.length > 0;
+const showChristmas = christmas.active && christmasPricing.packages.length > 0;
 
 // In season the Christmas packages are the offer, so they replace the
 // year-round list rather than sitting under it.
@@ -49,13 +51,13 @@ const description = showChristmas
       <section class="section christmas">
         <div class="container">
           <div class="centered heading-block heading-block--lead">
-            {pricing.christmas.eyebrow && <p class="label">{pricing.christmas.eyebrow}</p>}
-            <SnowyTitle as="h1">{pricing.christmas.title}</SnowyTitle>
-            {pricing.christmas.description && (
-              <p class="lead">{pricing.christmas.description}</p>
+            {christmasPricing.eyebrow && <p class="label">{christmasPricing.eyebrow}</p>}
+            <SnowyTitle as="h1">{christmasPricing.title}</SnowyTitle>
+            {christmasPricing.description && (
+              <p class="lead">{christmasPricing.description}</p>
             )}
           </div>
-          <PricingTable packages={pricing.christmas.packages} />
+          <PricingTable packages={christmasPricing.packages} />
           <PricingNotes notes={pricing.notes} dark />
           <p class="christmas-more">
             <a class="more-link" href="/swieta">

@@ -1,9 +1,10 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '../assets/logo.png';
-import { getSettings, whatsappHref } from '../lib/siteContent';
+import { getChristmas, getSettings, whatsappHref } from '../lib/siteContent';
 
 const settings = getSettings();
+const christmas = getChristmas();
 const year = new Date().getFullYear();
 const waHref = whatsappHref(settings.whatsapp);
 ---
@@ -26,7 +27,7 @@ const waHref = whatsappHref(settings.whatsapp);
       <ul class="footer-nav">
         <li><a href="/sesje">Moje sesje</a></li>
         <li><a href="/oferta">Oferta</a></li>
-        {settings.christmas.active && <li><a href="/swieta">Święta</a></li>}
+        {christmas.active && <li><a href="/swieta">Święta</a></li>}
         <li><a href="/cennik">Cennik</a></li>
         <li><a href="/o-mnie">O mnie</a></li>
       </ul>

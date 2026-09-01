@@ -2,11 +2,11 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SessionGrid from '../../components/SessionGrid.astro';
 import { publishedSessions } from '../../lib/sessions';
-import { getSettings } from '../../lib/siteContent';
+import { getSessionsPage } from '../../lib/siteContent';
 import { renderRichText } from '../../lib/richText';
 
 const sessions = await publishedSessions();
-const { pages } = getSettings();
+const page = getSessionsPage();
 ---
 
 <BaseLayout
@@ -14,9 +14,9 @@ const { pages } = getSettings();
   description="Sesje rodzinne, plenerowe, roczkowe i świąteczne."
 >
   <header class="page-header">
-    <h1>{pages.sessionsHeading}</h1>
-    {pages.sessionsIntro && (
-      <div class="lead page-lead" set:html={renderRichText(pages.sessionsIntro)} />
+    <h1>{page.heading}</h1>
+    {page.intro && (
+      <div class="lead page-lead" set:html={renderRichText(page.intro)} />
     )}
   </header>
 

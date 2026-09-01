@@ -10,12 +10,13 @@ import SessionCard from '../components/SessionCard.astro';
 import SnowyTitle from '../components/SnowyTitle.astro';
 import Carousel from '../components/Carousel.astro';
 import ContactSection from '../components/ContactSection.astro';
-import { getPricing, getSettings } from '../lib/siteContent';
+import { getChristmas, getChristmasPricing, getPricing, getSettings } from '../lib/siteContent';
 import { publishedSessions, christmasSessions } from '../lib/sessions';
 
 const settings = getSettings();
 const pricing = getPricing();
-const { christmas } = settings;
+const christmas = getChristmas();
+const christmasPricing = getChristmasPricing();
 
 // The season is one switch in the panel. Off-season the page still answers —
 // links to it live on Instagram and in inboxes all year — but it shrinks to a
@@ -33,7 +34,7 @@ const offers = (await getCollection('offers'))
 // list carry the page.
 const galleryPhotos = offers.flatMap((offer) => offer.data.gallery);
 
-const packages = pricing.christmas.packages;
+const packages = christmasPricing.packages;
 const past = christmasSessions(await publishedSessions());
 
 const description = christmas.lead || 'Sesje świąteczne — scenografia, terminy i cennik na ten sezon.';
@@ -78,10 +79,10 @@ const description = christmas.lead || 'Sesje świąteczne — scenografia, termi
             <div class="container">
               <BotanicalDivider />
               <div class="centered heading-block">
-                {pricing.christmas.eyebrow && <p class="label">{pricing.christmas.eyebrow}</p>}
-                <SnowyTitle>{pricing.christmas.title || 'Cennik świąteczny'}</SnowyTitle>
-                {pricing.christmas.description && (
-                  <p class="lead">{pricing.christmas.description}</p>
+                {christmasPricing.eyebrow && <p class="label">{christmasPricing.eyebrow}</p>}
+                <SnowyTitle>{christmasPricing.title || 'Cennik świąteczny'}</SnowyTitle>
+                {christmasPricing.description && (
+                  <p class="lead">{christmasPricing.description}</p>
                 )}
               </div>
               <PricingTable packages={packages} />

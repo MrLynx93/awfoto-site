@@ -8,10 +8,12 @@ import OfferCard from '../components/OfferCard.astro';
 import BotanicalDivider from '../components/BotanicalDivider.astro';
 import ContactSection from '../components/ContactSection.astro';
 import ChristmasFeature from '../components/ChristmasFeature.astro';
-import { getSettings } from '../lib/siteContent';
+import { getSettings, getHome, getChristmas } from '../lib/siteContent';
 import { publishedSessions } from '../lib/sessions';
 
 const settings = getSettings();
+const home = getHome();
+const christmas = getChristmas();
 
 const sessions = await publishedSessions();
 // Featured sessions first, newest otherwise. More than fills the row on
@@ -25,19 +27,19 @@ const offers = allOffers.filter((offer) => offer.data.featured);
 
 // In season the Christmas offer gets its own band straight below the hero —
 // it is the year's main event, so it outranks everything but the headline.
-const christmasOffer = settings.christmas.active
+const christmasOffer = christmas.active
   ? allOffers.find((offer) => offer.data.season === 'swiateczna')
   : undefined;
 
 const heroImage = highlighted[0]?.data.coverImage;
 ---
 
-<BaseLayout title="AW Fotografia" description={settings.heroText}>
+<BaseLayout title="AW Fotografia" description={home.text}>
   <section class="hero">
     <div>
-      {settings.heroEyebrow && <p class="label">{settings.heroEyebrow}</p>}
-      <h1>{settings.heroHeading}</h1>
-      {settings.heroText && <p class="hero-text">{settings.heroText}</p>}
+      {home.eyebrow && <p class="label">{home.eyebrow}</p>}
+      <h1>{home.heading}</h1>
+      {home.text && <p class="hero-text">{home.text}</p>}
       <div class="buttons">
         <a class="button" href="#moje-sesje">Moje sesje</a>
         <a class="button button--ghost" href="/cennik">Cennik</a>
@@ -60,9 +62,9 @@ const heroImage = highlighted[0]?.data.coverImage;
   </section>
 
   {
-    settings.christmas.active && (
+    christmas.active && (
       <ChristmasFeature
-        christmas={settings.christmas}
+        christmas={christmas}
         image={christmasOffer?.data.image}
         price={christmasOffer?.data.price}
       />

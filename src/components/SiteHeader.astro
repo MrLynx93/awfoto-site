@@ -4,9 +4,10 @@ import Snowflake from './Snowflake.astro';
 import logo from '../assets/logo.png';
 import SocialLinks from './SocialLinks.astro';
 import SeasonalBanner from './SeasonalBanner.astro';
-import { getSettings, whatsappHref } from '../lib/siteContent';
+import { getChristmas, getSettings, whatsappHref } from '../lib/siteContent';
 
 const settings = getSettings();
+const christmas = getChristmas();
 const path = Astro.url.pathname;
 const waHref = whatsappHref(settings.whatsapp);
 
@@ -20,7 +21,7 @@ interface NavItem {
 // In season the Christmas page opens the menu as the one highlighted item;
 // out of season it disappears, so the nav never advertises a closed offer.
 const NAV: NavItem[] = [
-  ...(settings.christmas.active ? [{ href: '/swieta', label: 'Święta', highlight: true }] : []),
+  ...(christmas.active ? [{ href: '/swieta', label: 'Święta', highlight: true }] : []),
   // Always the full listing, from every page including the homepage: a menu
   // item that goes somewhere else depending on where you already are is a
   // menu item you cannot learn. The homepage's own button scrolls to the row.
