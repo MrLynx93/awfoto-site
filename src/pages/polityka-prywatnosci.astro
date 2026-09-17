@@ -48,14 +48,8 @@ const settings = getSettings();
 
     <h2>Administrator danych</h2>
     <p>
-      AW Fotografia{settings.city && `, ${settings.city}`}.
-      {settings.email && <> Kontakt: <a href={`mailto:${settings.email}`}>{settings.email}</a>.</>}
-    </p>
-
-    <p class="note">
-      <strong>Uwaga:</strong> to jest tekst przygotowany na start. Zanim strona
-      pójdzie na produkcję, uzupełnij dane firmy (pełna nazwa, adres, NIP)
-      i — jeśli dojdzie formularz albo analityka — rozszerz ten dokument.
+      AW Fotografia.
+      {settings.email && <> <a href={`mailto:${settings.email}`}>{settings.email}</a></>}
     </p>
   </article>
 </BaseLayout>
@@ -82,17 +76,5 @@ const settings = getSettings();
   }
   .legal a {
     color: var(--glina-ciemna);
-  }
-
-  .note {
-    margin-top: 3rem;
-    padding: 1.25rem 1.5rem;
-    background: var(--bez);
-    border-left: 2px solid var(--glina);
-    font-size: 0.92rem;
-  }
-  .note strong {
-    color: var(--tekst);
-    font-weight: 500;
   }
 </style>
