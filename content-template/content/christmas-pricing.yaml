@@ -1,0 +1,35 @@
+eyebrow: Listopad — grudzień
+title: Cennik świąteczny
+description: >-
+  Osobna scenografia, krótsze sesje i stałe terminy weekendowe.
+  Zdjęcia gotowe przed Wigilią przy rezerwacji do 8 grudnia.
+packages:
+  - name: Mini świąteczna
+    price: 450 zł
+    duration: ok. 30 minut
+    highlighted: false
+    badge: ''
+    includes:
+      - 10 zdjęć w obróbce
+      - Scenografia świąteczna
+      - Galeria online
+  - name: Rodzinna świąteczna
+    price: 700 zł
+    duration: ok. 60 minut
+    highlighted: true
+    badge: Polecana
+    includes:
+      - 25 zdjęć w obróbce
+      - Dwie scenografie
+      - 10 kartek świątecznych
+      - Gotowe w 7 dni
+  - name: Świąteczna max
+    price: 950 zł
+    duration: ok. 90 minut
+    highlighted: false
+    badge: ''
+    includes:
+      - 40 zdjęć w obróbce
+      - Scenografia + plener
+      - 20 kartek świątecznych
+      - Odbitka 30×40 w ramie

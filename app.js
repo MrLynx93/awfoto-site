@@ -38,6 +38,16 @@ if (panelOnly) {
   app.use((req, res, next) => {
     res.set('X-Robots-Tag', 'noindex, nofollow');
 
+    // The build's own /robots.txt invites crawlers in, which is right for the
+    // site and wrong here — every URL on this host is either the panel or a
+    // redirect to a page Google already has. Answer with a blanket disallow
+    // instead of redirecting, since a crawler reads robots.txt per host and a
+    // redirect would leave this one with no rules at all.
+    if (req.path === '/robots.txt') {
+      res.type('text/plain');
+      return res.send('User-agent: *\nDisallow: /\n');
+    }
+
     // Land people straight in the panel when they type the bare domain.
     //
     // The panel cannot actually be *served* at "/": Keystatic hardcodes

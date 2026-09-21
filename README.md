@@ -152,6 +152,47 @@ autumn" note, carries `noindex`, and drops out of the sitemap (the filter in
 `astro.config.mjs` reads the same YAML flag). The announcement bar is
 independent of this switch: it is a generic strip that can advertise anything.
 
+## Search visibility
+
+A photographer is found in two places — a local search ("fotograf rodzinny
+Rzeszów") and Google Images — so the site is built to answer both. Everything
+below is derived from what the panel holds; nothing is hardcoded copy.
+
+**`src/lib/seo.ts`** is the one place titles, descriptions and structured data
+are built.
+
+| What | Where | Why |
+|---|---|---|
+| Title tags | `BaseLayout` + each page | `<page> — AW Fotografia, <miasto>`. The city comes from `settings.city`, shortened by `cityName()` — "Rzeszów i okolice" costs 10 of the ~60 characters Google shows |
+| Descriptions | each page | The trade and the place first, her own words after, clamped to 160 on a word boundary |
+| `PhotographyBusiness` | every page | The business card, `@id`-anchored at `/#business` so every other block points back at one business rather than one per URL |
+| `BreadcrumbList` | every page below the root | The trail Google prints instead of a bare URL |
+| `ImageGallery` | `/sesje/<slug>` | A dated set of photos by a named author — how a shoot reaches Google Images |
+| `Service` + `Offer` | `/oferta/<slug>` | Answers "sesja świąteczna Rzeszów", with the price floor parsed out of the free-text field |
+| `OfferCatalog` | `/cennik` | The packages and their prices |
+| `WebSite` | `/` | Settles the site's name in results |
+| `/robots.txt` | `src/pages/robots.txt.ts` | Generated so the `Sitemap:` line follows `SITE_URL`. The panel host answers it separately — see `app.js` |
+| `lastmod` | `astro.config.mjs` | Real per-session dates, read from the content repo's frontmatter. Google reads `lastmod` and ignores `priority`/`changefreq`, so those are not emitted |
+
+**Prices are free text** in the panel ("850 zł", "od 550 zł", "1 250 zł"), so
+`parsePrice()` pulls the digits and treats a leading "od" as a `minPrice`
+floor. A field with no number emits no `Offer` at all rather than a guess.
+
+**`areaServed` comes from `settings.areas`** — the towns she actually travels
+to. It feeds both the JSON-LD and the line in the footer, which is what gives
+the site a reason to match a search made from the next town over.
+
+Two things Google cares about are **not** in the repo's hands, and they matter
+more than any of the above: a Google Business Profile, and links from other
+sites. Both are covered in [`DLA-FOTOGRAFA.md`](./DLA-FOTOGRAFA.md), in Polish,
+as steps she can follow.
+
+> **`<Fragment set:html>`, never `<set:html>`.** The latter is not an Astro
+> directive: the compiler reads it as an element named `set` carrying a `:html`
+> attribute, so the whole block ships as an inert, escaped `<set>` tag. The
+> business JSON-LD was emitted that way from the start and Google never saw any
+> of it.
+
 ## Deployment
 
 ### One-time setup on mydevil.net
@@ -364,6 +405,9 @@ depending on which of the two you pick.
   If a second save lands mid-run the lease refuses and that run bows out; the
   new push is resized by its own run. The bot's push is skipped via an
   `actor != github-actions[bot]` guard so the workflow doesn't loop.
+- **Structured data and meta are generated**, never written by hand — see
+  *Search visibility* above. A new page gets them by passing `schema={[…]}` to
+  `BaseLayout`; the business card comes for free.
 - **The Christmas page is always built**, in or out of season — see *The
   Christmas season* above for why, and how it is kept out of Google.
 - **Publishing is not instant** — save → commit → build → deploy ≈ 2–3 minutes.

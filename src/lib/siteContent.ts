@@ -28,9 +28,21 @@ const settingsSchema = z.object({
   phone: z.string().default(''),
   email: z.string().default(''),
   city: z.string().default(''),
+  /**
+   * Every town she travels to. Google matches a search made from one of them
+   * against a business that says it serves it, so this is what puts the site
+   * in front of someone two towns over — see `areaServed` in src/lib/seo.ts.
+   */
+  areas: z.array(z.string()).default([]),
   facebook: z.string().default(''),
   instagram: z.string().default(''),
   whatsapp: z.string().default(''),
+  /**
+   * The token Search Console hands out to prove the site is hers. It lives in
+   * the panel rather than in an env var so she can verify the site — and see
+   * what people search for to reach it — without a deploy.
+   */
+  googleSiteVerification: z.string().default(''),
   seasonalBanner: z
     .object({
       active: z.boolean().default(false),

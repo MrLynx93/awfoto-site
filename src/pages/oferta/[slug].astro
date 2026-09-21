@@ -9,6 +9,7 @@ import SessionCard from '../../components/SessionCard.astro';
 import Carousel from '../../components/Carousel.astro';
 import { getSettings } from '../../lib/siteContent';
 import { publishedSessions } from '../../lib/sessions';
+import { breadcrumbSchema, cityName, sentences, serviceSchema } from '../../lib/seo';
 
 export async function getStaticPaths() {
   const offers = await getCollection('offers');
@@ -43,9 +44,34 @@ const facts = [
   ['Czas trwania', duration],
   ['Cena', price],
 ].filter(([, value]) => value);
+
+const city = cityName(settings.city);
+const url = new URL(Astro.url.pathname, Astro.site);
+
+// An offer page is the one that should answer "sesja rodzinna Rzeszów", so the
+// description names the place and the price before it reaches her own words.
+const metaDescription = sentences(
+  city && `${name} — ${city} i okolice.`,
+  price && `Cena: ${price}.`,
+  description,
+);
+
+const schema = [
+  breadcrumbSchema(Astro.site!, [
+    { name: 'Oferta', path: '/oferta' },
+    { name, path: Astro.url.pathname },
+  ]),
+  serviceSchema(Astro.site!, settings, {
+    name,
+    description,
+    price,
+    url,
+    image: { src: image.src, width: image.width, height: image.height, alt: name },
+  }),
+];
 ---
 
-<BaseLayout title={name} description={description} ogImage={image.src}>
+<BaseLayout title={name} description={metaDescription} ogImage={image.src} schema={schema}>
   <article class="offer">
     <Image
       class="offer-photo arch"

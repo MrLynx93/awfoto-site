@@ -12,6 +12,7 @@ import Carousel from '../components/Carousel.astro';
 import ContactSection from '../components/ContactSection.astro';
 import { getChristmas, getChristmasPricing, getPricing, getSettings } from '../lib/siteContent';
 import { publishedSessions, christmasSessions } from '../lib/sessions';
+import { breadcrumbSchema, cityName, sentences } from '../lib/seo';
 
 const settings = getSettings();
 const pricing = getPricing();
@@ -37,13 +38,28 @@ const galleryPhotos = offers.flatMap((offer) => offer.data.gallery);
 const packages = christmasPricing.packages;
 const past = christmasSessions(await publishedSessions());
 
-const description = christmas.lead || 'Sesje świąteczne — scenografia, terminy i cennik na ten sezon.';
+const city = cityName(settings.city);
+const description = sentences(
+  city ? `Sesje świąteczne — ${city} i okolice.` : 'Sesje świąteczne.',
+  christmas.lead || 'Scenografia, terminy i cennik na ten sezon.',
+);
+
+/**
+ * The heading is the season's own name ("Święta 2026"), which nobody searches
+ * for — but the year in it is worth keeping, since "sesje świąteczne 2026" is
+ * exactly what gets typed. The heading itself stays on the page as the H1.
+ */
+const seasonYear = christmas.heading.match(/\b(20\d{2})\b/)?.[1];
+const title = /sesj/i.test(christmas.heading)
+  ? christmas.heading
+  : `Sesje świąteczne${seasonYear ? ` ${seasonYear}` : ''}`;
 ---
 
 <BaseLayout
-  title={christmas.heading}
+  title={active ? title : 'Sesje świąteczne'}
   description={active ? description : 'Sesje świąteczne wracają jesienią.'}
   ogImage={active ? offers[0]?.data.image.src : undefined}
+  schema={active ? [breadcrumbSchema(Astro.site!, [{ name: 'Święta', path: '/swieta' }])] : []}
   noindex={!active}
 >
   {

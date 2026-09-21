@@ -8,6 +8,7 @@ import Carousel from '../../components/Carousel.astro';
 import ContactSection from '../../components/ContactSection.astro';
 import { getSettings } from '../../lib/siteContent';
 import { publishedSessions, otherSessions, formatDate, type Session } from '../../lib/sessions';
+import { breadcrumbSchema, cityName, sentences, sessionSchema } from '../../lib/seo';
 
 export async function getStaticPaths() {
   const sessions = await publishedSessions();
@@ -30,9 +31,54 @@ const settings = getSettings();
 const { Content } = await render(session);
 
 const meta = [formatDate(date), ...tags].filter(Boolean).join(' · ');
+
+const city = cityName(settings.city);
+const url = new URL(Astro.url.pathname, Astro.site);
+
+// The kind of shoot up front — someone searching "sesja roczkowa Rzeszów"
+// needs the description to say that, and the intro is a story, not a label.
+const description = sentences(
+  tags.length > 0 ? `${tags.join(', ')} — ${city || 'sesja zdjęciowa'}.` : undefined,
+  intro,
+);
+
+/**
+ * A dated page of photographs by a named author, tied to the business. This is
+ * what puts a shoot's pictures into Google Images with the page behind them —
+ * the main way a portfolio is found by someone who was not looking for it.
+ */
+const schema = [
+  breadcrumbSchema(Astro.site!, [
+    { name: 'Moje sesje', path: '/sesje' },
+    { name: title, path: Astro.url.pathname },
+  ]),
+  sessionSchema(Astro.site!, {
+    title,
+    intro,
+    date,
+    tags,
+    url,
+    images: [
+      { src: coverImage.src, width: coverImage.width, height: coverImage.height, alt: title },
+      ...photos.map((photo) => ({
+        src: photo.image.src,
+        width: photo.image.width,
+        height: photo.image.height,
+        alt: photo.alt,
+      })),
+    ],
+  }),
+];
 ---
 
-<BaseLayout title={title} description={intro} ogImage={coverImage.src}>
+<BaseLayout
+  title={title}
+  description={description}
+  ogImage={coverImage.src}
+  ogType="article"
+  publishedTime={date.toISOString()}
+  schema={schema}
+>
   <header class="session-header">
     <p class="session-date">{meta}</p>
     <h1>{title}</h1>

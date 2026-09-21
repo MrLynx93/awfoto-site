@@ -1,30 +1,16 @@
-heroEyebrow: Fotografia rodzinna i plenerowa
-heroHeading: Światło, które zostaje na lata
-heroText: >-
-  Fotografuję tak, jak lubię wspominać — miękko, ciepło i bez pozowania.
-  Sesje w plenerze, w domu i w studiu.
-aboutHeading: Cześć, tu Ania
-aboutText: >-
-  Od ośmiu lat fotografuję rodziny, dzieci i pary. Nie ustawiam sztywnych póz —
-  wolę poczekać, aż wydarzy się coś prawdziwego. Na sesji jest luźno, dzieci mogą
-  biegać, a Wy nie musicie wiedzieć, co zrobić z rękami.
-signature: Ania
 phone: '000 000 000'
 email: kontakt@aw-foto.pl
 city: Rzeszów i okolice
-hours: 'Pon.–pt. 9:00–18:00, weekendy — sesje'
+areas:
+  - Rzeszów
+  - Łańcut
+  - Ropczyce
+  - Tyczyn
+  - Głogów Małopolski
 facebook: 'https://facebook.com/'
 instagram: 'https://instagram.com/'
-messenger: 'https://m.me/'
 whatsapp: '48000000000'
-christmas:
-  active: true
-  eyebrow: Listopad — grudzień 2026
-  heading: Święta 2026
-  lead: >-
-    Raz w roku wszyscy są razem i wszyscy są odświętni — szkoda tego nie
-    zatrzymać. Zapisy trwają, terminy weekendowe schodzą pierwsze, a zdjęcia
-    są gotowe przed Wigilią.
+googleSiteVerification: ''
 seasonalBanner:
   active: true
   text: Sesje świąteczne 2026 — zapisy otwarte, zostały 3 terminy

@@ -386,12 +386,27 @@ export default config({
         phone: fields.text({ label: 'Telefon', description: 'Np. „555 123 456”' }),
         email: fields.text({ label: 'E-mail' }),
         city: fields.text({ label: 'Miasto / obszar', description: 'Np. „Rzeszów i okolice”' }),
+        areas: fields.array(fields.text({ label: 'Miejscowość' }), {
+          label: 'Gdzie fotografujesz',
+          description:
+            'Miasta i wsie, do których dojeżdżasz. Google pokazuje stronę osobom, ' +
+            'które szukają z tych okolic, a lista wyświetla się w stopce. ' +
+            'Wpisuj tylko miejsca, gdzie naprawdę robisz sesje.',
+          itemLabel: (item) => item.value || 'Miejscowość',
+        }),
         facebook: fields.url({ label: 'Facebook — link do profilu' }),
         instagram: fields.url({ label: 'Instagram — link do profilu' }),
         whatsapp: fields.text({
           label: 'WhatsApp — numer',
           description:
             'Numer z kierunkowym kraju, bez spacji i plusa. Np. 48555123456. Zostaw puste, żeby ukryć przycisk.',
+        }),
+        googleSiteVerification: fields.text({
+          label: 'Google Search Console — kod weryfikacyjny',
+          description:
+            'Z Google Search Console: „Sposób weryfikacji: tag HTML” → skopiuj samą ' +
+            'wartość content="…". Dzięki temu zobaczysz, czego ludzie szukają, ' +
+            'zanim trafią na stronę. Zostaw puste, jeśli nie używasz.',
         }),
         seasonalBanner: fields.object(
           {

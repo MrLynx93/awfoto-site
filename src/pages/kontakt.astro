@@ -2,13 +2,21 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactSection from '../components/ContactSection.astro';
 import { getSettings } from '../lib/siteContent';
+import { breadcrumbSchema, cityName, sentences } from '../lib/seo';
 
 const settings = getSettings();
+const city = cityName(settings.city);
+
+const description = sentences(
+  city ? `Fotograf rodzinny — ${city} i okolice.` : 'Fotograf rodzinny i plenerowy.',
+  'Rezerwacja terminu: telefon, WhatsApp, e-mail, Instagram i Facebook.',
+);
 ---
 
 <BaseLayout
   title="Kontakt"
-  description="Telefon, WhatsApp, e-mail, Instagram i Facebook — najszybszy sposób na rezerwację terminu."
+  description={description}
+  schema={[breadcrumbSchema(Astro.site!, [{ name: 'Kontakt', path: '/kontakt' }])]}
 >
   <header class="page-header">
     <p class="label">Kontakt</p>

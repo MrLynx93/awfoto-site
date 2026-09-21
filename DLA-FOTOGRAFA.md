@@ -154,8 +154,15 @@ Możesz go użyć też do czegoś innego niż święta — wtedy zmień adres li
 - nagłówek i tekst na stronie głównej,
 - tekst „O mnie" i podpis,
 - telefon, e-mail, miasto, godziny kontaktu,
+- **gdzie fotografujesz** — lista miejscowości,
 - linki do Facebooka, Instagrama i Messengera,
 - **numer WhatsApp**.
+
+**Gdzie fotografujesz.** Wypisz miasta i wsie, do których naprawdę dojeżdżasz
+(np. Rzeszów, Łańcut, Ropczyce, Tyczyn). Lista pokazuje się w stopce i — co
+ważniejsze — mówi Google, komu pokazywać stronę. Ktoś, kto szuka fotografa
+w Łańcucie, ma wtedy szansę trafić na Ciebie. Nie wpisuj miejsc, gdzie nie
+jeździsz: to nie pomaga, a bywa, że szkodzi.
 
 **WhatsApp — jak wpisać numer.** Z kierunkowym kraju, bez plusa i bez spacji:
 dla polskiego numeru 555 123 456 wpisz `48555123456`. Przycisk pojawi się wtedy
@@ -163,6 +170,81 @@ w kontakcie, w stopce i na górze strony. Zostaw pole puste, żeby go ukryć.
 
 Zmiana telefonu czy Instagrama tutaj podmienia go **wszędzie na stronie** naraz
 — w stopce, w kontakcie i pod każdą sesją.
+
+---
+
+## Żeby Google pokazywał stronę
+
+Sama strona jest już przygotowana pod wyszukiwarkę: ma mapę strony, opisy dla
+Google i dane firmy. Reszta zależy od kilku rzeczy, które możesz zrobić tylko
+Ty — i które działają **mocniej niż cokolwiek w kodzie**.
+
+### 1. Wizytówka Firmy w Google (najważniejsze)
+
+Załóż **Profil Firmy w Google** (dawniej „Google Moja Firma"):
+<https://business.google.com>. To ona sprawia, że pojawiasz się na mapie i
+w ramce po prawej stronie wyników, gdy ktoś wpisze „fotograf rodzinny Rzeszów".
+
+- Kategoria: **Fotograf**.
+- Podaj **ten sam** telefon, e-mail i nazwę, co na stronie — muszą się zgadzać
+  co do znaku.
+- Jeśli nie masz studia, ustaw **obszar działania** zamiast adresu: ten sam,
+  który wpisałaś w „Gdzie fotografujesz".
+- Wstaw adres strony: `https://aw-foto.pl`.
+- Dodaj 15–20 zdjęć i **proś klientki o opinie**. Opinie są tym, co decyduje
+  o kolejności na mapie. Najprościej: po wysłaniu galerii napisz jedno zdanie
+  z linkiem do wystawienia opinii.
+
+Bez wizytówki strona może być idealna i i tak przegra z fotografem, który ją ma.
+
+### 2. Google Search Console
+
+<https://search.google.com/search-console> — darmowe, pokazuje, **czego ludzie
+szukali**, zanim trafili na stronę, i które strony w ogóle są w Google.
+
+1. Dodaj `https://aw-foto.pl`, wybierz weryfikację **„tag HTML"**.
+2. Google pokaże linijkę `<meta name="google-site-verification" content="ABC…">`.
+   Skopiuj **samą wartość** z `content="…"`.
+3. Wklej ją w panelu: **Ustawienia → Ustawienia → Google Search Console**.
+4. Poczekaj 2–3 minuty na przebudowę strony i kliknij w Google **Zweryfikuj**.
+5. Na końcu w zakładce „Mapy witryn" dodaj: `sitemap-index.xml`.
+
+### 3. Co pisać, żeby dało się Cię znaleźć
+
+Google czyta teksty, które wpisujesz w panelu. Kilka nawyków wystarczy:
+
+- **Tytuł sesji** — dopisz rodzaj i miejsce: „Roczek Antosia — sesja rodzinna
+  w Rzeszowie" zamiast samego „Roczek Antosia".
+- **Krótki opis sesji** — pierwsze zdanie niech mówi, co to była za sesja i
+  gdzie. Reszta może być dowolna.
+- **Opis zdjęcia** przy każdym zdjęciu (patrz wyżej) — stąd biorą się wejścia
+  z Grafiki Google, a u fotografa to spory ruch.
+- **Rodzaje sesji** — zaznaczaj wszystkie pasujące. Trafiają do Google jako
+  słowa kluczowe strony.
+- Pisz normalnie. Powtarzanie „fotograf Rzeszów fotograf Rzeszów" nie pomaga,
+  a Google to wychwytuje.
+
+### 4. Regularność
+
+Google lubi strony, na których coś się dzieje. **Jedna–dwie nowe sesje
+w miesiącu** robią więcej niż jakakolwiek zmiana techniczna. Każda nowa sesja
+to nowa strona, która może się pokazać w wynikach.
+
+### 5. Linki z innych stron
+
+To drugi po wizytówce najmocniejszy czynnik. Darmowe i sensowne miejsca:
+
+- adres strony w **opisie profilu na Instagramie i Facebooku**,
+- lokalne grupy i katalogi (fotografowie, wesela, „mamy z Rzeszowa"),
+- strony miejsc, w których fotografujesz (sale, dwory, przedszkola) — poproś
+  o link, jeśli pokazują Twoje zdjęcia,
+- wspólne wpisy z wizażystką, florystką, salą — link w obie strony.
+
+### 6. Cierpliwość
+
+Nowa strona potrzebuje **2–3 miesięcy**, zanim Google zacznie ją pokazywać
+wyżej, i nawet pół roku na lokalne frazy. To normalne. Nie ma sposobu, żeby
+przyspieszyć — poza tym, co wyżej.
 
 ---
 

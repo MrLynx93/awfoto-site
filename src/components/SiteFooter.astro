@@ -20,6 +20,14 @@ const waHref = whatsappHref(settings.whatsapp);
         Fotografia rodzinna, plenerowa i świąteczna.
         {settings.city && <><br />{settings.city}</>}
       </p>
+      {
+        /* The towns she actually travels to, named once on every page. It
+           answers the visitor from the next town over ("does she come here?")
+           and is the same list Google reads as `areaServed`. */
+        settings.areas.length > 0 && (
+          <p class="areas">Dojeżdżam: {settings.areas.join(' · ')}</p>
+        )
+      }
     </div>
 
     <div>
@@ -149,6 +157,16 @@ const waHref = whatsappHref(settings.whatsapp);
     margin-top: 0.75rem;
     color: #a99e92;
     font-size: 0.88rem;
+  }
+
+  /* A step quieter than the tagline: useful to the one visitor checking
+     whether she comes to their town, and not otherwise asking to be read. */
+  .areas {
+    margin-top: 0.4rem;
+    max-width: 34rem;
+    color: #8c8276;
+    font-size: 0.78rem;
+    line-height: 1.6;
   }
 
   .footer h2 {

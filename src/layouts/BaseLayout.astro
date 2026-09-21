@@ -1,7 +1,8 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { getSettings } from '../lib/siteContent';
+import { getSettings, getPricing } from '../lib/siteContent';
+import { SITE_NAME, businessSchema, cityName } from '../lib/seo';
 import '../styles/global.css';
 
 /**
@@ -15,6 +16,16 @@ interface Props {
   description?: string;
   /** Absolute or site-relative URL of the image used for link previews. */
   ogImage?: string;
+  /** `article` for a session, whose page is dated and written. */
+  ogType?: 'website' | 'article';
+  /** ISO date of a session, for `article:published_time`. */
+  publishedTime?: string;
+  /**
+   * Extra JSON-LD for this page — the breadcrumb trail, the gallery, the
+   * service. The business card below is emitted everywhere and referenced by
+   * `@id`, so a page only describes what is its own.
+   */
+  schema?: Record<string, unknown>[];
   /** Keeps the panel subdomain out of Google. */
   noindex?: boolean;
 }
@@ -23,13 +34,30 @@ const {
   title,
   description = 'Fotografia rodzinna, plenerowa i świąteczna. Sesje zdjęciowe bez pozowania.',
   ogImage = OG_DEFAULT,
+  ogType = 'website',
+  publishedTime,
+  schema = [],
   noindex = false,
 } = Astro.props;
 
 const settings = getSettings();
+const pricing = getPricing();
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const fullTitle = title === 'AW Fotografia' ? title : `${title} — AW Fotografia`;
 const ogImageUrl = ogImage ? new URL(ogImage, Astro.site).href : undefined;
+
+/**
+ * The title tag is the single line Google shows, so it has to say the trade
+ * and the place — those are what people type. The page's own words come first,
+ * then the studio, then the city: "Cennik sesji zdjęciowych — AW Fotografia,
+ * Rzeszów". The home page passes a title that already reads that way and is
+ * left alone.
+ */
+const city = cityName(settings.city);
+const fullTitle =
+  title === SITE_NAME || title.startsWith(`${SITE_NAME} `)
+    ? title
+    : `${title} — ${SITE_NAME}${city ? `, ${city}` : ''}`;
+
 // Declared only for the card, whose size is known here — a session's cover is
 // whatever the photographer uploaded, and a wrong pair is worse than none.
 const isDefaultOgImage = ogImage === OG_DEFAULT;
@@ -38,20 +66,29 @@ const isDefaultOgImage = ogImage === OG_DEFAULT;
  * Helps Google show the business in local results. Only fields that are
  * actually filled in are emitted, so placeholder data never ships as fact.
  */
-const businessSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'LocalBusiness',
-  '@id': Astro.site?.href,
-  name: 'AW Fotografia',
+const business = businessSchema({
+  site: Astro.site!,
+  settings,
+  pricing,
   description,
-  url: Astro.site?.href,
-  ...(settings.phone && { telephone: settings.phone }),
-  ...(settings.email && { email: settings.email }),
-  ...(settings.city && { areaServed: settings.city }),
-  ...(settings.facebook || settings.instagram
-    ? { sameAs: [settings.facebook, settings.instagram].filter(Boolean) }
-    : {}),
-};
+  image: new URL(OG_DEFAULT, Astro.site).href,
+});
+
+/**
+ * One <script> per block, built as a single string: `set:html` is a directive
+ * on a template element, so inside a `.map()` it renders as literal markup
+ * rather than as the script it describes.
+ *
+ * `<` is escaped along the way. JSON.stringify leaves it alone, so a `</script>`
+ * inside any field the photographer typed would otherwise close the block and
+ * spill the rest onto the page.
+ */
+const jsonLd = [business, ...schema]
+  .map(
+    (block) =>
+      `<script type="application/ld+json">${JSON.stringify(block).replace(/</g, '\\u003c')}</script>`,
+  )
+  .join('');
 ---
 
 <!doctype html>
@@ -63,8 +100,25 @@ const businessSchema = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical.href} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {
+      /* Tells Google it may show the whole preview and a full-size image
+         thumbnail, rather than the short default — a photographer's result is
+         mostly the picture. */
+      !noindex && (
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        />
+      )
+    }
+    {
+      settings.googleSiteVerification && (
+        <meta name="google-site-verification" content={settings.googleSiteVerification} />
+      )
+    }
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
     <meta property="og:site_name" content="AW Fotografia" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
@@ -99,9 +153,10 @@ const businessSchema = {
     />
     <link rel="preload" href="/fonts/jost-300.woff2" as="font" type="font/woff2" crossorigin />
 
-    <set:html
-      value={`<script type="application/ld+json">${JSON.stringify(businessSchema)}</script>`}
-    />
+    {/* `<Fragment set:html>`, not `<set:html>`: the latter parses as an element
+        named `set` carrying a `:html` attribute, so the whole block shipped as
+        an inert, escaped `<set>` tag and Google never saw any of it. */}
+    <Fragment set:html={jsonLd} />
 
     <!--
       No analytics by default: no cookies means no consent banner. To add

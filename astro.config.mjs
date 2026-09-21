@@ -1,5 +1,5 @@
 // @ts-check
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { parse } from 'yaml';
 import { defineConfig } from 'astro/config';
 import node from '@astrojs/node';
@@ -40,6 +40,39 @@ function christmasSeasonActive() {
 
 const christmasActive = christmasSeasonActive();
 
+/**
+ * When each session was shot, keyed by the URL its page gets.
+ *
+ * Google reads `lastmod` and ignores `priority` and `changefreq` entirely, so
+ * a truthful date per session is the only part of a sitemap worth building.
+ * The frontmatter is read directly rather than through the content collection,
+ * which does not exist yet when the integration is configured.
+ */
+function sessionDates() {
+  const dates = new Map();
+  let files;
+  try {
+    files = readdirSync('./site-content/content/sessions');
+  } catch {
+    return dates;
+  }
+
+  for (const file of files) {
+    if (!file.endsWith('.mdoc')) continue;
+    const raw = readFileSync(`./site-content/content/sessions/${file}`, 'utf8');
+    // Only the first line that starts a top-level `date:` — a body could well
+    // mention one, and the frontmatter block is what the loader reads.
+    const match = /^---\r?\n[\s\S]*?^date:\s*(\S+)/m.exec(raw);
+    if (!match) continue;
+    const date = new Date(match[1]);
+    if (Number.isNaN(date.getTime())) continue;
+    dates.set(`/sesje/${file.replace(/\.mdoc$/, '')}/`, date);
+  }
+  return dates;
+}
+
+const sessionLastmod = sessionDates();
+
 export default defineConfig({
   site,
 
@@ -60,7 +93,16 @@ export default defineConfig({
     react(),
     markdoc(),
     keystatic(),
-    sitemap({ filter: (page) => christmasActive || !/\/swieta\/?$/.test(page) }),
+    sitemap({
+      filter: (page) => christmasActive || !/\/swieta\/?$/.test(page),
+      // A session's date is the day it was shot, which is also the last time
+      // the page meant anything new. Everything else gets the build's date.
+      serialize(item) {
+        const { pathname } = new URL(item.url);
+        const shot = sessionLastmod.get(pathname);
+        return { ...item, lastmod: (shot ?? new Date()).toISOString() };
+      },
+    }),
   ],
 
   image: {

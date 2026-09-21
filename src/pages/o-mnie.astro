@@ -6,19 +6,31 @@ import SessionCard from '../components/SessionCard.astro';
 import Carousel from '../components/Carousel.astro';
 import { getSettings, getAbout } from '../lib/siteContent';
 import { publishedSessions } from '../lib/sessions';
+import { breadcrumbSchema, cityName, sentences } from '../lib/seo';
 import portrait from '../../site-content/images/about/portret.jpg';
 
 const settings = getSettings();
 const about = getAbout();
 const latest = (await publishedSessions()).slice(0, 8);
+const city = cityName(settings.city);
+const who = about.signature || 'Ania';
+
+const description = sentences(
+  city ? `Fotografka rodzinna i plenerowa — ${city} i okolice.` : undefined,
+  about.text,
+);
 ---
 
-<BaseLayout title="O mnie" description={about.text}>
+<BaseLayout
+  title="O mnie — fotografka rodzinna"
+  description={description}
+  schema={[breadcrumbSchema(Astro.site!, [{ name: 'O mnie', path: '/o-mnie' }])]}
+>
   <article class="about">
     <Image
       class="arch"
       src={portrait}
-      alt="Ania — fotografka"
+      alt={city ? `${who} — fotografka, ${city}` : `${who} — fotografka`}
       widths={[400, 800]}
       sizes="(max-width: 900px) 80vw, 40vw"
       loading="eager"
