@@ -385,14 +385,12 @@ export default config({
       schema: {
         phone: fields.text({ label: 'Telefon', description: 'Np. „555 123 456”' }),
         email: fields.text({ label: 'E-mail' }),
-        city: fields.text({ label: 'Miasto / obszar', description: 'Np. „Rzeszów i okolice”' }),
-        areas: fields.array(fields.text({ label: 'Miejscowość' }), {
-          label: 'Gdzie fotografujesz',
+        city: fields.text({
+          label: 'Miasto',
           description:
-            'Miasta i wsie, do których dojeżdżasz. Google pokazuje stronę osobom, ' +
-            'które szukają z tych okolic, a lista wyświetla się w stopce. ' +
-            'Wpisuj tylko miejsca, gdzie naprawdę robisz sesje.',
-          itemLabel: (item) => item.value || 'Miejscowość',
+            'Samo miasto, w którym działasz — np. „Rzeszów”. Bez „i okolice”: ' +
+            'okoliczne miejscowości wpisujesz niżej, w „Widoczność w Google”. ' +
+            'To miasto trafia do danych firmy i do tytułów stron w Google.',
         }),
         facebook: fields.url({ label: 'Facebook — link do profilu' }),
         instagram: fields.url({ label: 'Instagram — link do profilu' }),
@@ -401,13 +399,33 @@ export default config({
           description:
             'Numer z kierunkowym kraju, bez spacji i plusa. Np. 48555123456. Zostaw puste, żeby ukryć przycisk.',
         }),
-        googleSiteVerification: fields.text({
-          label: 'Google Search Console — kod weryfikacyjny',
-          description:
-            'Z Google Search Console: „Sposób weryfikacji: tag HTML” → skopiuj samą ' +
-            'wartość content="…". Dzięki temu zobaczysz, czego ludzie szukają, ' +
-            'zanim trafią na stronę. Zostaw puste, jeśli nie używasz.',
-        }),
+        seo: fields.object(
+          {
+            nearbyCities: fields.array(fields.text({ label: 'Miejscowość' }), {
+              label: 'Okoliczne miejscowości',
+              description:
+                'Miejscowości wokół Twojego miasta, do których dojeżdżasz — ' +
+                'np. Łańcut, Ropczyce, Tyczyn. Nie powtarzaj tu miasta z góry, ' +
+                'jest dopisywane samo. Dzięki temu Google pokazuje stronę ' +
+                'osobom szukającym fotografa z tamtych okolic. ' +
+                'Wpisuj tylko miejsca, gdzie naprawdę robisz sesje.',
+              itemLabel: (item) => item.value || 'Miejscowość',
+            }),
+            googleSiteVerification: fields.text({
+              label: 'Google Search Console — kod weryfikacyjny',
+              description:
+                'Z Google Search Console: „Sposób weryfikacji: tag HTML” → skopiuj samą ' +
+                'wartość content="…". Dzięki temu zobaczysz, czego ludzie szukają, ' +
+                'zanim trafią na stronę. Zostaw puste, jeśli nie używasz.',
+            }),
+          },
+          {
+            label: 'Widoczność w Google',
+            description:
+              'Te pola są tylko dla wyszukiwarek — odwiedzający ich nie czytają ' +
+              '(poza listą miejscowości w stopce).',
+          },
+        ),
         seasonalBanner: fields.object(
           {
             active: fields.checkbox({

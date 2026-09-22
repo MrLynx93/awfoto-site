@@ -153,16 +153,16 @@ Możesz go użyć też do czegoś innego niż święta — wtedy zmień adres li
 
 - nagłówek i tekst na stronie głównej,
 - tekst „O mnie" i podpis,
-- telefon, e-mail, miasto, godziny kontaktu,
-- **gdzie fotografujesz** — lista miejscowości,
+- telefon, e-mail, **miasto**, godziny kontaktu,
 - linki do Facebooka, Instagrama i Messengera,
-- **numer WhatsApp**.
+- **numer WhatsApp**,
+- osobno, w sekcji **Widoczność w Google** — okoliczne miejscowości i kod
+  weryfikacyjny (patrz niżej).
 
-**Gdzie fotografujesz.** Wypisz miasta i wsie, do których naprawdę dojeżdżasz
-(np. Rzeszów, Łańcut, Ropczyce, Tyczyn). Lista pokazuje się w stopce i — co
-ważniejsze — mówi Google, komu pokazywać stronę. Ktoś, kto szuka fotografa
-w Łańcucie, ma wtedy szansę trafić na Ciebie. Nie wpisuj miejsc, gdzie nie
-jeździsz: to nie pomaga, a bywa, że szkodzi.
+**Miasto** to jedno miasto, w którym działasz — np. `Rzeszów`. **Nie dopisuj
+„i okolice”.** To pole mówi Google, gdzie jesteś: trafia do danych firmy jako
+adres i do tytułów stron w wynikach wyszukiwania. Okoliczne miejscowości mają
+swoje własne pole, niżej.
 
 **WhatsApp — jak wpisać numer.** Z kierunkowym kraju, bez plusa i bez spacji:
 dla polskiego numeru 555 123 456 wpisz `48555123456`. Przycisk pojawi się wtedy
@@ -179,6 +179,24 @@ Sama strona jest już przygotowana pod wyszukiwarkę: ma mapę strony, opisy dla
 Google i dane firmy. Reszta zależy od kilku rzeczy, które możesz zrobić tylko
 Ty — i które działają **mocniej niż cokolwiek w kodzie**.
 
+### 0. Sekcja „Widoczność w Google" w Ustawieniach
+
+**Ustawienia → Ustawienia → Widoczność w Google.** Są tam dwa pola, których
+odwiedzający nie czytają — służą wyłącznie wyszukiwarkom.
+
+**Okoliczne miejscowości.** Wypisz miejscowości wokół Twojego miasta, do
+których naprawdę dojeżdżasz — np. Łańcut, Ropczyce, Tyczyn. **Nie wpisuj tu
+swojego miasta z pola „Miasto”** — dopisuje się samo, na początek listy.
+
+Po co: ktoś, kto szuka fotografa w Łańcucie, ma dzięki temu szansę trafić na
+Ciebie. Lista pokazuje się też w stopce jako „Dojeżdżam też”, więc odwiedzający
+z sąsiedniej miejscowości od razu wie, że u niego też zrobisz sesję.
+
+Wpisuj **tylko miejsca, gdzie naprawdę robisz sesje**. Wypisanie pół
+województwa nie pomaga, a bywa, że szkodzi.
+
+**Kod weryfikacyjny** — patrz punkt 2 niżej.
+
 ### 1. Wizytówka Firmy w Google (najważniejsze)
 
 Załóż **Profil Firmy w Google** (dawniej „Google Moja Firma"):
@@ -188,8 +206,8 @@ w ramce po prawej stronie wyników, gdy ktoś wpisze „fotograf rodzinny Rzesz�
 - Kategoria: **Fotograf**.
 - Podaj **ten sam** telefon, e-mail i nazwę, co na stronie — muszą się zgadzać
   co do znaku.
-- Jeśli nie masz studia, ustaw **obszar działania** zamiast adresu: ten sam,
-  który wpisałaś w „Gdzie fotografujesz".
+- Jeśli nie masz studia, ustaw **obszar działania** zamiast adresu: to samo
+  miasto co w polu „Miasto" plus miejscowości z „Okoliczne miejscowości".
 - Wstaw adres strony: `https://aw-foto.pl`.
 - Dodaj 15–20 zdjęć i **proś klientki o opinie**. Opinie są tym, co decyduje
   o kolejności na mapie. Najprościej: po wysłaniu galerii napisz jedno zdanie
@@ -205,7 +223,8 @@ szukali**, zanim trafili na stronę, i które strony w ogóle są w Google.
 1. Dodaj `https://aw-foto.pl`, wybierz weryfikację **„tag HTML"**.
 2. Google pokaże linijkę `<meta name="google-site-verification" content="ABC…">`.
    Skopiuj **samą wartość** z `content="…"`.
-3. Wklej ją w panelu: **Ustawienia → Ustawienia → Google Search Console**.
+3. Wklej ją w panelu: **Ustawienia → Ustawienia → Widoczność w Google →
+   Google Search Console**.
 4. Poczekaj 2–3 minuty na przebudowę strony i kliknij w Google **Zweryfikuj**.
 5. Na końcu w zakładce „Mapy witryn" dodaj: `sitemap-index.xml`.
 

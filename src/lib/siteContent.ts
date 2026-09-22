@@ -23,26 +23,43 @@ const pricingPackageSchema = z.object({
   includes: z.array(z.string()).default([]),
 });
 
-/** Reusable across every page: how to reach her, and the announcement bar. */
-const settingsSchema = z.object({
-  phone: z.string().default(''),
-  email: z.string().default(''),
-  city: z.string().default(''),
+/**
+ * What exists for search engines rather than for visitors, kept in a group of
+ * its own.
+ *
+ * The separation is the point. `city` above is one thing — where the business
+ * is — and it is what a visitor reads and what Google files as the address.
+ * Which towns are worth being *found* from is a different question with a
+ * different answer, and mixing the two into one "Rzeszów i okolice" box meant
+ * the address, the title tags and the service area all had to be guessed back
+ * out of the same piece of marketing copy.
+ */
+const seoSchema = z.object({
   /**
-   * Every town she travels to. Google matches a search made from one of them
-   * against a business that says it serves it, so this is what puts the site
-   * in front of someone two towns over — see `areaServed` in src/lib/seo.ts.
+   * Towns near the main one, *in addition to* it — `servedAreas()` in
+   * src/lib/seo.ts puts the city at the head of the list. Google matches a
+   * search made from one of these against a business that says it serves it,
+   * so this is what puts the site in front of someone two towns over.
    */
-  areas: z.array(z.string()).default([]),
-  facebook: z.string().default(''),
-  instagram: z.string().default(''),
-  whatsapp: z.string().default(''),
+  nearbyCities: z.array(z.string()).default([]),
   /**
    * The token Search Console hands out to prove the site is hers. It lives in
    * the panel rather than in an env var so she can verify the site — and see
    * what people search for to reach it — without a deploy.
    */
   googleSiteVerification: z.string().default(''),
+});
+
+/** Reusable across every page: how to reach her, and the announcement bar. */
+const settingsSchema = z.object({
+  phone: z.string().default(''),
+  email: z.string().default(''),
+  /** Where the business is: one city, nothing else. Not the service area. */
+  city: z.string().default(''),
+  facebook: z.string().default(''),
+  instagram: z.string().default(''),
+  whatsapp: z.string().default(''),
+  seo: seoSchema.default({ nearbyCities: [], googleSiteVerification: '' }),
   seasonalBanner: z
     .object({
       active: z.boolean().default(false),

@@ -22,12 +22,33 @@ export const SITE_NAME = 'AW Fotografia';
 export const PHOTOGRAPHER_NAME = 'Alicja Wicherek';
 
 /**
- * The panel asks for an area ("Rzeszów i okolice"), but a title tag wants the
- * bare city — "i okolice" costs 10 of the ~60 characters Google shows and wins
- * nothing. The long form still goes into the footer and the business card.
+ * The panel asks for one bare city, so this is normally a no-op. It stays as a
+ * guard for content written before the field meant that — "Rzeszów i okolice"
+ * is an address Google cannot file and costs 10 of the ~60 characters a title
+ * tag gets. Where the business travels is `nearbyCities`, a separate field.
  */
 export function cityName(city: string): string {
   return city.split(/\s+i\s+|[,/(]/)[0].trim();
+}
+
+/**
+ * Everywhere the business works, the main city first: it plainly serves its own
+ * city, so `nearbyCities` lists only what comes *after* that rather than
+ * repeating it. Duplicates are dropped, since the panel cannot stop her naming
+ * the main city again and `areaServed` saying "Rzeszów, Rzeszów" reads as
+ * broken data.
+ */
+export function servedAreas(settings: Settings): string[] {
+  const city = cityName(settings.city);
+  const all = [city, ...settings.seo.nearbyCities].map((name) => name.trim()).filter(Boolean);
+  return [...new Set(all)];
+}
+
+/** `areaServed`, or nothing at all when there is no place to name. */
+function areaServed(settings: Settings) {
+  const areas = servedAreas(settings);
+  if (areas.length === 0) return {};
+  return { areaServed: areas.map((name) => ({ '@type': 'City', name })) };
 }
 
 /**
@@ -106,6 +127,7 @@ export function businessSchema({ site, settings, pricing, description, image }: 
   const range = priceRange(pricing);
   const profiles = [settings.facebook, settings.instagram].filter(Boolean);
 
+
   return {
     '@context': 'https://schema.org',
     '@type': 'PhotographyBusiness',
@@ -120,10 +142,9 @@ export function businessSchema({ site, settings, pricing, description, image }: 
     ...(city && {
       address: { '@type': 'PostalAddress', addressLocality: city, addressCountry: 'PL' },
     }),
-    // Every town she travels to, so a search from the next town over can match.
-    ...(settings.areas.length > 0
-      ? { areaServed: settings.areas.map((name: string) => ({ '@type': 'City', name })) }
-      : settings.city && { areaServed: settings.city }),
+    // Every town she works in, so a search from the next one over can match.
+    // The address above is the single city; this is the reach around it.
+    ...areaServed(settings),
     ...(range && { priceRange: range }),
     ...(profiles.length > 0 && { sameAs: profiles }),
     founder: { '@type': 'Person', name: PHOTOGRAPHER_NAME },
@@ -223,9 +244,7 @@ export function serviceSchema(
     url: offer.url.href,
     image: imageObject(site, offer.image),
     provider: { '@id': businessId(site) },
-    ...(settings.areas.length > 0
-      ? { areaServed: settings.areas.map((name: string) => ({ '@type': 'City', name })) }
-      : settings.city && { areaServed: settings.city }),
+    ...areaServed(settings),
     ...(offered && { offers: offered }),
   };
 }

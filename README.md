@@ -178,9 +178,18 @@ are built.
 `parsePrice()` pulls the digits and treats a leading "od" as a `minPrice`
 floor. A field with no number emits no `Offer` at all rather than a guess.
 
-**`areaServed` comes from `settings.areas`** — the towns she actually travels
-to. It feeds both the JSON-LD and the line in the footer, which is what gives
-the site a reason to match a search made from the next town over.
+**Where the business is and where it is worth being found are two fields.**
+`settings.city` is one bare city: it is the address Google files
+(`addressLocality`), the city in every title tag, and what the footer shows.
+`settings.seo.nearbyCities` is the reach around it, and lives with the other
+search-engine-only settings under `seo`. `servedAreas()` joins them for
+`areaServed` — city first, duplicates dropped — so the schema never claims a
+town twice and the footer can list only what is *beyond* her own city without
+the two falling out of step.
+
+`cityName()` survives as a guard, not a parser: the panel now asks for a single
+city, but content written when that field meant "Rzeszów i okolice" still has to
+yield a filable address and a title tag that fits.
 
 Two things Google cares about are **not** in the repo's hands, and they matter
 more than any of the above: a Google Business Profile, and links from other

@@ -21,11 +21,12 @@ const waHref = whatsappHref(settings.whatsapp);
         {settings.city && <><br />{settings.city}</>}
       </p>
       {
-        /* The towns she actually travels to, named once on every page. It
-           answers the visitor from the next town over ("does she come here?")
-           and is the same list Google reads as `areaServed`. */
-        settings.areas.length > 0 && (
-          <p class="areas">Dojeżdżam: {settings.areas.join(' · ')}</p>
+        /* The towns beyond her own, named once on every page. It answers the
+           visitor from the next town over ("does she come here?"); the city
+           itself is already on the line above, so repeating it here would read
+           as padding. Google gets the full list, city first, via `areaServed`. */
+        settings.seo.nearbyCities.length > 0 && (
+          <p class="areas">Dojeżdżam też: {settings.seo.nearbyCities.join(' · ')}</p>
         )
       }
     </div>
