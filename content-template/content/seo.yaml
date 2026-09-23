@@ -1,0 +1,30 @@
+# Wszystko, co służy tylko wyszukiwarkom. Każde pole może zostać puste —
+# wtedy tekst układa się sam z treści strony i z miasta z Ustawień.
+nearbyPlaces:
+  - Rybnik
+  - Jastrzębie-Zdrój
+  - Wodzisław Śląski
+  - Śląsk
+googleSiteVerification: ''
+pages:
+  home:
+    title: ''
+    description: ''
+  sessions:
+    title: ''
+    description: ''
+  offers:
+    title: ''
+    description: ''
+  pricing:
+    title: ''
+    description: ''
+  about:
+    title: ''
+    description: ''
+  contact:
+    title: ''
+    description: ''
+  christmas:
+    title: ''
+    description: ''

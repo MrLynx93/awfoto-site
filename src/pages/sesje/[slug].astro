@@ -35,7 +35,7 @@ const meta = [formatDate(date), ...tags].filter(Boolean).join(' · ');
 const city = cityName(settings.city);
 const url = new URL(Astro.url.pathname, Astro.site);
 
-// The kind of shoot up front — someone searching "sesja roczkowa Rzeszów"
+// The kind of shoot up front — someone searching "sesja roczkowa Żory"
 // needs the description to say that, and the intro is a story, not a label.
 const description = sentences(
   tags.length > 0 ? `${tags.join(', ')} — ${city || 'sesja zdjęciowa'}.` : undefined,

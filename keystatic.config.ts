@@ -83,6 +83,48 @@ const pricingPackage = fields.object(
   { label: 'Pakiet' },
 );
 
+/**
+ * The seven pages whose search-result text is editable. Sessions and offers are
+ * not here: their description already comes from words she writes ("Krótki
+ * opis", "Opis"), so a second box for the same job would only be somewhere for
+ * the two to disagree.
+ */
+const SEO_PAGES = [
+  ['home', 'Strona główna'],
+  ['sessions', 'Moje sesje'],
+  ['offers', 'Oferta'],
+  ['pricing', 'Cennik'],
+  ['about', 'O mnie'],
+  ['contact', 'Kontakt'],
+  ['christmas', 'Święta'],
+] as const;
+
+/**
+ * One page's pair of boxes. Both may be left empty, and empty is the normal
+ * state: the site then writes the line itself from the page's own words and the
+ * city, which is right until she wants to say something different.
+ */
+const seoPageFields = (label: string) =>
+  fields.object(
+    {
+      title: fields.text({
+        label: 'Tytuł w Google',
+        description:
+          'Niebieski nagłówek wyniku. Google ucina go koło 60 znaków, więc ' +
+          'najważniejsze słowa dawaj na początek. Pusty = tytuł układa się sam.',
+      }),
+      description: fields.text({
+        label: 'Opis w Google',
+        description:
+          'Dwa–trzy zdania pod tytułem. Google ucina je koło 160 znaków. ' +
+          'To jedyny tekst, którym przekonujesz kogoś do kliknięcia. ' +
+          'Pusty = opis układa się sam.',
+        multiline: true,
+      }),
+    },
+    { label },
+  );
+
 export default config({
   storage,
 
@@ -93,6 +135,7 @@ export default config({
       Strony: ['homePage', 'sessionsPage', 'offersPage', 'aboutPage', 'christmasPage'],
       Cennik: ['pricing', 'christmasPricing'],
       Ustawienia: ['settings'],
+      'Widoczność w Google': ['seo'],
     },
   },
 
@@ -378,6 +421,43 @@ export default config({
       },
     }),
 
+    seo: singleton({
+      label: 'Widoczność w Google',
+      path: inRepo('content/seo'),
+      format: { data: 'yaml' },
+      schema: {
+        nearbyPlaces: fields.array(fields.text({ label: 'Miejscowość lub region' }), {
+          label: 'Gdzie jeszcze fotografujesz',
+          description:
+            'Miejscowości i regiony wokół Twojego miasta, do których dojeżdżasz — ' +
+            'np. Rybnik, Jastrzębie-Zdrój, Śląsk. Nie powtarzaj tu miasta z Ustawień, ' +
+            'dopisuje się samo. Dzięki temu Google pokazuje stronę osobom szukającym ' +
+            'fotografa z tamtych okolic, a lista widnieje w stopce. ' +
+            'Wpisuj tylko miejsca, gdzie naprawdę robisz sesje.',
+          itemLabel: (item) => item.value || 'Miejscowość',
+        }),
+        googleSiteVerification: fields.text({
+          label: 'Google Search Console — kod weryfikacyjny',
+          description:
+            'Z Google Search Console: „Sposób weryfikacji: tag HTML” → skopiuj samą ' +
+            'wartość content="…". Dzięki temu zobaczysz, czego ludzie szukają, ' +
+            'zanim trafią na stronę. Zostaw puste, jeśli nie używasz.',
+        }),
+        pages: fields.object(
+          Object.fromEntries(
+            SEO_PAGES.map(([key, label]) => [key, seoPageFields(label)]),
+          ) as { [K in (typeof SEO_PAGES)[number][0]]: ReturnType<typeof seoPageFields> },
+          {
+            label: 'Teksty w wynikach wyszukiwania',
+            description:
+              'Dla każdej strony: tytuł i opis, które Google pokazuje w wynikach. ' +
+              'Każde pole możesz zostawić puste — wtedy tekst układa się sam ' +
+              'z treści strony i z miasta.',
+          },
+        ),
+      },
+    }),
+
     settings: singleton({
       label: 'Ustawienia',
       path: inRepo('content/settings'),
@@ -388,7 +468,7 @@ export default config({
         city: fields.text({
           label: 'Miasto',
           description:
-            'Samo miasto, w którym działasz — np. „Rzeszów”. Bez „i okolice”: ' +
+            'Samo miasto, w którym działasz — np. „Żory”. Bez „i okolice”: ' +
             'okoliczne miejscowości wpisujesz niżej, w „Widoczność w Google”. ' +
             'To miasto trafia do danych firmy i do tytułów stron w Google.',
         }),
@@ -399,33 +479,6 @@ export default config({
           description:
             'Numer z kierunkowym kraju, bez spacji i plusa. Np. 48555123456. Zostaw puste, żeby ukryć przycisk.',
         }),
-        seo: fields.object(
-          {
-            nearbyCities: fields.array(fields.text({ label: 'Miejscowość' }), {
-              label: 'Okoliczne miejscowości',
-              description:
-                'Miejscowości wokół Twojego miasta, do których dojeżdżasz — ' +
-                'np. Łańcut, Ropczyce, Tyczyn. Nie powtarzaj tu miasta z góry, ' +
-                'jest dopisywane samo. Dzięki temu Google pokazuje stronę ' +
-                'osobom szukającym fotografa z tamtych okolic. ' +
-                'Wpisuj tylko miejsca, gdzie naprawdę robisz sesje.',
-              itemLabel: (item) => item.value || 'Miejscowość',
-            }),
-            googleSiteVerification: fields.text({
-              label: 'Google Search Console — kod weryfikacyjny',
-              description:
-                'Z Google Search Console: „Sposób weryfikacji: tag HTML” → skopiuj samą ' +
-                'wartość content="…". Dzięki temu zobaczysz, czego ludzie szukają, ' +
-                'zanim trafią na stronę. Zostaw puste, jeśli nie używasz.',
-            }),
-          },
-          {
-            label: 'Widoczność w Google',
-            description:
-              'Te pola są tylko dla wyszukiwarek — odwiedzający ich nie czytają ' +
-              '(poza listą miejscowości w stopce).',
-          },
-        ),
         seasonalBanner: fields.object(
           {
             active: fields.checkbox({

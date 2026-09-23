@@ -1,9 +1,10 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '../assets/logo.png';
-import { getChristmas, getSettings, whatsappHref } from '../lib/siteContent';
+import { getChristmas, getSettings, getSeo, whatsappHref } from '../lib/siteContent';
 
 const settings = getSettings();
+const seo = getSeo();
 const christmas = getChristmas();
 const year = new Date().getFullYear();
 const waHref = whatsappHref(settings.whatsapp);
@@ -25,8 +26,8 @@ const waHref = whatsappHref(settings.whatsapp);
            visitor from the next town over ("does she come here?"); the city
            itself is already on the line above, so repeating it here would read
            as padding. Google gets the full list, city first, via `areaServed`. */
-        settings.seo.nearbyCities.length > 0 && (
-          <p class="areas">Dojeżdżam też: {settings.seo.nearbyCities.join(' · ')}</p>
+        seo.nearbyPlaces.length > 0 && (
+          <p class="areas">Dojeżdżam też: {seo.nearbyPlaces.join(' · ')}</p>
         )
       }
     </div>

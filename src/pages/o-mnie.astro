@@ -4,9 +4,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactSection from '../components/ContactSection.astro';
 import SessionCard from '../components/SessionCard.astro';
 import Carousel from '../components/Carousel.astro';
-import { getSettings, getAbout } from '../lib/siteContent';
+import { getSettings, getAbout, getSeo } from '../lib/siteContent';
 import { publishedSessions } from '../lib/sessions';
-import { breadcrumbSchema, cityName, sentences } from '../lib/seo';
+import { breadcrumbSchema, cityName, pageMeta, sentences } from '../lib/seo';
 import portrait from '../../site-content/images/about/portret.jpg';
 
 const settings = getSettings();
@@ -15,15 +15,18 @@ const latest = (await publishedSessions()).slice(0, 8);
 const city = cityName(settings.city);
 const who = about.signature || 'Ania';
 
-const description = sentences(
-  city ? `Fotografka rodzinna i plenerowa — ${city} i okolice.` : undefined,
-  about.text,
-);
+const meta = pageMeta(getSeo().pages.about, {
+  title: 'O mnie — fotografka rodzinna',
+  titleIsFinal: false,
+  description: sentences(
+    city ? `Fotografka rodzinna i plenerowa — ${city} i okolice.` : undefined,
+    about.text,
+  ),
+});
 ---
 
 <BaseLayout
-  title="O mnie — fotografka rodzinna"
-  description={description}
+  {...meta}
   schema={[breadcrumbSchema(Astro.site!, [{ name: 'O mnie', path: '/o-mnie' }])]}
 >
   <article class="about">

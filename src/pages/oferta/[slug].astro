@@ -7,7 +7,7 @@ import PhotoGallery from '../../components/PhotoGallery.astro';
 import Lightbox from '../../components/Lightbox.astro';
 import SessionCard from '../../components/SessionCard.astro';
 import Carousel from '../../components/Carousel.astro';
-import { getSettings } from '../../lib/siteContent';
+import { getSettings, getSeo } from '../../lib/siteContent';
 import { publishedSessions } from '../../lib/sessions';
 import { breadcrumbSchema, cityName, sentences, serviceSchema } from '../../lib/seo';
 
@@ -48,7 +48,7 @@ const facts = [
 const city = cityName(settings.city);
 const url = new URL(Astro.url.pathname, Astro.site);
 
-// An offer page is the one that should answer "sesja rodzinna Rzeszów", so the
+// An offer page is the one that should answer "sesja rodzinna Żory", so the
 // description names the place and the price before it reaches her own words.
 const metaDescription = sentences(
   city && `${name} — ${city} i okolice.`,
@@ -61,7 +61,7 @@ const schema = [
     { name: 'Oferta', path: '/oferta' },
     { name, path: Astro.url.pathname },
   ]),
-  serviceSchema(Astro.site!, settings, {
+  serviceSchema(Astro.site!, settings, getSeo(), {
     name,
     description,
     price,

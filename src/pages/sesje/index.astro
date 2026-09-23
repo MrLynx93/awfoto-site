@@ -2,9 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SessionGrid from '../../components/SessionGrid.astro';
 import { publishedSessions } from '../../lib/sessions';
-import { getSessionsPage, getSettings } from '../../lib/siteContent';
+import { getSessionsPage, getSettings, getSeo } from '../../lib/siteContent';
 import { renderRichText } from '../../lib/richText';
-import { breadcrumbSchema, cityName, sentences } from '../../lib/seo';
+import { breadcrumbSchema, cityName, pageMeta, sentences } from '../../lib/seo';
 
 const sessions = await publishedSessions();
 const page = getSessionsPage();
@@ -12,15 +12,18 @@ const city = cityName(getSettings().city);
 
 // "Portfolio sesji zdjęciowych" is what someone looking for a photographer
 // types; "Moje sesje" is what the page is called once you are already on it.
-const description = sentences(
-  'Portfolio: sesje rodzinne, plenerowe, roczkowe i świąteczne.',
-  city && `${city} i okolice.`,
-);
+const meta = pageMeta(getSeo().pages.sessions, {
+  title: 'Portfolio sesji zdjęciowych',
+  titleIsFinal: false,
+  description: sentences(
+    'Portfolio: sesje rodzinne, plenerowe, roczkowe i świąteczne.',
+    city && `${city} i okolice.`,
+  ),
+});
 ---
 
 <BaseLayout
-  title="Portfolio sesji zdjęciowych"
-  description={description}
+  {...meta}
   schema={[breadcrumbSchema(Astro.site!, [{ name: 'Moje sesje', path: '/sesje' }])]}
 >
   <header class="page-header">

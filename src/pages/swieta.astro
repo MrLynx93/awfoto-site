@@ -10,9 +10,15 @@ import SessionCard from '../components/SessionCard.astro';
 import SnowyTitle from '../components/SnowyTitle.astro';
 import Carousel from '../components/Carousel.astro';
 import ContactSection from '../components/ContactSection.astro';
-import { getChristmas, getChristmasPricing, getPricing, getSettings } from '../lib/siteContent';
+import {
+  getChristmas,
+  getChristmasPricing,
+  getPricing,
+  getSettings,
+  getSeo,
+} from '../lib/siteContent';
 import { publishedSessions, christmasSessions } from '../lib/sessions';
-import { breadcrumbSchema, cityName, sentences } from '../lib/seo';
+import { breadcrumbSchema, cityName, pageMeta, sentences } from '../lib/seo';
 
 const settings = getSettings();
 const pricing = getPricing();
@@ -53,11 +59,24 @@ const seasonYear = christmas.heading.match(/\b(20\d{2})\b/)?.[1];
 const title = /sesj/i.test(christmas.heading)
   ? christmas.heading
   : `Sesje świąteczne${seasonYear ? ` ${seasonYear}` : ''}`;
+
+// Out of season the page carries `noindex`, so the panel's text would be
+// written for a result that is never shown — the short note stands instead.
+const meta = active
+  ? pageMeta(getSeo().pages.christmas, {
+      title,
+      titleIsFinal: false,
+      description,
+    })
+  : {
+      title: 'Sesje świąteczne',
+      titleIsFinal: false,
+      description: 'Sesje świąteczne wracają jesienią.',
+    };
 ---
 
 <BaseLayout
-  title={active ? title : 'Sesje świąteczne'}
-  description={active ? description : 'Sesje świąteczne wracają jesienią.'}
+  {...meta}
   ogImage={active ? offers[0]?.data.image.src : undefined}
   schema={active ? [breadcrumbSchema(Astro.site!, [{ name: 'Święta', path: '/swieta' }])] : []}
   noindex={!active}
