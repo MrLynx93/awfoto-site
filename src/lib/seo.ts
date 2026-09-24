@@ -2,7 +2,7 @@
  * Everything the pages need in order to describe themselves to Google.
  *
  * Two jobs live here. The first is wording: title tags and meta descriptions
- * that lead with what someone actually types ("fotograf rodzinny Rzeszów")
+ * that lead with what someone actually types ("fotograf rodzinny Żory")
  * rather than with the studio's name, which only people who already know it
  * search for. The second is structured data — the JSON-LD that lets Google
  * show the business in the local pack, put breadcrumbs under a result, and
@@ -12,7 +12,7 @@
  * filled in through the panel, and anything she left blank is left out rather
  * than shipped as a placeholder.
  */
-import type { Settings, Pricing } from './siteContent';
+import type { Settings, Seo, SeoPage, Pricing } from './siteContent';
 
 type Package = Pricing['packages'][number];
 
@@ -23,7 +23,7 @@ export const PHOTOGRAPHER_NAME = 'Alicja Wicherek';
 
 /**
  * The panel asks for one bare city, so this is normally a no-op. It stays as a
- * guard for content written before the field meant that — "Rzeszów i okolice"
+ * guard for content written before the field meant that — "Żory i okolice"
  * is an address Google cannot file and costs 10 of the ~60 characters a title
  * tag gets. Where the business travels is `nearbyCities`, a separate field.
  */
@@ -33,22 +33,27 @@ export function cityName(city: string): string {
 
 /**
  * Everywhere the business works, the main city first: it plainly serves its own
- * city, so `nearbyCities` lists only what comes *after* that rather than
+ * city, so `nearbyPlaces` lists only what comes *after* that rather than
  * repeating it. Duplicates are dropped, since the panel cannot stop her naming
- * the main city again and `areaServed` saying "Rzeszów, Rzeszów" reads as
- * broken data.
+ * the main city again and `areaServed` saying "Żory, Żory" reads as broken data.
  */
-export function servedAreas(settings: Settings): string[] {
+export function servedAreas(settings: Settings, seo: Seo): string[] {
   const city = cityName(settings.city);
-  const all = [city, ...settings.seo.nearbyCities].map((name) => name.trim()).filter(Boolean);
+  const all = [city, ...seo.nearbyPlaces].map((name) => name.trim()).filter(Boolean);
   return [...new Set(all)];
 }
 
-/** `areaServed`, or nothing at all when there is no place to name. */
-function areaServed(settings: Settings) {
-  const areas = servedAreas(settings);
+/**
+ * `areaServed`, or nothing at all when there is no place to name.
+ *
+ * `Place` rather than `City`: the list mixes towns with whole regions — "Żory,
+ * Rybnik, Śląsk" — and a region filed as a City is data that contradicts
+ * itself. `Place` is the type both are, so neither has to be mislabelled.
+ */
+function areaServed(settings: Settings, seo: Seo) {
+  const areas = servedAreas(settings, seo);
   if (areas.length === 0) return {};
-  return { areaServed: areas.map((name) => ({ '@type': 'City', name })) };
+  return { areaServed: areas.map((name) => ({ '@type': 'Place', name })) };
 }
 
 /**
@@ -61,6 +66,33 @@ export function clamp(text: string, max = 160): string {
   const cut = flat.slice(0, max - 1);
   const lastSpace = cut.lastIndexOf(' ');
   return `${(lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).replace(/[.,;:—-]$/, '')}…`;
+}
+
+/**
+ * What the page says about itself, with whatever she typed in the panel winning
+ * over it.
+ *
+ * A custom title is used **verbatim** — no "— AW Fotografia, Żory" appended.
+ * Someone who opens that box is there to control the line Google prints, and
+ * silently gluing 24 characters onto the end would push their own words past
+ * where Google cuts. The generated titles still get the suffix, since nobody
+ * chose those.
+ */
+export interface PageMeta {
+  title: string;
+  description: string;
+  /** Set when the title came from the panel, so BaseLayout leaves it alone. */
+  titleIsFinal: boolean;
+}
+
+export function pageMeta(override: SeoPage, generated: PageMeta): PageMeta {
+  const title = override.title.trim();
+  const description = override.description.trim();
+  return {
+    title: title || generated.title,
+    description: description || generated.description,
+    titleIsFinal: title ? true : generated.titleIsFinal,
+  };
 }
 
 /** Joins the parts of a description, dropping the ones that are empty. */
@@ -108,6 +140,7 @@ function priceRange(pricing: Pricing): string | undefined {
 interface BusinessInput {
   site: URL;
   settings: Settings;
+  seo: Seo;
   pricing: Pricing;
   description: string;
   /** Absolute URL of the picture Google may show beside the listing. */
@@ -122,7 +155,7 @@ interface BusinessInput {
  * schema.org type for exactly this trade, and being specific is what makes a
  * listing eligible for the local results a photographer is found through.
  */
-export function businessSchema({ site, settings, pricing, description, image }: BusinessInput) {
+export function businessSchema({ site, settings, seo, pricing, description, image }: BusinessInput) {
   const city = cityName(settings.city);
   const range = priceRange(pricing);
   const profiles = [settings.facebook, settings.instagram].filter(Boolean);
@@ -142,9 +175,9 @@ export function businessSchema({ site, settings, pricing, description, image }: 
     ...(city && {
       address: { '@type': 'PostalAddress', addressLocality: city, addressCountry: 'PL' },
     }),
-    // Every town she works in, so a search from the next one over can match.
+    // Everywhere she works, so a search from the next town over can match.
     // The address above is the single city; this is the reach around it.
-    ...areaServed(settings),
+    ...areaServed(settings, seo),
     ...(range && { priceRange: range }),
     ...(profiles.length > 0 && { sameAs: profiles }),
     founder: { '@type': 'Person', name: PHOTOGRAPHER_NAME },
@@ -226,11 +259,12 @@ export function sessionSchema(
 
 /**
  * A kind of shoot, as sold: what it is, who provides it, where, and from how
- * much. `Service` is the type Google reads for "sesja świąteczna Rzeszów".
+ * much. `Service` is the type Google reads for "sesja świąteczna Żory".
  */
 export function serviceSchema(
   site: URL,
   settings: Settings,
+  seo: Seo,
   offer: { name: string; description: string; price: string; url: URL; image: SchemaImage },
 ) {
   const offered = offerSchema(offer.name, offer.price);
@@ -244,7 +278,7 @@ export function serviceSchema(
     url: offer.url.href,
     image: imageObject(site, offer.image),
     provider: { '@id': businessId(site) },
-    ...areaServed(settings),
+    ...areaServed(settings, seo),
     ...(offered && { offers: offered }),
   };
 }

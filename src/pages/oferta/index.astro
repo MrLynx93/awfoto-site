@@ -3,25 +3,28 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import OfferCard from '../../components/OfferCard.astro';
 import ContactSection from '../../components/ContactSection.astro';
-import { getSettings, getOffersPage } from '../../lib/siteContent';
+import { getSettings, getOffersPage, getSeo } from '../../lib/siteContent';
 import { renderRichText } from '../../lib/richText';
-import { breadcrumbSchema, cityName, sentences } from '../../lib/seo';
+import { breadcrumbSchema, cityName, pageMeta, sentences } from '../../lib/seo';
 
 const settings = getSettings();
 const page = getOffersPage();
 const offers = (await getCollection('offers')).sort((a, b) => a.data.order - b.data.order);
 const city = cityName(settings.city);
 
-const description = sentences(
-  'Rodzaje sesji zdjęciowych: plenerowa, rodzinna, roczkowa i świąteczna —',
-  'co obejmują i jak wyglądają.',
-  city && `${city} i okolice.`,
-);
+const meta = pageMeta(getSeo().pages.offers, {
+  title: 'Rodzaje sesji zdjęciowych',
+  titleIsFinal: false,
+  description: sentences(
+    'Rodzaje sesji zdjęciowych: plenerowa, rodzinna, roczkowa i świąteczna —',
+    'co obejmują i jak wyglądają.',
+    city && `${city} i okolice.`,
+  ),
+});
 ---
 
 <BaseLayout
-  title="Rodzaje sesji zdjęciowych"
-  description={description}
+  {...meta}
   schema={[breadcrumbSchema(Astro.site!, [{ name: 'Oferta', path: '/oferta' }])]}
 >
   <header class="page-header">

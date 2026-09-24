@@ -1,16 +1,9 @@
 phone: '000 000 000'
 email: kontakt@aw-foto.pl
-city: Rzeszów
+city: Żory
 facebook: 'https://facebook.com/'
 instagram: 'https://instagram.com/'
 whatsapp: '48000000000'
-seo:
-  nearbyCities:
-    - Łańcut
-    - Ropczyce
-    - Tyczyn
-    - Głogów Małopolski
-  googleSiteVerification: ''
 seasonalBanner:
   active: true
   text: Sesje świąteczne 2026 — zapisy otwarte, zostały 3 terminy

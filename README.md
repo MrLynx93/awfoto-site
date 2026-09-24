@@ -155,7 +155,7 @@ independent of this switch: it is a generic strip that can advertise anything.
 ## Search visibility
 
 A photographer is found in two places — a local search ("fotograf rodzinny
-Rzeszów") and Google Images — so the site is built to answer both. Everything
+Żory") and Google Images — so the site is built to answer both. Everything
 below is derived from what the panel holds; nothing is hardcoded copy.
 
 **`src/lib/seo.ts`** is the one place titles, descriptions and structured data
@@ -163,12 +163,12 @@ are built.
 
 | What | Where | Why |
 |---|---|---|
-| Title tags | `BaseLayout` + each page | `<page> — AW Fotografia, <miasto>`. The city comes from `settings.city`, shortened by `cityName()` — "Rzeszów i okolice" costs 10 of the ~60 characters Google shows |
+| Title tags | `BaseLayout` + each page | `<page> — AW Fotografia, <miasto>`, or verbatim from the panel. The city comes from `settings.city`, shortened by `cityName()` — "Żory i okolice" costs 8 of the ~60 characters Google shows |
 | Descriptions | each page | The trade and the place first, her own words after, clamped to 160 on a word boundary |
 | `PhotographyBusiness` | every page | The business card, `@id`-anchored at `/#business` so every other block points back at one business rather than one per URL |
 | `BreadcrumbList` | every page below the root | The trail Google prints instead of a bare URL |
 | `ImageGallery` | `/sesje/<slug>` | A dated set of photos by a named author — how a shoot reaches Google Images |
-| `Service` + `Offer` | `/oferta/<slug>` | Answers "sesja świąteczna Rzeszów", with the price floor parsed out of the free-text field |
+| `Service` + `Offer` | `/oferta/<slug>` | Answers "sesja świąteczna Żory", with the price floor parsed out of the free-text field |
 | `OfferCatalog` | `/cennik` | The packages and their prices |
 | `WebSite` | `/` | Settles the site's name in results |
 | `/robots.txt` | `src/pages/robots.txt.ts` | Generated so the `Sitemap:` line follows `SITE_URL`. The panel host answers it separately — see `app.js` |
@@ -178,17 +178,39 @@ are built.
 `parsePrice()` pulls the digits and treats a leading "od" as a `minPrice`
 floor. A field with no number emits no `Offer` at all rather than a guess.
 
-**Where the business is and where it is worth being found are two fields.**
-`settings.city` is one bare city: it is the address Google files
-(`addressLocality`), the city in every title tag, and what the footer shows.
-`settings.seo.nearbyCities` is the reach around it, and lives with the other
-search-engine-only settings under `seo`. `servedAreas()` joins them for
-`areaServed` — city first, duplicates dropped — so the schema never claims a
-town twice and the footer can list only what is *beyond* her own city without
-the two falling out of step.
+**Three separate questions, three separate homes.** Where the business *is* is
+`settings.city` — one bare city, which becomes `addressLocality`, the city in
+every title tag, and the line in the footer. Where it is worth being *found*
+from, and what Google should *print*, both live in their own singleton,
+`content/seo.yaml`, shown in the panel as **Widoczność w Google**:
+
+| Field | Feeds |
+|---|---|
+| `nearbyPlaces` | `areaServed`, and the footer's "Dojeżdżam też" line |
+| `googleSiteVerification` | the Search Console meta tag |
+| `pages.<page>.{title,description}` | that page's title tag and meta description |
+
+`servedAreas()` joins the city and `nearbyPlaces` for `areaServed` — city first,
+duplicates dropped — so the schema never claims a place twice and the footer can
+list only what is *beyond* her own city without the two falling out of step.
+They are emitted as `Place`, not `City`: the list mixes towns with whole regions
+("Żory, Rybnik, Śląsk") and a region filed as a City is data that contradicts
+itself.
+
+**Every `pages` box may be empty, and empty is the normal state** — the page
+then writes its own line, as it always did. `pageMeta()` in `src/lib/seo.ts`
+applies the override; a title typed into the panel is used **verbatim**, with no
+`— AW Fotografia, Żory` appended, since someone who opens that box is there to
+control the line Google prints and 24 silent extra characters would push their
+words past where it cuts.
+
+`getSeo()` reads the file through `readOptionalYaml()`, so a missing
+`seo.yaml` parses as all-defaults rather than failing the build. The content
+lives in its own repo and lands on its own schedule, so a new section must not
+break the deploy that introduces it.
 
 `cityName()` survives as a guard, not a parser: the panel now asks for a single
-city, but content written when that field meant "Rzeszów i okolice" still has to
+city, but content written when that field meant "Żory i okolice" still has to
 yield a filable address and a title tag that fits.
 
 Two things Google cares about are **not** in the repo's hands, and they matter

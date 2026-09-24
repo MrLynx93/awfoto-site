@@ -1,7 +1,7 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { getSettings, getPricing } from '../lib/siteContent';
+import { getSettings, getPricing, getSeo } from '../lib/siteContent';
 import { SITE_NAME, businessSchema, cityName } from '../lib/seo';
 import { getAnalytics, IGNORE_KEY } from '../lib/analytics';
 import '../styles/global.css';
@@ -17,6 +17,11 @@ interface Props {
   description?: string;
   /** Absolute or site-relative URL of the image used for link previews. */
   ogImage?: string;
+  /**
+   * Set when `title` is already the finished line — a title typed into the
+   * panel, which is used exactly as written. See `pageMeta` in src/lib/seo.ts.
+   */
+  titleIsFinal?: boolean;
   /** `article` for a session, whose page is dated and written. */
   ogType?: 'website' | 'article';
   /** ISO date of a session, for `article:published_time`. */
@@ -34,6 +39,7 @@ interface Props {
 const {
   title,
   description = 'Fotografia rodzinna, plenerowa i świąteczna. Sesje zdjęciowe bez pozowania.',
+  titleIsFinal = false,
   ogImage = OG_DEFAULT,
   ogType = 'website',
   publishedTime,
@@ -44,6 +50,7 @@ const {
 const settings = getSettings();
 const pricing = getPricing();
 const analytics = getAnalytics(Astro.site!);
+const seo = getSeo();
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImageUrl = ogImage ? new URL(ogImage, Astro.site).href : undefined;
 
@@ -51,12 +58,12 @@ const ogImageUrl = ogImage ? new URL(ogImage, Astro.site).href : undefined;
  * The title tag is the single line Google shows, so it has to say the trade
  * and the place — those are what people type. The page's own words come first,
  * then the studio, then the city: "Cennik sesji zdjęciowych — AW Fotografia,
- * Rzeszów". The home page passes a title that already reads that way and is
+ * Żory". The home page passes a title that already reads that way and is
  * left alone.
  */
 const city = cityName(settings.city);
 const fullTitle =
-  title === SITE_NAME || title.startsWith(`${SITE_NAME} `)
+  titleIsFinal || title === SITE_NAME || title.startsWith(`${SITE_NAME} `)
     ? title
     : `${title} — ${SITE_NAME}${city ? `, ${city}` : ''}`;
 
@@ -71,6 +78,7 @@ const isDefaultOgImage = ogImage === OG_DEFAULT;
 const business = businessSchema({
   site: Astro.site!,
   settings,
+  seo,
   pricing,
   description,
   image: new URL(OG_DEFAULT, Astro.site).href,
@@ -114,8 +122,8 @@ const jsonLd = [business, ...schema]
       )
     }
     {
-      settings.seo.googleSiteVerification && (
-        <meta name="google-site-verification" content={settings.seo.googleSiteVerification} />
+      seo.googleSiteVerification && (
+        <meta name="google-site-verification" content={seo.googleSiteVerification} />
       )
     }
 

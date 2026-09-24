@@ -156,13 +156,13 @@ Możesz go użyć też do czegoś innego niż święta — wtedy zmień adres li
 - telefon, e-mail, **miasto**, godziny kontaktu,
 - linki do Facebooka, Instagrama i Messengera,
 - **numer WhatsApp**,
-- osobno, w sekcji **Widoczność w Google** — okoliczne miejscowości i kod
-  weryfikacyjny (patrz niżej).
+- w osobnej zakładce **Widoczność w Google** — miejscowości, teksty do Google
+  i kod weryfikacyjny (patrz niżej).
 
-**Miasto** to jedno miasto, w którym działasz — np. `Rzeszów`. **Nie dopisuj
+**Miasto** to jedno miasto, w którym działasz — `Żory`. **Nie dopisuj
 „i okolice”.** To pole mówi Google, gdzie jesteś: trafia do danych firmy jako
-adres i do tytułów stron w wynikach wyszukiwania. Okoliczne miejscowości mają
-swoje własne pole, niżej.
+adres i do tytułów stron w wynikach wyszukiwania. Okoliczne miejscowości
+i cały Śląsk wpisujesz osobno, w zakładce **Widoczność w Google**.
 
 **WhatsApp — jak wpisać numer.** Z kierunkowym kraju, bez plusa i bez spacji:
 dla polskiego numeru 555 123 456 wpisz `48555123456`. Przycisk pojawi się wtedy
@@ -179,35 +179,81 @@ Sama strona jest już przygotowana pod wyszukiwarkę: ma mapę strony, opisy dla
 Google i dane firmy. Reszta zależy od kilku rzeczy, które możesz zrobić tylko
 Ty — i które działają **mocniej niż cokolwiek w kodzie**.
 
-### 0. Sekcja „Widoczność w Google" w Ustawieniach
+### 0. Zakładka „Widoczność w Google"
 
-**Ustawienia → Ustawienia → Widoczność w Google.** Są tam dwa pola, których
-odwiedzający nie czytają — służą wyłącznie wyszukiwarkom.
+W menu panelu, obok **Ustawień**, jest osobna zakładka **Widoczność w Google**.
+Wszystko w niej służy tylko wyszukiwarkom — odwiedzający tych pól nie czytają
+(poza listą miejscowości w stopce).
 
-**Okoliczne miejscowości.** Wypisz miejscowości wokół Twojego miasta, do
-których naprawdę dojeżdżasz — np. Łańcut, Ropczyce, Tyczyn. **Nie wpisuj tu
-swojego miasta z pola „Miasto”** — dopisuje się samo, na początek listy.
+#### Gdzie jeszcze fotografujesz
 
-Po co: ktoś, kto szuka fotografa w Łańcucie, ma dzięki temu szansę trafić na
-Ciebie. Lista pokazuje się też w stopce jako „Dojeżdżam też”, więc odwiedzający
-z sąsiedniej miejscowości od razu wie, że u niego też zrobisz sesję.
+Wypisz miejscowości i regiony wokół Żor, do których dojeżdżasz — np. Rybnik,
+Jastrzębie-Zdrój, Wodzisław Śląski, Śląsk. **Nie wpisuj tu Żor** — miasto
+z Ustawień dopisuje się samo, na początek listy.
 
-Wpisuj **tylko miejsca, gdzie naprawdę robisz sesje**. Wypisanie pół
-województwa nie pomaga, a bywa, że szkodzi.
+Możesz wpisać zarówno pojedyncze miasto, jak i cały region. „Śląsk" w jednej
+pozycji działa lepiej niż wymienianie czterdziestu miejscowości.
 
-**Kod weryfikacyjny** — patrz punkt 2 niżej.
+Po co: ktoś, kto szuka fotografa w Rybniku, ma dzięki temu szansę trafić na
+Ciebie. Lista pokazuje się też w stopce jako „Dojeżdżam też", więc odwiedzający
+z sąsiedniego miasta od razu wie, że u niego też zrobisz sesję.
+
+Wpisuj **tylko miejsca, gdzie naprawdę robisz sesje**. Wypisanie pół Polski nie
+pomaga, a bywa, że szkodzi.
+
+#### Teksty w wynikach wyszukiwania
+
+To jest ten fragment, który ludzie widzą w Google, **zanim** wejdą na stronę:
+
+```
+Cennik sesji zdjęciowych — AW Fotografia, Żory      ← tytuł (niebieski)
+aw-foto.pl › cennik
+Pakiety od 400 zł. Sesje rodzinne i plenerowe        ← opis
+w Żorach, Rybniku i na Śląsku.
+```
+
+Dla każdej strony masz dwa pola:
+
+- **Tytuł w Google** — niebieski nagłówek. Google ucina go koło **60 znaków**,
+  więc najważniejsze słowa dawaj na początek.
+- **Opis w Google** — dwa–trzy zdania pod tytułem, ucinane koło **160 znaków**.
+  To jedyny tekst, którym przekonujesz kogoś do kliknięcia.
+
+**Każde pole możesz zostawić puste — i tak jest normalnie.** Wtedy tekst układa
+się sam z treści strony i z miasta, i jest poprawny. Wypełniaj tylko wtedy, gdy
+chcesz powiedzieć coś innego, np. dopisać cenę albo odpowiedzieć na konkretne
+pytanie („Ile kosztuje sesja rodzinna w Żorach?").
+
+**Uwaga:** jeśli wpiszesz własny tytuł, będzie użyty **dokładnie tak, jak go
+napiszesz** — bez dopisywania „— AW Fotografia, Żory" na końcu. Chcesz mieć tam
+nazwę i miasto? Wpisz je sama.
+
+Kilka zasad, które działają:
+
+- Pisz tak, jak ludzie szukają: „fotograf rodzinny Żory", nie „usługi
+  fotograficzne premium".
+- Jedna konkretna rzecz na stronę. Nie powtarzaj tego samego opisu wszędzie.
+- W opisie daj powód do kliknięcia: cena od…, termin, „zdjęcia w 10 dni".
+- Nie upychaj słów kluczowych. „Fotograf Żory fotograf Rybnik fotograf Śląsk"
+  Google wychwytuje i to szkodzi.
+- Google i tak czasem pokaże swój własny tekst, jeśli uzna, że lepiej pasuje do
+  pytania. To normalne — te pola są mocną sugestią, nie rozkazem.
+
+#### Kod weryfikacyjny
+
+Patrz punkt 2 niżej.
 
 ### 1. Wizytówka Firmy w Google (najważniejsze)
 
 Załóż **Profil Firmy w Google** (dawniej „Google Moja Firma"):
 <https://business.google.com>. To ona sprawia, że pojawiasz się na mapie i
-w ramce po prawej stronie wyników, gdy ktoś wpisze „fotograf rodzinny Rzeszów".
+w ramce po prawej stronie wyników, gdy ktoś wpisze „fotograf rodzinny Żory".
 
 - Kategoria: **Fotograf**.
 - Podaj **ten sam** telefon, e-mail i nazwę, co na stronie — muszą się zgadzać
   co do znaku.
-- Jeśli nie masz studia, ustaw **obszar działania** zamiast adresu: to samo
-  miasto co w polu „Miasto" plus miejscowości z „Okoliczne miejscowości".
+- Jeśli nie masz studia, ustaw **obszar działania** zamiast adresu: Żory plus
+  miejscowości z „Gdzie jeszcze fotografujesz".
 - Wstaw adres strony: `https://aw-foto.pl`.
 - Dodaj 15–20 zdjęć i **proś klientki o opinie**. Opinie są tym, co decyduje
   o kolejności na mapie. Najprościej: po wysłaniu galerii napisz jedno zdanie
@@ -217,30 +263,86 @@ Bez wizytówki strona może być idealna i i tak przegra z fotografem, który j�
 
 ### 2. Google Search Console
 
-<https://search.google.com/search-console> — darmowe, pokazuje, **czego ludzie
-szukali**, zanim trafili na stronę, i które strony w ogóle są w Google.
+<https://search.google.com/search-console> — **darmowe w całości**, bez wersji
+płatnej. Potrzebujesz tylko konta Google.
 
-1. Dodaj `https://aw-foto.pl`, wybierz weryfikację **„tag HTML"**.
-2. Google pokaże linijkę `<meta name="google-site-verification" content="ABC…">`.
+To panel Google'a o Twojej stronie. Pokazuje rzeczy, których nie da się
+zobaczyć nigdzie indziej:
+
+- **jakie hasła ludzie wpisywali**, zanim zobaczyli Twoją stronę,
+- na którym miejscu się wtedy pokazałaś i czy ktoś kliknął,
+- które strony Google w ogóle ma u siebie, a które pominął.
+
+To nie to samo co Google Analytics: Analytics liczy ludzi **na** stronie,
+Search Console pokazuje wszystko **zanim** kliknęli.
+
+**Ważne:** samo założenie Search Console **nie poprawia pozycji**. To
+termometr, nie grzejnik. Wartość jest inna: przestajesz zgadywać. Bez niego
+każda decyzja („czy warto opisać sesje roczkowe?") to strzał w ciemno.
+
+#### Jak podłączyć
+
+1. Wejdź na <https://search.google.com/search-console> i dodaj usługę.
+   Wybierz **„Prefiks adresu URL"** i wpisz `https://aw-foto.pl`.
+   (Druga opcja, „Domena", wymaga grzebania w ustawieniach domeny — ta jest
+   prostsza. Nie dodawaj `panel.aw-foto.pl`, jest celowo ukryty przed Google.)
+2. Wybierz weryfikację **„tag HTML"**. Google pokaże linijkę
+   `<meta name="google-site-verification" content="ABC…">`.
    Skopiuj **samą wartość** z `content="…"`.
-3. Wklej ją w panelu: **Ustawienia → Ustawienia → Widoczność w Google →
-   Google Search Console**.
+3. Wklej ją w panelu: **Widoczność w Google → Google Search Console**.
 4. Poczekaj 2–3 minuty na przebudowę strony i kliknij w Google **Zweryfikuj**.
-5. Na końcu w zakładce „Mapy witryn" dodaj: `sitemap-index.xml`.
+5. Na końcu w zakładce **„Mapy witryn"** dodaj: `sitemap-index.xml`.
+
+Pierwsze dane pojawią się po kilku dniach. Search Console zawsze pokazuje stan
+sprzed ok. 2–3 dni i trzyma historię 16 miesięcy.
+
+#### Co z tym robić — po kolei
+
+**Szukaj „prawie trafionych".** W zakładce **Skuteczność** posortuj hasła po
+liczbie wyświetleń i znajdź te, przy których średnia pozycja to **8–20**. To
+frazy, przy których Google już uznaje Cię za pasującą, ale jesteś na drugiej
+stronie, gdzie nikt nie zagląda. Przesunięcie z 12. na 6. miejsce jest o wiele
+łatwiejsze niż zbudowanie pozycji od zera — zwykle wystarczy dopisać sesję na
+ten temat albo poprawić tekst w **Widoczność w Google → Teksty w wynikach
+wyszukiwania**.
+
+**Sprawdzaj osobno Grafikę Google.** Na górze zmień **Typ wyszukiwania**
+z „Wyniki z sieci" na **„Grafika"**. U fotografa to bywa spora część ruchu,
+a liczy się osobno — łatwo tego w ogóle nie zauważyć.
+
+**Wyłapuj hasła, których się nie spodziewałaś.** Ludzie szukają dziwnie —
+„zdjęcia noworodkowe w domu", „fotograf na chrzciny". Jeśli coś się wyświetla,
+a nie masz o tym strony, to gotowy pomysł na sesję albo ofertę — i to popyt
+potwierdzony, nie wymyślony.
+
+**Pilnuj, czy strony są w Google.** Zakładka **Strony** pokazuje, czego Google
+nie wziął i dlaczego. Strona, której nie ma w Google, nie pokaże się nigdy.
+W **Sprawdzanie adresu URL** możesz też wkleić adres nowej sesji i kliknąć
+**„Poproś o zindeksowanie"** — wtedy Google przyjdzie po nią w kilka godzin
+zamiast po kilku tygodniach. Warto robić to po każdej nowej sesji.
+
+Jest jeszcze zakładka **Ulepszenia** — pokaże „Menu nawigacyjne" i ewentualne
+błędy w danych o firmie, które strona wysyła do Google. Dobre miejsce, żeby
+sprawdzić, czy wszystko się wczytuje.
+
+**Czego się spodziewać:** przez pierwsze dwa tygodnie nie będzie prawie nic,
+a lokalne frazy rozkręcają się miesiącami. Nie oceniaj po pierwszym tygodniu.
+Realny rytm to zajrzeć **raz w miesiącu** i poprawić dwie–trzy rzeczy z listy
+„prawie trafionych".
 
 ### 3. Co pisać, żeby dało się Cię znaleźć
 
 Google czyta teksty, które wpisujesz w panelu. Kilka nawyków wystarczy:
 
 - **Tytuł sesji** — dopisz rodzaj i miejsce: „Roczek Antosia — sesja rodzinna
-  w Rzeszowie" zamiast samego „Roczek Antosia".
+  w Żorach" zamiast samego „Roczek Antosia".
 - **Krótki opis sesji** — pierwsze zdanie niech mówi, co to była za sesja i
   gdzie. Reszta może być dowolna.
 - **Opis zdjęcia** przy każdym zdjęciu (patrz wyżej) — stąd biorą się wejścia
   z Grafiki Google, a u fotografa to spory ruch.
 - **Rodzaje sesji** — zaznaczaj wszystkie pasujące. Trafiają do Google jako
   słowa kluczowe strony.
-- Pisz normalnie. Powtarzanie „fotograf Rzeszów fotograf Rzeszów" nie pomaga,
+- Pisz normalnie. Powtarzanie „fotograf Żory fotograf Żory" nie pomaga,
   a Google to wychwytuje.
 
 ### 4. Regularność
@@ -254,7 +356,7 @@ to nowa strona, która może się pokazać w wynikach.
 To drugi po wizytówce najmocniejszy czynnik. Darmowe i sensowne miejsca:
 
 - adres strony w **opisie profilu na Instagramie i Facebooku**,
-- lokalne grupy i katalogi (fotografowie, wesela, „mamy z Rzeszowa"),
+- lokalne grupy i katalogi (fotografowie, wesela, „mamy z Żor"),
 - strony miejsc, w których fotografujesz (sale, dwory, przedszkola) — poproś
   o link, jeśli pokazują Twoje zdjęcia,
 - wspólne wpisy z wizażystką, florystką, salą — link w obie strony.

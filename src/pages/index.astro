@@ -8,9 +8,9 @@ import OfferCard from '../components/OfferCard.astro';
 import BotanicalDivider from '../components/BotanicalDivider.astro';
 import ContactSection from '../components/ContactSection.astro';
 import ChristmasFeature from '../components/ChristmasFeature.astro';
-import { getSettings, getHome, getChristmas } from '../lib/siteContent';
+import { getSettings, getHome, getChristmas, getSeo } from '../lib/siteContent';
 import { publishedSessions } from '../lib/sessions';
-import { cityName, sentences, websiteSchema } from '../lib/seo';
+import { cityName, pageMeta, sentences, websiteSchema } from '../lib/seo';
 
 const settings = getSettings();
 const home = getHome();
@@ -41,19 +41,25 @@ const heroImage = heroSession?.data.coverImage;
  * a name they have not heard yet. The heading stays whatever she wrote.
  */
 const city = cityName(settings.city);
-const title = city
+const generatedTitle = city
   ? `AW Fotografia — fotograf rodzinny i plenerowy, ${city}`
   : 'AW Fotografia — fotografia rodzinna, plenerowa i świąteczna';
 
 // Her own words, but behind one line that says what this is and where, since
 // the description is the other half of what Google prints.
-const description = sentences(
-  city ? `Sesje rodzinne, plenerowe, roczkowe i świąteczne — ${city} i okolice.` : undefined,
-  home.text,
-);
+const meta = pageMeta(getSeo().pages.home, {
+  // Already the finished line — the home page names the studio itself, so
+  // BaseLayout must not append it a second time.
+  title: generatedTitle,
+  titleIsFinal: true,
+  description: sentences(
+    city ? `Sesje rodzinne, plenerowe, roczkowe i świąteczne — ${city} i okolice.` : undefined,
+    home.text,
+  ),
+});
 ---
 
-<BaseLayout title={title} description={description} schema={[websiteSchema(Astro.site!)]}>
+<BaseLayout {...meta} schema={[websiteSchema(Astro.site!)]}>
   <section class="hero">
     <div>
       {home.eyebrow && <p class="label">{home.eyebrow}</p>}

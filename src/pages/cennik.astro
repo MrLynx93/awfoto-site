@@ -4,8 +4,14 @@ import PricingTable from '../components/PricingTable.astro';
 import ContactSection from '../components/ContactSection.astro';
 import PricingNotes from '../components/PricingNotes.astro';
 import SnowyTitle from '../components/SnowyTitle.astro';
-import { getChristmas, getChristmasPricing, getPricing, getSettings } from '../lib/siteContent';
-import { breadcrumbSchema, cityName, offerCatalogSchema, sentences } from '../lib/seo';
+import {
+  getChristmas,
+  getChristmasPricing,
+  getPricing,
+  getSettings,
+  getSeo,
+} from '../lib/siteContent';
+import { breadcrumbSchema, cityName, offerCatalogSchema, pageMeta, sentences } from '../lib/seo';
 
 const pricing = getPricing();
 const settings = getSettings();
@@ -20,7 +26,7 @@ const showChristmas = christmas.active && christmasPricing.packages.length > 0;
 // In season the Christmas packages are the offer, so they replace the
 // year-round list rather than sitting under it.
 const city = cityName(settings.city);
-const description = showChristmas
+const generatedDescription = showChristmas
   ? sentences(
       'Cennik sesji świątecznych — pakiety, co obejmują i ile kosztują.',
       city && `${city} i okolice.`,
@@ -42,9 +48,15 @@ const schema = [
   breadcrumbSchema(Astro.site!, [{ name: 'Cennik', path: '/cennik' }]),
   ...(catalog ? [catalog] : []),
 ];
+
+const meta = pageMeta(getSeo().pages.pricing, {
+  title: 'Cennik sesji zdjęciowych',
+  titleIsFinal: false,
+  description: generatedDescription,
+});
 ---
 
-<BaseLayout title="Cennik sesji zdjęciowych" description={description} schema={schema}>
+<BaseLayout {...meta} schema={schema}>
   {/* In season the Christmas band carries the page's own heading, so this one
       would sit above it saying the same thing about a list that is not there. */}
   {
