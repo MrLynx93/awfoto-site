@@ -1,8 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getSettings } from '../lib/siteContent';
+import { getAnalytics } from '../lib/analytics';
 
 const settings = getSettings();
+// The policy describes what this build actually does: the statistics section
+// appears only when the tracker in BaseLayout is switched on.
+const analytics = getAnalytics(Astro.site!);
 ---
 
 <BaseLayout
@@ -14,10 +18,20 @@ const settings = getSettings();
     <p class="label">Informacja</p>
     <h1>Polityka prywatności</h1>
 
-    <p class="lead">
-      Krótko, bo naprawdę nie ma tu wiele do opisania: ta strona nie zbiera
-      żadnych danych.
-    </p>
+    {
+      analytics ? (
+        <p class="lead">
+          Krótko, bo naprawdę nie ma tu wiele do opisania: strona liczy
+          odwiedziny, ale nie zapisuje niczego w Twojej przeglądarce i nie wie,
+          kim jesteś.
+        </p>
+      ) : (
+        <p class="lead">
+          Krótko, bo naprawdę nie ma tu wiele do opisania: ta strona nie zbiera
+          żadnych danych.
+        </p>
+      )
+    }
 
     <h2>Formularze</h2>
     <p>
@@ -27,10 +41,38 @@ const settings = getSettings();
     </p>
 
     <h2>Pliki cookies</h2>
-    <p>
-      Strona nie używa plików cookies ani narzędzi analitycznych. Dlatego nie
-      zobaczysz tu okienka z pytaniem o zgodę — nie ma na co jej wyrażać.
-    </p>
+    {
+      analytics ? (
+        <p>
+          Strona nie używa plików cookies ani niczego innego, co zapisywałoby
+          dane w Twojej przeglądarce. Dlatego nie zobaczysz tu okienka
+          z pytaniem o zgodę — nie ma na co jej wyrażać.
+        </p>
+      ) : (
+        <p>
+          Strona nie używa plików cookies ani narzędzi analitycznych. Dlatego nie
+          zobaczysz tu okienka z pytaniem o zgodę — nie ma na co jej wyrażać.
+        </p>
+      )
+    }
+
+    {
+      analytics && (
+        <>
+          <h2>Statystyki odwiedzin</h2>
+          <p>
+            Żeby wiedzieć, ile osób odwiedza stronę i które podstrony oglądają,
+            korzystam z Matomo — programu do statystyk działającego na moim
+            własnym serwerze, więc dane nie trafiają do żadnej zewnętrznej
+            firmy. Przy każdym otwarciu podstrony zapisywany jest jej adres,
+            adres strony, z której przychodzisz, typ przeglądarki i urządzenia
+            oraz skrócony adres IP (bez ostatnich dwóch części, więc nie da się
+            z niego ustalić, kim jesteś). Służy to wyłącznie liczeniu odwiedzin
+            i nie jest łączone z żadnymi innymi danymi.
+          </p>
+        </>
+      )
+    }
 
     <h2>Logi serwera</h2>
     <p>

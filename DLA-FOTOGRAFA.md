@@ -267,6 +267,19 @@ przyspieszyć — poza tym, co wyżej.
 
 ---
 
+## Statystyki odwiedzin
+
+Ile osób odwiedza stronę i skąd przychodzą, zobaczysz na
+**https://stats.aw-foto.pl** (login ustalony przy instalacji Matomo).
+
+Żeby Twoje własne wejścia nie zawyżały liczb, otwórz raz
+**https://aw-foto.pl/nie-licz-mnie** i kliknij **Nie licz moich wizyt**.
+Zrób to w każdej przeglądarce, której używasz — osobno na telefonie i na
+komputerze. Po wyczyszczeniu danych przeglądarki trzeba to powtórzyć; ta sama
+strona pokazuje, czy dana przeglądarka jest wyłączona z liczenia.
+
+---
+
 ## Oferta
 
 **Oferta** to opisy rodzajów sesji (plenerowa, rodzinna, świąteczna…).

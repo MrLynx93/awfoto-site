@@ -287,6 +287,8 @@ In **this** repo:
 |---|---|
 | `SITE_DOMAIN` | `aw-foto.pl` — the only domain setting; the rest derives from it |
 | `PANEL_DOMAIN` | `panel.<SITE_DOMAIN>`, unless set explicitly |
+| `MATOMO_SITE_ID` | unset — visitor statistics are off; see *Visitor statistics* |
+| `MATOMO_URL` | `https://stats.<SITE_DOMAIN>/` |
 
 ### The panel's `.env` is written by CI
 
@@ -322,8 +324,9 @@ The domain is not hardcoded — CI reads `SITE_DOMAIN`, the server reads
    cannot log in until this matches.
 4. On mydevil, `devil www add` the two new domains and issue their certificates,
    as in the setup block above.
-5. Update the panel address in `DLA-FOTOGRAFA.md`, and the Plausible
-   `data-domain` in `BaseLayout.astro` if analytics are ever switched on.
+5. Update the panel address in `DLA-FOTOGRAFA.md`. If statistics are on, add
+   the new domain to the site in Matomo (and move Matomo to `stats.<new-domain>`
+   or set `MATOMO_URL`).
 
 Steps 3 and 4 are the ones that actually break things if skipped; the rest are
 cosmetic until traffic arrives.
@@ -379,6 +382,43 @@ manifest to GitHub, which creates the app with exactly these permissions.
 just static files. Run the panel locally with `npm run dev` and deploy only
 `dist/client/`.
 
+## Visitor statistics
+
+Self-hosted [Matomo](https://matomo.org) on the same mydevil account, with no
+cookies and so no consent banner. The site does not load `matomo.js` (~22 KB
+gzipped, cookies by default): `BaseLayout.astro` sends one `sendBeacon` per page
+view straight to Matomo's tracking API with the address, referrer and title,
+~0.5 KB of inline script that writes nothing to the visitor's browser. Matomo
+tells visitors apart server-side from the anonymised IP and user agent. Lost
+compared with `matomo.js`: time on page and automatic outlink/download
+tracking.
+
+It is off until the build gets `MATOMO_SITE_ID`, and never runs under
+`astro dev`. The privacy policy grows its statistics section in the same build.
+
+**Leaving out the photographer's own visits:** open `/nie-licz-mnie` (not
+linked, `noindex`, not in the sitemap) once in each browser and press the
+button. It sets a localStorage flag the tracker checks first. Clearing site
+data removes it; the page shows whether the current browser is excluded.
+Matomo's *Excluded IPs* covers the home network on top of that.
+
+One-time setup:
+
+1. `devil www add stats.aw-foto.pl php`, a MySQL database from the panel
+   (*MySQL → Dodaj bazę*), and a certificate:
+   `devil ssl www add <IP> le le stats.aw-foto.pl`.
+2. Unzip the latest Matomo from matomo.org into
+   `~/domains/stats.aw-foto.pl/public_html/`, open `https://stats.aw-foto.pl`
+   and run the installer. Add the site `https://aw-foto.pl`; note its ID
+   (the first site is `1`).
+3. In Matomo, *Administration → Privacy → Anonymize data*: anonymise IPs by
+   **2 bytes** (the privacy policy says so) and use the anonymised IP for
+   geolocation too. *Administration → Websites → Manage → Excluded IPs*: the
+   home IP, optionally.
+4. *Administration → System → General settings → Archive reports when viewed
+   from the browser*: leave on. It is enough at this traffic, so no cron.
+5. Set the repository variable `MATOMO_SITE_ID` and re-run *build and deploy*.
+
 ## Which host
 
 The deploy targets a host with SSH and the `devil` CLI. Two work identically:
@@ -420,8 +460,8 @@ depending on which of the two you pick.
 - **The Christmas page is always built**, in or out of season — see *The
   Christmas season* above for why, and how it is kept out of Google.
 - **Publishing is not instant** — save → commit → build → deploy ≈ 2–3 minutes.
-- **No analytics, no cookies, no contact form**, so there is no consent banner
-  and no spam surface. A commented-out Plausible snippet sits in `BaseLayout.astro`.
+- **No cookies, no contact form**, so there is no consent banner and no spam
+  surface. Statistics are cookieless — see *Visitor statistics*.
 - **Fonts are self-hosted**, split `latin`/`latin-ext` so Polish diacritics render
   without a third-party request.
 - **`content-template/` is seed data**, not the live content. Once the private

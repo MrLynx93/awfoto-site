@@ -94,7 +94,10 @@ export default defineConfig({
     markdoc(),
     keystatic(),
     sitemap({
-      filter: (page) => christmasActive || !/\/swieta\/?$/.test(page),
+      // /nie-licz-mnie is the photographer's own switch for the statistics,
+      // not a page for anyone else.
+      filter: (page) =>
+        !/\/nie-licz-mnie\/?$/.test(page) && (christmasActive || !/\/swieta\/?$/.test(page)),
       // A session's date is the day it was shot, which is also the last time
       // the page meant anything new. Everything else gets the build's date.
       serialize(item) {

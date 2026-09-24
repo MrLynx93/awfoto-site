@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BotanicalDivider from '../components/BotanicalDivider.astro';
+import { IGNORE_KEY } from '../lib/analytics';
+
+/**
+ * Not linked from anywhere: the photographer opens it once in each browser she
+ * uses, so her own visits stay out of the statistics. The flag lives in that
+ * browser's localStorage, which BaseLayout checks before sending a page view.
+ * Clearing the browser's site data undoes it, so the page is also where to
+ * check whether a browser is still excluded.
+ */
+---
+
+<BaseLayout title="Statystyki odwiedzin" noindex>
+  <section class="ignore">
+    <BotanicalDivider />
+    <p class="label">Statystyki</p>
+    <h1>Nie licz moich odwiedzin</h1>
+    <p class="lead" data-state>Sprawdzam tę przeglądarkę…</p>
+    <div class="buttons">
+      <button type="button" class="button" data-toggle hidden></button>
+    </div>
+    <p class="note">
+      Ustawienie dotyczy tylko tej przeglądarki na tym urządzeniu. Otwórz tę
+      stronę na telefonie i komputerze osobno. Wyczyszczenie danych przeglądarki
+      je usuwa.
+    </p>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ ignoreKey: IGNORE_KEY }}>
+  const state = document.querySelector('[data-state]');
+  const toggle = document.querySelector('[data-toggle]');
+
+  function ignored() {
+    try {
+      return localStorage.getItem(ignoreKey) !== null;
+    } catch {
+      return null;
+    }
+  }
+
+  function render() {
+    const value = ignored();
+    if (value === null) {
+      state.textContent =
+        'Ta przeglądarka nie pozwala zapisać ustawienia (tryb prywatny albo zablokowane dane stron).';
+      toggle.hidden = true;
+      return;
+    }
+    state.textContent = value
+      ? 'Wizyty z tej przeglądarki nie są liczone w statystykach.'
+      : 'Wizyty z tej przeglądarki są liczone w statystykach.';
+    toggle.textContent = value ? 'Znowu licz moje wizyty' : 'Nie licz moich wizyt';
+    toggle.hidden = false;
+  }
+
+  toggle.addEventListener('click', () => {
+    try {
+      if (ignored()) localStorage.removeItem(ignoreKey);
+      else localStorage.setItem(ignoreKey, '1');
+    } catch {}
+    render();
+  });
+
+  render();
+</script>
+
+<style>
+  .ignore {
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: clamp(4rem, 12vw, 8rem) var(--pad-x);
+    text-align: center;
+  }
+  .ignore .label {
+    margin-top: 2.5rem;
+  }
+  .ignore h1 {
+    margin-bottom: 1.25rem;
+    font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+  }
+  .ignore p {
+    margin-inline: auto;
+  }
+  .buttons {
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  /* .button sets display, which would otherwise beat the hidden attribute. */
+  .button[hidden] {
+    display: none;
+  }
+  .note {
+    margin-top: 2.5rem;
+    font-size: 0.9rem;
+    color: var(--tekst-jasny);
+  }
+</style>

@@ -3,6 +3,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import { getSettings, getPricing } from '../lib/siteContent';
 import { SITE_NAME, businessSchema, cityName } from '../lib/seo';
+import { getAnalytics, IGNORE_KEY } from '../lib/analytics';
 import '../styles/global.css';
 
 /**
@@ -42,6 +43,7 @@ const {
 
 const settings = getSettings();
 const pricing = getPricing();
+const analytics = getAnalytics(Astro.site!);
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImageUrl = ogImage ? new URL(ogImage, Astro.site).href : undefined;
 
@@ -158,11 +160,38 @@ const jsonLd = [business, ...schema]
         an inert, escaped `<set>` tag and Google never saw any of it. */}
     <Fragment set:html={jsonLd} />
 
-    <!--
-      No analytics by default: no cookies means no consent banner. To add
-      privacy-friendly stats later, uncomment and set your own domain:
-      <script defer data-domain="aw-foto.pl" src="https://plausible.io/js/script.js"></script>
-    -->
+    {
+      /* One beacon per page view to Matomo — see src/lib/analytics.ts for why
+         this is not matomo.js. Nothing is written to the visitor's browser;
+         the only read is the flag /nie-licz-mnie sets in the photographer's
+         own. sendBeacon with a form body is a simple CORS request, so it needs
+         no preflight and survives the visitor leaving the page. */
+      analytics && (
+        <script
+          is:inline
+          define:vars={{ endpoint: analytics.endpoint, siteId: analytics.siteId, ignoreKey: IGNORE_KEY }}
+        >
+          let ignored = false;
+          try {
+            ignored = localStorage.getItem(ignoreKey) !== null;
+          } catch {}
+          if (!ignored && navigator.sendBeacon) {
+            navigator.sendBeacon(
+              endpoint,
+              new URLSearchParams({
+                idsite: siteId,
+                rec: '1',
+                apiv: '1',
+                send_image: '0',
+                url: location.href,
+                urlref: document.referrer,
+                action_name: document.title,
+              }),
+            );
+          }
+        </script>
+      )
+    }
   </head>
 
   <body>

@@ -121,6 +121,10 @@ jobs:
           # straight to the app's install page. Cosmetic, but that page is
           # exactly where someone lands when the app is not installed yet.
           PUBLIC_KEYSTATIC_GITHUB_APP_SLUG: ${{ vars.KEYSTATIC_GITHUB_APP_SLUG }}
+          # Visitor statistics (src/lib/analytics.ts). Off while MATOMO_SITE_ID
+          # is unset; MATOMO_URL defaults to https://stats.<SITE_DOMAIN>/.
+          MATOMO_SITE_ID: ${{ vars.MATOMO_SITE_ID }}
+          MATOMO_URL: ${{ vars.MATOMO_URL }}
 
       # The whole tree, because the panel deploy rsyncs the app itself, not
       # just dist/. node_modules is reinstalled on the server; .git is useless
