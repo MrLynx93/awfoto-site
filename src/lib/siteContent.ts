@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { parse } from 'yaml';
 import { z } from 'astro:content';
+import { PRIVACY_DEFAULTS } from './privacyDefaults';
 
 /**
  * The panel's singletons are single YAML documents with no images, so they skip
@@ -112,6 +113,25 @@ const christmasSchema = z.object({
     .default('Terminy listopadowe i grudniowe rezerwują się najszybciej — napisz albo zadzwoń.'),
 });
 
+/**
+ * A privacy policy section: an emptied box falls back to the original wording
+ * rather than silently dropping part of a legal page.
+ */
+const privacyText = (fallback: string) =>
+  z
+    .string()
+    .default('')
+    .transform((text) => text.trim() || fallback);
+
+const privacySchema = z.object({
+  lead: privacyText(PRIVACY_DEFAULTS.lead),
+  forms: privacyText(PRIVACY_DEFAULTS.forms),
+  cookies: privacyText(PRIVACY_DEFAULTS.cookies),
+  statistics: privacyText(PRIVACY_DEFAULTS.statistics),
+  serverLogs: privacyText(PRIVACY_DEFAULTS.serverLogs),
+  photos: privacyText(PRIVACY_DEFAULTS.photos),
+});
+
 const pricingSchema = z.object({
   intro: z.string().default(''),
   packages: z.array(pricingPackageSchema).default([]),
@@ -130,20 +150,29 @@ export type Home = z.infer<typeof homeSchema>;
 export type About = z.infer<typeof aboutSchema>;
 export type ListingPage = z.infer<typeof sessionsPageSchema>;
 export type Christmas = z.infer<typeof christmasSchema>;
+export type Privacy = z.infer<typeof privacySchema>;
 export type Pricing = z.infer<typeof pricingSchema>;
 export type ChristmasPricing = z.infer<typeof christmasPricingSchema>;
 
-function readYaml<T>(fileName: string, schema: z.ZodType<T>): T {
+/**
+ * `optional` is for a section added after the content repo was seeded: until
+ * it is first saved in the panel there is no file, and the schema's defaults
+ * stand in for it rather than failing the build.
+ */
+function readYaml<T>(fileName: string, schema: z.ZodType<T>, { optional = false } = {}): T {
   const filePath = path.join(CONTENT_DIR, fileName);
   let raw: string;
   try {
     raw = readFileSync(filePath, 'utf8');
-  } catch {
-    throw new Error(
-      `Nie znaleziono ${filePath}.\n` +
-        'Uruchom `npm run content:pull` (albo `npm run content:init` przy pierwszym uruchomieniu), ' +
-        'żeby pobrać repozytorium z treścią.',
-    );
+  } catch (error) {
+    if (!optional || (error as NodeJS.ErrnoException)?.code !== 'ENOENT') {
+      throw new Error(
+        `Nie znaleziono ${filePath}.\n` +
+          'Uruchom `npm run content:pull` (albo `npm run content:init` przy pierwszym uruchomieniu), ' +
+          'żeby pobrać repozytorium z treścią.',
+      );
+    }
+    raw = '{}';
   }
 
   const result = schema.safeParse(parse(raw));
@@ -175,6 +204,7 @@ export const getAbout = () => readYaml('pages/about.yaml', aboutSchema);
 export const getSessionsPage = () => readYaml('pages/sessions.yaml', sessionsPageSchema);
 export const getOffersPage = () => readYaml('pages/offers.yaml', offersPageSchema);
 export const getChristmas = () => readYaml('pages/christmas.yaml', christmasSchema);
+export const getPrivacy = () => readYaml('pages/privacy.yaml', privacySchema, { optional: true });
 export const getPricing = () => readYaml('pricing.yaml', pricingSchema);
 export const getChristmasPricing = () =>
   readYaml('christmas-pricing.yaml', christmasPricingSchema);

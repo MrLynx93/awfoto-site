@@ -1,12 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getSettings } from '../lib/siteContent';
+import { getSettings, getPrivacy } from '../lib/siteContent';
 import { getAnalytics } from '../lib/analytics';
 
 const settings = getSettings();
-// The policy describes what this build actually does: the statistics section
-// appears only when the tracker in BaseLayout is switched on.
+const privacy = getPrivacy();
+// The statistics section describes the tracker in BaseLayout, so it appears
+// only in builds where that tracker is switched on.
 const analytics = getAnalytics(Astro.site!);
+
+/** The panel's boxes are plain text; a blank line starts a new paragraph. */
+const paragraphs = (text: string) => text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
 ---
 
 <BaseLayout
@@ -18,75 +22,28 @@ const analytics = getAnalytics(Astro.site!);
     <p class="label">Informacja</p>
     <h1>Polityka prywatności</h1>
 
-    {
-      analytics ? (
-        <p class="lead">
-          Krótko, bo naprawdę nie ma tu wiele do opisania: strona liczy
-          odwiedziny, ale nie zapisuje niczego w Twojej przeglądarce i nie wie,
-          kim jesteś.
-        </p>
-      ) : (
-        <p class="lead">
-          Krótko, bo naprawdę nie ma tu wiele do opisania: ta strona nie zbiera
-          żadnych danych.
-        </p>
-      )
-    }
+    {paragraphs(privacy.lead).map((p) => <p class="lead">{p}</p>)}
 
     <h2>Formularze</h2>
-    <p>
-      Strona nie ma formularza kontaktowego. Kontakt odbywa się telefonicznie,
-      mailowo albo przez Instagram i Facebook — czyli poza tą stroną, na
-      zasadach tych serwisów.
-    </p>
+    {paragraphs(privacy.forms).map((p) => <p>{p}</p>)}
 
     <h2>Pliki cookies</h2>
-    {
-      analytics ? (
-        <p>
-          Strona nie używa plików cookies ani niczego innego, co zapisywałoby
-          dane w Twojej przeglądarce. Dlatego nie zobaczysz tu okienka
-          z pytaniem o zgodę — nie ma na co jej wyrażać.
-        </p>
-      ) : (
-        <p>
-          Strona nie używa plików cookies ani narzędzi analitycznych. Dlatego nie
-          zobaczysz tu okienka z pytaniem o zgodę — nie ma na co jej wyrażać.
-        </p>
-      )
-    }
+    {paragraphs(privacy.cookies).map((p) => <p>{p}</p>)}
 
     {
       analytics && (
         <>
           <h2>Statystyki odwiedzin</h2>
-          <p>
-            Żeby wiedzieć, ile osób odwiedza stronę i które podstrony oglądają,
-            korzystam z Matomo — programu do statystyk działającego na moim
-            własnym serwerze, więc dane nie trafiają do żadnej zewnętrznej
-            firmy. Przy każdym otwarciu podstrony zapisywany jest jej adres,
-            adres strony, z której przychodzisz, typ przeglądarki i urządzenia
-            oraz skrócony adres IP (bez ostatnich dwóch części, więc nie da się
-            z niego ustalić, kim jesteś). Służy to wyłącznie liczeniu odwiedzin
-            i nie jest łączone z żadnymi innymi danymi.
-          </p>
+          {paragraphs(privacy.statistics).map((p) => <p>{p}</p>)}
         </>
       )
     }
 
     <h2>Logi serwera</h2>
-    <p>
-      Serwer, na którym stoi strona, zapisuje standardowe logi dostępu (adres
-      IP, data zapytania, typ przeglądarki). Służą wyłącznie diagnostyce
-      i bezpieczeństwu, i nie są łączone z żadnymi innymi danymi.
-    </p>
+    {paragraphs(privacy.serverLogs).map((p) => <p>{p}</p>)}
 
     <h2>Zdjęcia</h2>
-    <p>
-      Zdjęcia publikowane na stronie pochodzą z sesji, na których publikację
-      osoby na nich uwiecznione wyraziły zgodę. Jeśli jesteś na którymś ze zdjęć
-      i chcesz, żeby zostało usunięte — napisz, usunę je bez pytania o powód.
-    </p>
+    {paragraphs(privacy.photos).map((p) => <p>{p}</p>)}
 
     <h2>Administrator danych</h2>
     <p>

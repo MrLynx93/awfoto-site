@@ -1,4 +1,5 @@
 import { config, collection, singleton, fields } from '@keystatic/core';
+import { PRIVACY_DEFAULTS } from './src/lib/privacyDefaults';
 
 /**
  * Panel do zarządzania treścią strony.
@@ -83,6 +84,24 @@ const pricingPackage = fields.object(
   { label: 'Pakiet' },
 );
 
+/**
+ * One section of the privacy policy. Headings stay in code so the page keeps
+ * its shape; only the words are hers. An emptied box brings the original text
+ * back rather than dropping the section — see src/lib/privacyDefaults.ts.
+ */
+const privacyText = (label: string, hint: string, defaultValue: string) =>
+  fields.text({
+    label,
+    description: [
+      hint,
+      'Nowy akapit: pusta linia. Zostaw puste, żeby przywrócić tekst domyślny.',
+    ]
+      .filter(Boolean)
+      .join(' '),
+    multiline: true,
+    defaultValue,
+  });
+
 export default config({
   storage,
 
@@ -90,7 +109,14 @@ export default config({
     brand: { name: 'AW Fotografia' },
     navigation: {
       Treść: ['sessions', 'offers'],
-      Strony: ['homePage', 'sessionsPage', 'offersPage', 'aboutPage', 'christmasPage'],
+      Strony: [
+        'homePage',
+        'sessionsPage',
+        'offersPage',
+        'aboutPage',
+        'christmasPage',
+        'privacyPage',
+      ],
       Cennik: ['pricing', 'christmasPricing'],
       Ustawienia: ['settings'],
     },
@@ -331,6 +357,24 @@ export default config({
           defaultValue:
             'Terminy listopadowe i grudniowe rezerwują się najszybciej — napisz albo zadzwoń.',
         }),
+      },
+    }),
+
+    privacyPage: singleton({
+      label: 'Strona „Polityka prywatności”',
+      path: inRepo('content/pages/privacy'),
+      format: { data: 'yaml' },
+      schema: {
+        lead: privacyText('Wstęp', 'Pierwsze zdanie pod nagłówkiem.', PRIVACY_DEFAULTS.lead),
+        forms: privacyText('Formularze', '', PRIVACY_DEFAULTS.forms),
+        cookies: privacyText('Pliki cookies', '', PRIVACY_DEFAULTS.cookies),
+        statistics: privacyText(
+          'Statystyki odwiedzin',
+          'Pokazuje się tylko wtedy, gdy statystyki odwiedzin są włączone.',
+          PRIVACY_DEFAULTS.statistics,
+        ),
+        serverLogs: privacyText('Logi serwera', '', PRIVACY_DEFAULTS.serverLogs),
+        photos: privacyText('Zdjęcia', '', PRIVACY_DEFAULTS.photos),
       },
     }),
 
