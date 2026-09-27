@@ -362,6 +362,12 @@ export default config({
         heading: fields.text({ label: 'Nagłówek' }),
         text: fields.text({ label: 'Tekst', multiline: true }),
         signature: fields.text({ label: 'Podpis', description: 'Np. imię pod tekstem.' }),
+        location: fields.markdoc.inline({
+          label: 'Tekst o lokalizacji',
+          description:
+            'Linijka pod podpisem, np. „Działam w **Żorach** i okolicach — dojadę też do Ciebie”. ' +
+            'Pusta = „Lokalizacja: <miasto z Ustawień>”.',
+        }),
       },
     }),
 

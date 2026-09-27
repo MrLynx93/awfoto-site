@@ -115,6 +115,8 @@ const aboutSchema = z.object({
   heading: z.string().default(''),
   text: z.string().default(''),
   signature: z.string().default(''),
+  /** Rich text; empty falls back to "Lokalizacja: <settings.city>". */
+  location: z.string().default(''),
 });
 
 /** /sesje and /oferta differ only in their words, so they share a shape. */
